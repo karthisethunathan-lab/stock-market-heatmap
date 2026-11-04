@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { usePortfolios } from '../../hooks/usePortfolios';
 import { PortfolioSummaryCards } from './PortfolioSummaryCards';
 import { HoldingsTable } from './HoldingsTable';
 import { AllocationDonut } from './AllocationDonut';
 import { PortfolioHeatmap } from './PortfolioHeatmap';
 import { AddHoldingModal } from './AddHoldingModal';
-import { exportHoldingsToCSV, parseHoldingsFromCSV } from '../../lib/utils';
+import { exportHoldingsToCSV, parseHoldingsFromCSV, calculateXIRR } from '../../lib/utils';
 import { useApp } from '../../context/ThemeContext';
 import {
   Plus,
@@ -18,6 +18,7 @@ import {
   X,
   PlusCircle,
   RefreshCw,
+  Percent,
 } from 'lucide-react';
 
 export const PortfolioPage: React.FC = () => {
@@ -42,8 +43,10 @@ export const PortfolioPage: React.FC = () => {
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
   const [editNameText, setEditNameText] = useState('');
   const [viewMode, setViewMode] = useState<'overview' | 'heatmap'>('overview');
+  const [baseCurrency, setBaseCurrency] = useState<'USD' | 'INR'>('USD');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +79,7 @@ export const PortfolioPage: React.FC = () => {
     showToast(`Exported "${activePortfolio.name}" holdings to CSV`, 'success');
   };
 
-  // CSV Import
+  // CSV Import (Standard, Zerodha, Groww)
   const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -87,10 +90,11 @@ export const PortfolioPage: React.FC = () => {
         const text = event.target?.result as string;
         const parsed = parseHoldingsFromCSV(text);
         if (parsed.length === 0) {
-          showToast('No valid holdings found in CSV file', 'error');
+          showToast('No valid holdings found. Ensure standard, Zerodha, or Groww CSV format.', 'error');
           return;
         }
         replaceHoldings(activePortfolioId, parsed);
+        showToast(`Successfully imported ${parsed.length} holdings into "${activePortfolio?.name}"!`, 'success');
       } catch (err) {
         showToast('Failed to parse CSV file', 'error');
       }
@@ -99,12 +103,38 @@ export const PortfolioPage: React.FC = () => {
     e.target.value = '';
   };
 
+  // Compute simulated cashflows for XIRR
+  const portfolioXirr = useMemo(() => {
+    if (!activePortfolio || activePortfolio.holdings.length === 0) return 0;
+    const cashFlows: Array<{ amount: number; date: Date }> = [];
+
+    activePortfolio.holdings.forEach((h) => {
+      const invested = h.quantity * h.buyPrice;
+      cashFlows.push({
+        amount: -invested,
+        date: new Date(h.buyDate || '2023-01-01'),
+      });
+    });
+
+    // Current portfolio terminal value
+    cashFlows.push({
+      amount: calculated.totalCurrentValue || 1,
+      date: new Date(),
+    });
+
+    return calculateXIRR(cashFlows);
+  }, [activePortfolio, calculated.totalCurrentValue]);
+
+  // Benchmark comparisons
+  const benchmarkSP500 = 24.5;
+  const benchmarkNifty = 19.8;
+  const alphaSP = Number((calculated.totalPnlPercent - benchmarkSP500).toFixed(2));
+  const alphaNifty = Number((calculated.totalPnlPercent - benchmarkNifty).toFixed(2));
+
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-12">
-      
+    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-12 p-4 sm:p-6">
       {/* Portfolio Selector Tabs & Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[#0d121f] rounded-xl border border-slate-800">
-        
         {/* Left: Portfolios Tabs */}
         <div className="flex flex-wrap items-center gap-2">
           {portfolios.map((p) => {
@@ -136,7 +166,7 @@ export const PortfolioPage: React.FC = () => {
                 key={p.id}
                 className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
                   isActive
-                    ? 'bg-slate-800 text-emerald-400 font-bold border border-slate-700 shadow-sm'
+                    ? 'bg-slate-800 text-blue-400 font-bold border border-slate-700 shadow-sm'
                     : 'bg-slate-950/60 text-slate-400 hover:text-slate-200 border border-slate-800/80 hover:bg-slate-900'
                 }`}
               >
@@ -186,7 +216,7 @@ export const PortfolioPage: React.FC = () => {
                 className="bg-transparent text-white font-mono text-xs focus:outline-none w-32"
                 autoFocus
               />
-              <button type="submit" className="text-emerald-400 hover:text-white">
+              <button type="submit" className="text-blue-400 hover:text-white">
                 <Check className="w-3.5 h-3.5" />
               </button>
               <button
@@ -200,7 +230,7 @@ export const PortfolioPage: React.FC = () => {
           ) : (
             <button
               onClick={() => setIsCreatingPortfolio(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-dashed border-slate-700 hover:border-emerald-500/60 text-slate-400 hover:text-emerald-400 text-xs font-mono transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-dashed border-slate-700 hover:border-blue-500/60 text-slate-400 hover:text-blue-400 text-xs font-mono transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>New Portfolio</span>
@@ -208,16 +238,35 @@ export const PortfolioPage: React.FC = () => {
           )}
         </div>
 
-        {/* Right: Actions Toolbar */}
-        <div className="flex items-center gap-2">
-          
+        {/* Right: Actions Toolbar & Base Currency Toggle */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Base Currency Toggle */}
+          <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-xs">
+            <button
+              onClick={() => setBaseCurrency('USD')}
+              className={`px-2 py-1 rounded font-mono font-medium transition ${
+                baseCurrency === 'USD' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              USD ($)
+            </button>
+            <button
+              onClick={() => setBaseCurrency('INR')}
+              className={`px-2 py-1 rounded font-mono font-medium transition ${
+                baseCurrency === 'INR' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              INR (₹)
+            </button>
+          </div>
+
           {/* View toggle: Overview vs Heatmap */}
           <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs font-medium">
             <button
               onClick={() => setViewMode('overview')}
               className={`px-2.5 py-1 rounded-md transition-all ${
                 viewMode === 'overview'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold'
+                  ? 'bg-slate-800 text-blue-400 font-semibold'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -227,11 +276,11 @@ export const PortfolioPage: React.FC = () => {
               onClick={() => setViewMode('heatmap')}
               className={`px-2.5 py-1 rounded-md transition-all ${
                 viewMode === 'heatmap'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold'
+                  ? 'bg-slate-800 text-blue-400 font-semibold'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Portfolio Heatmap
+              Heatmap
             </button>
           </div>
 
@@ -253,11 +302,11 @@ export const PortfolioPage: React.FC = () => {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            title="Import from CSV"
+            title="Import Zerodha, Groww, or Standard CSV"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-medium transition-colors"
           >
             <Upload className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Import</span>
+            <span className="hidden sm:inline">Import Broker CSV</span>
           </button>
 
           {/* CSV Export */}
@@ -273,7 +322,7 @@ export const PortfolioPage: React.FC = () => {
           {/* Add Holding Button */}
           <button
             onClick={() => setAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-950/40 transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-colors"
           >
             <PlusCircle className="w-4 h-4" />
             <span>Add Holding</span>
@@ -292,6 +341,46 @@ export const PortfolioPage: React.FC = () => {
         currency={calculated.primaryCurrency}
         hasMixedCurrencies={calculated.hasMixedCurrencies}
       />
+
+      {/* Benchmark & XIRR Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* XIRR Card */}
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-xs text-slate-400 font-medium flex items-center gap-1">
+              <Percent className="w-3.5 h-3.5 text-blue-400" /> Annualized Return (XIRR)
+            </span>
+            <span className={`text-xl font-mono font-bold mt-1 ${portfolioXirr >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {portfolioXirr >= 0 ? `+${portfolioXirr}%` : `${portfolioXirr}%`}
+            </span>
+          </div>
+          <div className="text-[11px] text-slate-500 text-right">
+            Cash-flow weighted IRR based on holding dates
+          </div>
+        </div>
+
+        {/* S&P 500 Alpha */}
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-xs text-slate-400 font-medium">vs S&P 500 Benchmark (+{benchmarkSP500}%)</span>
+            <span className={`text-xl font-mono font-bold mt-1 ${alphaSP >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {alphaSP >= 0 ? `+${alphaSP}% Alpha` : `${alphaSP}% Under`}
+            </span>
+          </div>
+          <div className="text-[11px] text-slate-500 text-right">Relative Outperformance</div>
+        </div>
+
+        {/* Nifty 50 Alpha */}
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-xs text-slate-400 font-medium">vs NIFTY 50 Benchmark (+{benchmarkNifty}%)</span>
+            <span className={`text-xl font-mono font-bold mt-1 ${alphaNifty >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {alphaNifty >= 0 ? `+${alphaNifty}% Alpha` : `${alphaNifty}% Under`}
+            </span>
+          </div>
+          <div className="text-[11px] text-slate-500 text-right">Relative Outperformance</div>
+        </div>
+      </div>
 
       {/* Conditional View: Overview (Table + Donut) OR Portfolio Treemap Heatmap */}
       {viewMode === 'overview' ? (

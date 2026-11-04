@@ -4,8 +4,13 @@ import { useStockDetail } from '../../hooks/useStockDetail';
 import { StockChart } from './StockChart';
 import { KeyStatsGrid } from './KeyStatsGrid';
 import { CompanyProfile } from './CompanyProfile';
-import { AnalystBar } from './AnalystBar';
 import { NewsList } from './NewsList';
+import { FundamentalsTab } from './FundamentalsTab';
+import { FinancialsTab } from './FinancialsTab';
+import { AnalystsTab } from './AnalystsTab';
+import { PeersTab } from './PeersTab';
+import { CompareModal } from './CompareModal';
+import { PriceAlertsModal } from '../alerts/PriceAlertsModal';
 import { AddHoldingModal } from '../portfolio/AddHoldingModal';
 import { formatCurrency, formatPercent } from '../../lib/utils';
 import {
@@ -15,17 +20,19 @@ import {
   PlusCircle,
   TrendingUp,
   TrendingDown,
-  Loader2,
-  AlertCircle,
+  Bell,
+  Scale,
 } from 'lucide-react';
+
+type DrawerTab = 'overview' | 'fundamentals' | 'financials' | 'analysts' | 'news' | 'peers';
 
 export const StockDrawer: React.FC = () => {
   const {
     selectedSymbol,
+    selectStock,
     closeStock,
     isWatchlisted,
     toggleWatchlist,
-    colorMode,
   } = useApp();
 
   const {
@@ -34,27 +41,47 @@ export const StockDrawer: React.FC = () => {
     metrics,
     candles,
     news,
-    loading,
     chartLoading,
-    error,
     chartRange,
     setChartRange,
     chartType,
     setChartType,
   } = useStockDetail(selectedSymbol);
 
+  const [activeTab, setActiveTab] = useState<DrawerTab>('overview');
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const [alertsModalOpen, setAlertsModalOpen] = useState(false);
+
+  // Synchronize URL with /stock/:symbol deep-linking
+  useEffect(() => {
+    if (selectedSymbol) {
+      const url = new URL(window.location.href);
+      if (!url.pathname.includes(`/stock/${selectedSymbol}`)) {
+        window.history.pushState({}, '', `/stock/${selectedSymbol}`);
+      }
+    }
+  }, [selectedSymbol]);
+
+  // Handle drawer close and reset URL
+  const handleClose = () => {
+    closeStock();
+    const url = new URL(window.location.href);
+    if (url.pathname.startsWith('/stock/')) {
+      window.history.pushState({}, '', '/');
+    }
+  };
 
   // Esc key closes drawer
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selectedSymbol && !addModalOpen) {
-        closeStock();
+      if (e.key === 'Escape' && selectedSymbol && !addModalOpen && !compareModalOpen && !alertsModalOpen) {
+        handleClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedSymbol, closeStock, addModalOpen]);
+  }, [selectedSymbol, addModalOpen, compareModalOpen, alertsModalOpen]);
 
   if (!selectedSymbol) return null;
 
@@ -62,20 +89,28 @@ export const StockDrawer: React.FC = () => {
   const isWatched = isWatchlisted(selectedSymbol);
   const currency = quote?.currency || (selectedSymbol.endsWith('.NS') ? 'INR' : 'USD');
 
+  // 52-week slider calculation
+  const curPrice = quote?.price || 100;
+  const high52 = quote?.fiftyTwoWeekHigh || curPrice * 1.15;
+  const low52 = quote?.fiftyTwoWeekLow || curPrice * 0.75;
+  const range52 = high52 - low52 || 1;
+  const progress52 = Math.min(100, Math.max(0, ((curPrice - low52) / range52) * 100));
+
+
   return (
     <>
       {/* Backdrop */}
       <div
-        onClick={closeStock}
+        onClick={handleClose}
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
-      {/* Drawer: Right panel on desktop, Bottom sheet on mobile */}
+      {/* Drawer: Right panel on desktop, Fullscreen on mobile */}
       <aside
-        className="fixed z-50 inset-y-0 right-0 w-full max-w-2xl bg-[#090d16] border-l border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-250 max-md:inset-x-0 max-md:top-12 max-md:bottom-0 max-md:rounded-t-2xl max-md:max-w-none max-md:slide-in-from-bottom"
+        className="fixed z-50 inset-y-0 right-0 w-full max-w-3xl bg-[#090d16] border-l border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-250 max-md:inset-0 max-md:max-w-none"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-800 bg-[#0c111e]/90 backdrop-blur-md sticky top-0 z-30">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-800 bg-[#0c111e]/95 backdrop-blur-md sticky top-0 z-30">
           <div className="flex items-center gap-3.5">
             {profile?.logo ? (
               <img
@@ -87,7 +122,7 @@ export const StockDrawer: React.FC = () => {
                 }}
               />
             ) : (
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center font-mono font-bold text-base text-white shadow-md">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-mono font-bold text-base text-white shadow-md">
                 {selectedSymbol.slice(0, 3)}
               </div>
             )}
@@ -100,7 +135,13 @@ export const StockDrawer: React.FC = () => {
                 <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 font-sans">
                   {profile?.exchange || quote?.exchange || 'EQUITY'}
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-mono font-semibold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/60">
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-semibold uppercase ${
+                    quote?.marketState === 'REGULAR'
+                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/60'
+                      : 'bg-slate-800 text-slate-400 border border-slate-700'
+                  }`}
+                >
                   {quote?.marketState || 'REGULAR'}
                 </span>
               </div>
@@ -111,32 +152,54 @@ export const StockDrawer: React.FC = () => {
           </div>
 
           <button
-            onClick={closeStock}
+            onClick={handleClose}
             className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Action Bar: Price, Change, + Portfolio, + Watchlist */}
-        <div className="flex flex-wrap items-center justify-between gap-4 px-4 sm:px-5 py-3.5 bg-slate-900/50 border-b border-slate-800">
+        {/* Action Bar: Price, Change, Quick Action Buttons */}
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3 bg-slate-900/60 border-b border-slate-800">
           <div>
             <div className="text-2xl font-mono font-extrabold text-white">
               {quote ? formatCurrency(quote.price, currency) : '--'}
             </div>
             {quote && (
-              <div className={`flex items-center gap-1.5 text-xs font-mono font-semibold ${
-                isUp ? 'text-emerald-400' : 'text-rose-400'
-              }`}>
+              <div
+                className={`flex items-center gap-1.5 text-xs font-mono font-semibold ${
+                  isUp ? 'text-emerald-400' : 'text-rose-400'
+                }`}
+              >
                 {isUp ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                 <span>{quote.change >= 0 ? `+${quote.change.toFixed(2)}` : quote.change.toFixed(2)}</span>
                 <span>({formatPercent(quote.changePercent)})</span>
-                <span className="text-slate-500 font-normal">Today</span>
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Compare Button */}
+            <button
+              onClick={() => setCompareModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-xs font-semibold transition"
+              title="Compare with other stocks"
+            >
+              <Scale className="w-3.5 h-3.5 text-blue-400" />
+              <span>Compare</span>
+            </button>
+
+            {/* Price Alert Button */}
+            <button
+              onClick={() => setAlertsModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-xs font-semibold transition"
+              title="Set Price Alert"
+            >
+              <Bell className="w-3.5 h-3.5 text-amber-400" />
+              <span>Alert</span>
+            </button>
+
+            {/* Watchlist Toggle */}
             <button
               onClick={() => toggleWatchlist(selectedSymbol)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
@@ -145,10 +208,11 @@ export const StockDrawer: React.FC = () => {
                   : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-750'
               }`}
             >
-              {isWatched ? <BookmarkCheck className="w-4 h-4 text-amber-400" /> : <Bookmark className="w-4 h-4" />}
+              {isWatched ? <BookmarkCheck className="w-3.5 h-3.5 text-amber-400" /> : <Bookmark className="w-3.5 h-3.5" />}
               <span>{isWatched ? 'Watchlisted' : 'Watchlist'}</span>
             </button>
 
+            {/* Add Holding Button */}
             <button
               onClick={() => setAddModalOpen(true)}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-950/40 transition-colors"
@@ -159,60 +223,116 @@ export const StockDrawer: React.FC = () => {
           </div>
         </div>
 
-        {/* Scrollable Content Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
-          {loading && !quote ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400">
-              <Loader2 className="w-8 h-8 text-emerald-400 animate-spin mb-3" />
-              <p className="text-sm font-mono">Fetching market data from Yahoo & Finnhub...</p>
-            </div>
-          ) : error && !quote ? (
-            <div className="p-6 rounded-xl border border-rose-800/40 bg-rose-950/20 text-center">
-              <AlertCircle className="w-10 h-10 text-rose-400 mx-auto mb-2" />
-              <h4 className="text-base font-bold text-white mb-1">Data Unavailable</h4>
-              <p className="text-xs text-slate-400">{error}</p>
-            </div>
-          ) : (
-            <>
-              {/* Interactive Price Chart */}
+        {/* Tab Navigation: Overview | Fundamentals | Financials | Analysts | News | Peers */}
+        <div className="flex items-center px-4 bg-slate-950/90 border-b border-slate-800 text-xs font-semibold overflow-x-auto scrollbar-thin">
+          {[
+            { id: 'overview', label: 'Overview' },
+            { id: 'fundamentals', label: 'Fundamentals' },
+            { id: 'financials', label: 'Financials' },
+            { id: 'analysts', label: 'Analysts' },
+            { id: 'news', label: 'News' },
+            { id: 'peers', label: 'Peers' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as DrawerTab)}
+              className={`px-4 py-2.5 border-b-2 transition capitalize whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'border-blue-500 text-blue-400 font-bold bg-blue-950/20'
+                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Drawer Body - Tab Content */}
+        <div className="flex-1 overflow-y-auto">
+          {activeTab === 'overview' && (
+            <div className="p-4 sm:p-5 flex flex-col gap-5">
+              {/* 52-Week Range Slider Card */}
+              <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                  <span>52-Week Range</span>
+                  <span className="font-mono text-slate-200">
+                    {formatCurrency(curPrice, currency)} ({progress52.toFixed(0)}% of range)
+                  </span>
+                </div>
+                <div className="relative w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    style={{ width: `${progress52}%` }}
+                    className="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full"
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                  <span>52W Low: {formatCurrency(low52, currency)}</span>
+                  <span>52W High: {formatCurrency(high52, currency)}</span>
+                </div>
+              </div>
+
+              {/* Chart */}
               <StockChart
                 candles={candles}
-                currency={currency}
                 previousClose={quote?.previousClose}
+                currency={currency}
                 timeframe={chartRange}
                 onTimeframeChange={setChartRange}
                 chartType={chartType}
                 onChartTypeChange={setChartType}
                 loading={chartLoading}
-                colorMode={colorMode}
               />
 
-              {/* Key Statistics Grid */}
+              {/* Key Stats Grid */}
               <KeyStatsGrid quote={quote} metrics={metrics} />
 
-              {/* Company Profile */}
+              {/* Company Profile Description */}
               <CompanyProfile profile={profile} />
+            </div>
+          )}
 
-              {/* Analyst Recommendation Consensus */}
-              <AnalystBar recommendation={metrics?.recommendation} />
+          {activeTab === 'fundamentals' && <FundamentalsTab symbol={selectedSymbol} />}
 
-              {/* Latest News */}
+          {activeTab === 'financials' && <FinancialsTab symbol={selectedSymbol} />}
+
+          {activeTab === 'analysts' && <AnalystsTab symbol={selectedSymbol} />}
+
+          {activeTab === 'news' && (
+            <div className="p-4 sm:p-5">
               <NewsList news={news} />
-            </>
+            </div>
+          )}
+
+          {activeTab === 'peers' && (
+            <PeersTab symbol={selectedSymbol} onSelectStock={(sym) => selectStock(sym)} />
           )}
         </div>
       </aside>
 
-      {/* Add Holding Modal */}
-      {addModalOpen && (
-        <AddHoldingModal
-          isOpen={addModalOpen}
-          initialSymbol={selectedSymbol}
-          initialPrice={quote?.price}
-          currency={currency}
-          onClose={() => setAddModalOpen(false)}
-        />
-      )}
+      {/* Holding Modal */}
+      <AddHoldingModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        initialSymbol={selectedSymbol}
+        initialPrice={quote?.price}
+        currency={currency}
+      />
+
+      {/* Compare Modal */}
+      <CompareModal
+        isOpen={compareModalOpen}
+        onClose={() => setCompareModalOpen(false)}
+        initialSymbol={selectedSymbol}
+        onSelectStock={(sym) => selectStock(sym)}
+      />
+
+      {/* Price Alerts Modal */}
+      <PriceAlertsModal
+        isOpen={alertsModalOpen}
+        onClose={() => setAlertsModalOpen(false)}
+        defaultSymbol={selectedSymbol}
+        currentPrice={quote?.price || 100}
+      />
     </>
   );
 };

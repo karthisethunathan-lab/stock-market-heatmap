@@ -1,7 +1,11 @@
 import { ColorMode, PortfolioHolding } from '../types';
 
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  if (amount === undefined || amount === null || isNaN(amount)) return '$0.00';
+export function formatCurrency(amount?: number | null, currency: string = 'USD', compact = false): string {
+  if (amount === undefined || amount === null || isNaN(amount)) return currency === 'INR' ? '₹0.00' : '$0.00';
+
+  if (compact) {
+    return formatCompactNumber(amount, currency);
+  }
 
   const isINR = currency === 'INR';
   return new Intl.NumberFormat(isINR ? 'en-IN' : 'en-US', {
@@ -12,14 +16,14 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
   }).format(amount);
 }
 
-export function formatCompactNumber(num: number, currency?: string): string {
+export function formatCompactNumber(num?: number | null, currency?: string): string {
   if (num === undefined || num === null || isNaN(num) || num === 0) return '0';
   const isINR = currency === 'INR';
 
   if (isINR) {
-    if (num >= 1e7) return `₹${(num / 1e7).toFixed(2)} Cr`;
-    if (num >= 1e5) return `₹${(num / 1e5).toFixed(2)} L`;
-    if (num >= 1e3) return `₹${(num / 1e3).toFixed(1)} K`;
+    if (Math.abs(num) >= 1e7) return `₹${(num / 1e7).toFixed(2)} Cr`;
+    if (Math.abs(num) >= 1e5) return `₹${(num / 1e5).toFixed(2)} L`;
+    if (Math.abs(num) >= 1e3) return `₹${(num / 1e3).toFixed(1)} K`;
     return `₹${num.toFixed(0)}`;
   }
 
@@ -31,10 +35,58 @@ export function formatCompactNumber(num: number, currency?: string): string {
   return `${prefix}${num.toFixed(2)}`;
 }
 
-export function formatPercent(val: number): string {
+export function formatPercent(val?: number | null): string {
   if (val === undefined || val === null || isNaN(val)) return '0.00%';
   const sign = val > 0 ? '+' : '';
   return `${sign}${val.toFixed(2)}%`;
+}
+
+/**
+ * Calculate Compound Annual Growth Rate
+ */
+export function calculateCAGR(startValue: number, endValue: number, years: number): number {
+  if (!startValue || startValue <= 0 || !endValue || endValue <= 0 || !years || years <= 0) return 0;
+  return Number(((Math.pow(endValue / startValue, 1 / years) - 1) * 100).toFixed(2));
+}
+
+/**
+ * Calculate XIRR (Extended Internal Rate of Return) via Newton-Raphson
+ */
+export function calculateXIRR(cashFlows: Array<{ amount: number; date: Date }>): number {
+  if (!cashFlows || cashFlows.length < 2) return 0;
+
+  const hasNegative = cashFlows.some((cf) => cf.amount < 0);
+  const hasPositive = cashFlows.some((cf) => cf.amount > 0);
+  if (!hasNegative || !hasPositive) return 0;
+
+  const d0 = cashFlows[0].date.getTime();
+  const dayFractions = cashFlows.map((cf) => (cf.date.getTime() - d0) / (365 * 86400000));
+
+  let rate = 0.1; // initial guess 10%
+  const maxIterations = 50;
+  const tolerance = 1e-6;
+
+  for (let i = 0; i < maxIterations; i++) {
+    let fValue = 0;
+    let fDerivative = 0;
+
+    for (let j = 0; j < cashFlows.length; j++) {
+      const dt = dayFractions[j];
+      const factor = Math.pow(1 + rate, dt);
+      if (factor === 0) continue;
+      fValue += cashFlows[j].amount / factor;
+      fDerivative -= (dt * cashFlows[j].amount) / (factor * (1 + rate));
+    }
+
+    if (Math.abs(fDerivative) < 1e-10) break;
+    const newRate = rate - fValue / fDerivative;
+    if (Math.abs(newRate - rate) < tolerance) {
+      return Number((newRate * 100).toFixed(2));
+    }
+    rate = newRate;
+  }
+
+  return Number((rate * 100).toFixed(2));
 }
 
 /**
@@ -44,7 +96,6 @@ export function getTreemapColor(changePercent: number, mode: ColorMode = 'standa
   const p = Number(changePercent) || 0;
 
   if (mode === 'colorblind') {
-    // Blue for positive, Orange for negative
     if (p >= 5.0) return '#1d4ed8'; // deep blue
     if (p >= 3.0) return '#2563eb';
     if (p >= 1.5) return '#3b82f6';
@@ -56,7 +107,6 @@ export function getTreemapColor(changePercent: number, mode: ColorMode = 'standa
     return '#1e293b'; // dark neutral
   }
 
-  // Standard Green / Red
   if (p >= 5.0) return '#047857'; // deep emerald green
   if (p >= 3.0) return '#059669';
   if (p >= 1.5) return '#10b981';
@@ -68,9 +118,6 @@ export function getTreemapColor(changePercent: number, mode: ColorMode = 'standa
   return '#1e293b'; // neutral dark slate
 }
 
-/**
- * Text color that contrasts against the tile background
- */
 export function getTreemapTextColor(changePercent: number): string {
   const p = Math.abs(Number(changePercent) || 0);
   if (p > 1.5) return '#ffffff';
@@ -104,12 +151,76 @@ export function exportHoldingsToCSV(holdings: PortfolioHolding[], portfolioName:
 }
 
 /**
- * Parse imported CSV into PortfolioHolding objects
+ * Parse imported CSV into PortfolioHolding objects (standard, Zerodha, Groww)
  */
 export function parseHoldingsFromCSV(csvText: string): PortfolioHolding[] {
   const lines = csvText.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
 
+  const rawHeader = lines[0].toLowerCase();
+  const isZerodha = rawHeader.includes('instrument') && rawHeader.includes('qty');
+  const isGroww = rawHeader.includes('stock name') && (rawHeader.includes('shares') || rawHeader.includes('quantity'));
+
+  const holdings: PortfolioHolding[] = [];
+
+  if (isZerodha) {
+    const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, '').toLowerCase());
+    const instIdx = headers.findIndex((h) => h.includes('instrument'));
+    const qtyIdx = headers.findIndex((h) => h === 'qty' || h.includes('quantity'));
+    const avgCostIdx = headers.findIndex((h) => h.includes('avg. cost') || h.includes('avg cost'));
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const parts = line.split(',').map((p) => p.trim().replace(/^"|"$/g, ''));
+      let symbol = parts[instIdx] || '';
+      if (!symbol) continue;
+      if (!symbol.endsWith('.NS')) symbol = `${symbol}.NS`;
+
+      holdings.push({
+        id: `zerodha-${Date.now()}-${i}`,
+        symbol,
+        name: symbol.replace('.NS', ''),
+        sector: 'Indian Equities',
+        quantity: Number(parts[qtyIdx]) || 1,
+        buyPrice: Number(parts[avgCostIdx]) || 100,
+        buyDate: new Date().toISOString().slice(0, 10),
+        currency: 'INR',
+      });
+    }
+    return holdings;
+  }
+
+  if (isGroww) {
+    const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, '').toLowerCase());
+    const nameIdx = headers.findIndex((h) => h.includes('stock name'));
+    const symbolIdx = headers.findIndex((h) => h.includes('symbol'));
+    const qtyIdx = headers.findIndex((h) => h.includes('shares') || h.includes('quantity'));
+    const priceIdx = headers.findIndex((h) => h.includes('average price') || h.includes('buy price'));
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const parts = line.split(',').map((p) => p.trim().replace(/^"|"$/g, ''));
+      let symbol = (symbolIdx !== -1 ? parts[symbolIdx] : parts[nameIdx]) || '';
+      if (!symbol) continue;
+      if (!symbol.endsWith('.NS')) symbol = `${symbol}.NS`;
+
+      holdings.push({
+        id: `groww-${Date.now()}-${i}`,
+        symbol,
+        name: parts[nameIdx] || symbol.replace('.NS', ''),
+        sector: 'Indian Equities',
+        quantity: Number(parts[qtyIdx]) || 1,
+        buyPrice: Number(parts[priceIdx]) || 100,
+        buyDate: new Date().toISOString().slice(0, 10),
+        currency: 'INR',
+      });
+    }
+    return holdings;
+  }
+
+  // Standard CSV parse
   const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, '').toLowerCase());
   const symbolIdx = headers.findIndex((h) => h.includes('symbol'));
   const nameIdx = headers.findIndex((h) => h.includes('name'));
@@ -119,13 +230,9 @@ export function parseHoldingsFromCSV(csvText: string): PortfolioHolding[] {
   const dateIdx = headers.findIndex((h) => h.includes('date'));
   const currIdx = headers.findIndex((h) => h.includes('curr'));
 
-  const holdings: PortfolioHolding[] = [];
-
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
-
-    // Simple CSV parse handling quotes
     const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
     const cleanVals = values.map((v) => v.trim().replace(/^"|"$/g, ''));
 

@@ -1,14 +1,28 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { MarketType, TimeframeType, SectorGroup } from '../types';
-import { fetchHeatmap } from '../lib/api';
+import { MarketType, TimeframeType, SectorGroup, GroupByOption, SizeMetric, ColorMetric } from '../types';
+import { fetchHeatmap, FetchHeatmapParams } from '../lib/api';
 import { useApp } from '../context/ThemeContext';
 
-export function useHeatmap() {
-  const { watchlist, showToast } = useApp();
-  const [market, setMarket] = useState<MarketType>('us');
-  const [timeframe, setTimeframe] = useState<TimeframeType>('1d');
-  const [sectorFilter, setSectorFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
+  const { showToast } = useApp();
+
+  // Parse URL search params for shareable views
+  const getUrlParam = (key: string, fallback: string) => {
+    if (typeof window === 'undefined') return fallback;
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key) || fallback;
+  };
+
+  const [market, setMarketState] = useState<MarketType>(initialMarket);
+  const [timeframe, setTimeframeState] = useState<TimeframeType>(() => (getUrlParam('tf', '1d') as TimeframeType));
+  const [groupBy, setGroupByState] = useState<GroupByOption>(() => (getUrlParam('groupBy', 'sector') as GroupByOption));
+  const [sizeMetric, setSizeMetricState] = useState<SizeMetric>(() => (getUrlParam('size', 'marketcap') as SizeMetric));
+  const [colorMetric, setColorMetricState] = useState<ColorMetric>(() => (getUrlParam('color', 'change') as ColorMetric));
+
+  const [selectedSector, setSelectedSectorState] = useState<string>(() => getUrlParam('sector', 'All'));
+  const [selectedIndex, setSelectedIndexState] = useState<string>(() => getUrlParam('index', 'All'));
+  const [selectedCapBucket, setSelectedCapBucketState] = useState<string>(() => getUrlParam('cap', 'All'));
+  const [selectedPreset, setSelectedPresetState] = useState<string>(() => getUrlParam('preset', ''));
 
   const [sectors, setSectors] = useState<SectorGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -16,55 +30,102 @@ export function useHeatmap() {
   const [dataSource, setDataSource] = useState<string>('live');
   const [lastUpdated, setLastUpdated] = useState<string>('');
 
-  // 60-second auto-refresh timer & pause state
+  // Auto-refresh countdown
   const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
-  const [refreshCountdown, setRefreshCountdown] = useState<number>(60);
+  const [refreshCountdown, setRefreshCountdown] = useState<number>(45);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sync state changes with URL search params
+  const updateUrlParams = (updates: Record<string, string | undefined>) => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    Object.entries(updates).forEach(([k, v]) => {
+      if (!v || v === 'All' || (k === 'tf' && v === '1d') || (k === 'size' && v === 'marketcap') || (k === 'color' && v === 'change') || (k === 'groupBy' && v === 'sector')) {
+        params.delete(k);
+      } else {
+        params.set(k, v);
+      }
+    });
+
+    const newSearch = params.toString();
+    const newPath = `/${market}${newSearch ? `?${newSearch}` : ''}`;
+    if (!window.location.pathname.startsWith('/stock/')) {
+      window.history.replaceState({}, '', newPath);
+    }
+  };
+
+  const setMarket = (m: MarketType) => {
+    setMarketState(m);
+    updateUrlParams({});
+  };
+
+  const setTimeframe = (tf: TimeframeType) => {
+    setTimeframeState(tf);
+    updateUrlParams({ tf });
+  };
+
+  const setGroupBy = (gb: GroupByOption) => {
+    setGroupByState(gb);
+    updateUrlParams({ groupBy: gb });
+  };
+
+  const setSizeMetric = (sm: SizeMetric) => {
+    setSizeMetricState(sm);
+    updateUrlParams({ size: sm });
+  };
+
+  const setColorMetric = (cm: ColorMetric) => {
+    setColorMetricState(cm);
+    updateUrlParams({ color: cm });
+  };
+
+  const setSelectedSector = (s: string) => {
+    setSelectedSectorState(s);
+    updateUrlParams({ sector: s });
+  };
+
+  const setSelectedIndex = (idx: string) => {
+    setSelectedIndexState(idx);
+    updateUrlParams({ index: idx });
+  };
+
+  const setSelectedCapBucket = (cap: string) => {
+    setSelectedCapBucketState(cap);
+    updateUrlParams({ cap });
+  };
+
+  const setSelectedPreset = (p: string) => {
+    setSelectedPresetState(p);
+    updateUrlParams({ preset: p });
+  };
+
+  // Sync market prop when parent changes active tab between US and IN
+  useEffect(() => {
+    setMarketState(initialMarket);
+  }, [initialMarket]);
 
   const loadData = useCallback(async (isSilent = false) => {
     if (!isSilent) setLoading(true);
     setError(null);
 
     try {
-      // If watchlist market, we fetch both US and IN to ensure watchlist symbols are resolved
-      const marketParam = market === 'watchlist' ? 'us' : market;
-      const res = await fetchHeatmap(marketParam, timeframe);
+      const params: FetchHeatmapParams = {
+        market,
+        range: timeframe,
+        groupBy,
+        sizeMetric,
+        colorMetric,
+        sector: selectedSector !== 'All' ? selectedSector : undefined,
+        index: selectedIndex !== 'All' ? selectedIndex : undefined,
+        capBucket: selectedCapBucket !== 'All' ? selectedCapBucket : undefined,
+        preset: selectedPreset || undefined,
+      };
 
-      let finalSectors = res.data.sectors || [];
-
-      if (market === 'watchlist') {
-        // Also fetch IN if watchlist has .NS stocks
-        let inSectors: SectorGroup[] = [];
-        if (watchlist.some((s) => s.endsWith('.NS') || s.endsWith('.BO'))) {
-          try {
-            const inRes = await fetchHeatmap('in', timeframe);
-            inSectors = inRes.data.sectors || [];
-          } catch {
-            // ignore
-          }
-        }
-
-        const allStocks = [...finalSectors.flatMap((s) => s.stocks), ...inSectors.flatMap((s) => s.stocks)];
-        const watchlistStocks = allStocks.filter((st) => watchlist.includes(st.symbol.toUpperCase()));
-
-        // Group by sector
-        const grouped = new Map<string, SectorGroup>();
-        watchlistStocks.forEach((st) => {
-          if (!grouped.has(st.sector)) {
-            grouped.set(st.sector, { name: st.sector, marketCap: 0, stocks: [] });
-          }
-          const group = grouped.get(st.sector)!;
-          group.stocks.push(st);
-          group.marketCap += st.marketCap;
-        });
-
-        finalSectors = Array.from(grouped.values()).sort((a, b) => b.marketCap - a.marketCap);
-      }
-
-      setSectors(finalSectors);
-      setDataSource(res.source || 'yahoo');
-      setLastUpdated(res.data.lastUpdated || new Date().toISOString());
-      setRefreshCountdown(60);
+      const res = await fetchHeatmap(params);
+      setSectors(res.sectors || []);
+      setDataSource(res.source || 'live');
+      setLastUpdated(res.lastUpdated || new Date().toISOString());
+      setRefreshCountdown(45);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to load heatmap';
       setError(msg);
@@ -72,14 +133,13 @@ export function useHeatmap() {
     } finally {
       if (!isSilent) setLoading(false);
     }
-  }, [market, timeframe, watchlist, showToast]);
+  }, [market, timeframe, groupBy, sizeMetric, colorMetric, selectedSector, selectedIndex, selectedCapBucket, selectedPreset, showToast]);
 
-  // Initial and param change trigger
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // Auto-refresh countdown effect
+  // Auto-refresh timer
   useEffect(() => {
     if (!autoRefresh) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -90,7 +150,7 @@ export function useHeatmap() {
       setRefreshCountdown((prev) => {
         if (prev <= 1) {
           loadData(true);
-          return 60;
+          return 45;
         }
         return prev - 1;
       });
@@ -101,60 +161,36 @@ export function useHeatmap() {
     };
   }, [autoRefresh, loadData]);
 
-  const toggleAutoRefresh = () => {
-    setAutoRefresh((prev) => !prev);
-  };
-
+  const toggleAutoRefresh = () => setAutoRefresh((prev) => !prev);
   const refreshNow = () => {
-    setRefreshCountdown(60);
+    setRefreshCountdown(45);
     loadData();
   };
 
-  // List of all unique sector names
-  const allSectorsList = useMemo(() => {
-    const names = sectors.map((s) => s.name);
-    return ['all', ...Array.from(new Set(names))];
-  }, [sectors]);
-
-  // Filtered sectors and stocks based on sectorFilter and searchQuery
-  const filteredSectors = useMemo(() => {
-    let result = sectors;
-
-    if (sectorFilter !== 'all') {
-      result = result.filter((s) => s.name.toLowerCase() === sectorFilter.toLowerCase());
-    }
-
-    if (searchQuery.trim().length > 0) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result
-        .map((sec) => {
-          const matchedStocks = sec.stocks.filter(
-            (st) => st.symbol.toLowerCase().includes(q) || st.name.toLowerCase().includes(q)
-          );
-          return {
-            ...sec,
-            stocks: matchedStocks,
-            marketCap: matchedStocks.reduce((sum, s) => sum + s.marketCap, 0),
-          };
-        })
-        .filter((sec) => sec.stocks.length > 0);
-    }
-
-    return result;
-  }, [sectors, sectorFilter, searchQuery]);
+  // All stocks flattened
+  const allStocks = useMemo(() => sectors.flatMap((s) => s.stocks), [sectors]);
 
   return {
     market,
     setMarket,
     timeframe,
     setTimeframe,
-    sectorFilter,
-    setSectorFilter,
-    searchQuery,
-    setSearchQuery,
-    sectors: filteredSectors,
-    rawSectors: sectors,
-    allSectorsList,
+    groupBy,
+    setGroupBy,
+    sizeMetric,
+    setSizeMetric,
+    colorMetric,
+    setColorMetric,
+    selectedSector,
+    setSelectedSector,
+    selectedIndex,
+    setSelectedIndex,
+    selectedCapBucket,
+    setSelectedCapBucket,
+    selectedPreset,
+    setSelectedPreset,
+    sectors,
+    allStocks,
     loading,
     error,
     dataSource,

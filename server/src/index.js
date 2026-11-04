@@ -1,16 +1,25 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 
 import heatmapRoutes from './routes/heatmap.js';
 import stockRoutes from './routes/stock.js';
 import searchRoutes from './routes/search.js';
+import screenerRoutes from './routes/screener.js';
+import marketOverviewRoutes from './routes/marketOverview.js';
+import { startBackgroundRefresher } from './services/universeRefresher.js';
+import { getUSMarketStatus, getIndiaMarketStatus } from './services/marketHours.js';
+import { cache } from './cache.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Gzip compression for all responses
+app.use(compression());
 
 // Rate limiting: max 150 requests per minute per IP
 const limiter = rateLimit({
@@ -35,7 +44,6 @@ const allowedOrigins = process.env.CLIENT_ORIGIN
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, server-to-server) or matching origins
       if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
         callback(null, true);
       } else {
@@ -60,19 +68,26 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Health check
+// Health check with market hours & cache stats
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
+    cacheKeysCount: cache.keys ? cache.keys().length : 0,
+    markets: {
+      us: getUSMarketStatus(),
+      india: getIndiaMarketStatus(),
+    },
     finnhubConfigured: Boolean(process.env.FINNHUB_API_KEY && process.env.FINNHUB_API_KEY !== 'YOUR_FINNHUB_API_KEY'),
   });
 });
 
 // Mount Routes
 app.use('/api/heatmap', heatmapRoutes);
-app.use('/api', stockRoutes); // mounts /quote/:symbol, /profile/:symbol, /history/:symbol, etc.
+app.use('/api/screener', screenerRoutes);
+app.use('/api/market-overview', marketOverviewRoutes);
+app.use('/api', stockRoutes); // mounts /quote/:symbol, /profile/:symbol, /history/:symbol, /fundamentals/:symbol, /financials/:symbol, etc.
 app.use('/api/search', searchRoutes);
 
 // 404 Fallback for unknown API routes
@@ -100,4 +115,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Stock Heatmap Server running on http://localhost:${PORT}`);
   console.log(`📊 Finnhub Key: ${process.env.FINNHUB_API_KEY ? 'Configured ✅' : 'Not set (using graceful Yahoo fallback) ⚠️'}`);
+  
+  // Start background universe quote refresher
+  startBackgroundRefresher();
 });

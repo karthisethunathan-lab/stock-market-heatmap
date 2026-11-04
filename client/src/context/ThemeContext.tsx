@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ColorMode, ThemeMode } from '../types';
+import { ColorMode, ThemeMode, TopLevelTab } from '../types';
 import { storage } from '../lib/storage';
 
 export interface ToastMessage {
@@ -15,9 +15,10 @@ interface AppContextType {
   toggleColorMode: () => void;
   selectedSymbol: string | null;
   openStock: (symbol: string) => void;
+  selectStock: (symbol: string) => void;
   closeStock: () => void;
-  activeTab: 'heatmap' | 'portfolios' | 'watchlist';
-  setActiveTab: (tab: 'heatmap' | 'portfolios' | 'watchlist') => void;
+  activeTab: TopLevelTab;
+  setActiveTab: (tab: TopLevelTab) => void;
   watchlist: string[];
   toggleWatchlist: (symbol: string) => Promise<void>;
   isWatchlisted: (symbol: string) => boolean;
@@ -28,6 +29,22 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+function getInitialTabFromURL(): TopLevelTab {
+  if (typeof window === 'undefined') return 'us';
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('/in') || path.includes('/india')) return 'in';
+  if (path.includes('/portfolio')) return 'portfolios';
+  if (path.includes('/watchlist')) return 'watchlist';
+  if (path.includes('/screener')) return 'screener';
+  return 'us';
+}
+
+function getInitialSymbolFromURL(): string | null {
+  if (typeof window === 'undefined') return null;
+  const match = window.location.pathname.match(/\/stock\/([A-Za-z0-9_.-]+)/i);
+  return match ? match[1].toUpperCase() : null;
+}
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeMode>(() => {
     return (localStorage.getItem('mp_theme') as ThemeMode) || 'dark';
@@ -37,8 +54,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (localStorage.getItem('mp_colormode') as ColorMode) || 'standard';
   });
 
-  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'heatmap' | 'portfolios' | 'watchlist'>('heatmap');
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(getInitialSymbolFromURL);
+  const [activeTab, setActiveTabState] = useState<TopLevelTab>(getInitialTabFromURL);
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -58,6 +75,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('mp_colormode', colorMode);
   }, [colorMode]);
 
+  // Listen to browser Back/Forward (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const tab = getInitialTabFromURL();
+      setActiveTabState(tab);
+      const sym = getInitialSymbolFromURL();
+      setSelectedSymbol(sym);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const setActiveTab = (tab: TopLevelTab) => {
+    setActiveTabState(tab);
+    if (!window.location.pathname.startsWith('/stock/')) {
+      window.history.pushState({}, '', `/${tab}`);
+    }
+  };
+
   // Load watchlist on mount
   useEffect(() => {
     storage.getWatchlist().then((list) => setWatchlist(list));
@@ -72,6 +109,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const openStock = (symbol: string) => {
+    setSelectedSymbol(symbol.toUpperCase());
+  };
+
+  const selectStock = (symbol: string) => {
     setSelectedSymbol(symbol.toUpperCase());
   };
 
@@ -112,6 +153,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toggleColorMode,
         selectedSymbol,
         openStock,
+        selectStock,
         closeStock,
         activeTab,
         setActiveTab,

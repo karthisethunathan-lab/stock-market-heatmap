@@ -1,161 +1,153 @@
 import { Router } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { cache, TTL } from '../cache.js';
-import { getLiveQuote } from '../services/yahoo.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const usSeedPath = path.join(__dirname, '../data/usSymbols.json');
-const inSeedPath = path.join(__dirname, '../data/inSymbols.json');
-
-const usSeed = JSON.parse(fs.readFileSync(usSeedPath, 'utf-8'));
-const inSeed = JSON.parse(fs.readFileSync(inSeedPath, 'utf-8'));
+import { getUniverse } from '../services/universeRefresher.js';
 
 const router = Router();
-
-/**
- * Concurrency runner to batch async operations without flooding
- */
-async function mapConcurrent(items, limit, fn) {
-  const results = [];
-  const executing = [];
-
-  for (const item of items) {
-    const p = Promise.resolve().then(() => fn(item));
-    results.push(p);
-
-    if (limit <= items.length) {
-      const e = p.then(() => executing.splice(executing.indexOf(e), 1));
-      executing.push(e);
-      if (executing.length >= limit) {
-        await Promise.race(executing);
-      }
-    }
-  }
-
-  return Promise.allSettled(results);
-}
 
 router.get('/', async (req, res, next) => {
   try {
     const market = (req.query.market || 'us').toLowerCase();
     const range = (req.query.range || '1d').toLowerCase();
+    const groupBy = (req.query.groupBy || 'sector').toLowerCase(); // sector | industry | index | capbucket
+    const filterSector = req.query.sector;
+    const filterIndex = req.query.index;
+    const filterCap = req.query.capBucket;
+    const preset = req.query.preset;
+    const sizeMetric = (req.query.sizeMetric || 'marketcap').toLowerCase(); // marketcap | volume | equal
+    const colorMetric = (req.query.colorMetric || 'change').toLowerCase(); // change | volume | pe | dist52whigh
 
-    // Input validation
-    const validMarkets = ['us', 'in'];
-    const validRanges = ['1d', '1w', '1m', 'ytd'];
-
-    const chosenMarket = validMarkets.includes(market) ? market : 'us';
-    const chosenRange = validRanges.includes(range) ? range : '1d';
-
-    const cacheKey = `heatmap:${chosenMarket}:${chosenRange}`;
-    const cached = cache.get(cacheKey);
-
-    if (cached) {
-      return res.json({
-        success: true,
-        source: 'cached',
-        ...cached,
-      });
-    }
-
-    const seedList = chosenMarket === 'in' ? inSeed : usSeed;
+    const chosenMarket = (market === 'in' || market === 'india') ? 'in' : 'us';
     const currency = chosenMarket === 'in' ? 'INR' : 'USD';
 
-    // Build the initial stocks list from seed base
-    let stocks = seedList.map((item) => {
-      let changePercent = item.change1d;
-      if (chosenRange === '1w') changePercent = item.change1w;
-      else if (chosenRange === '1m') changePercent = item.change1m;
-      else if (chosenRange === 'ytd') changePercent = item.changeYtd;
+    let universe = getUniverse(chosenMarket);
+    if (!universe || universe.length === 0) {
+      // Emergency fallback to empty array
+      universe = [];
+    }
+
+    // Clone array
+    let stocks = universe.map((s) => ({ ...s, currency }));
+
+    // Apply secondary filters
+    if (filterSector && filterSector !== 'All') {
+      stocks = stocks.filter((s) => s.sector === filterSector);
+    }
+
+    if (filterIndex && filterIndex !== 'All') {
+      stocks = stocks.filter((s) => Array.isArray(s.indices) && s.indices.includes(filterIndex));
+    }
+
+    if (filterCap && filterCap !== 'All') {
+      stocks = stocks.filter((s) => s.capBucket === filterCap);
+    }
+
+    // Apply Presets
+    if (preset) {
+      switch (preset.toLowerCase()) {
+        case 'gainers':
+          stocks = stocks.filter((s) => s.change1d > 0).sort((a, b) => b.change1d - a.change1d).slice(0, 50);
+          break;
+        case 'losers':
+          stocks = stocks.filter((s) => s.change1d < 0).sort((a, b) => a.change1d - b.change1d).slice(0, 50);
+          break;
+        case 'active':
+          stocks = stocks.sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 50);
+          break;
+        case '52w-high':
+        case 'near-52w-high':
+          stocks = stocks.filter((s) => (s.dist52wHigh || -99) >= -5.0).sort((a, b) => (b.dist52wHigh || -99) - (a.dist52wHigh || -99));
+          break;
+        case '52w-low':
+          stocks = stocks.filter((s) => (s.dist52wHigh || 0) <= -25.0).sort((a, b) => (a.dist52wHigh || 0) - (b.dist52wHigh || 0));
+          break;
+        case 'high-dividend':
+          stocks = stocks.filter((s) => (s.dividendYield || 0) > 2.0).sort((a, b) => (b.dividendYield || 0) - (a.dividendYield || 0)).slice(0, 50);
+          break;
+        case 'value':
+          stocks = stocks.filter((s) => s.pe && s.pe > 0 && s.pe < 22).sort((a, b) => (a.pe || 999) - (b.pe || 999)).slice(0, 50);
+          break;
+        case 'growth':
+          stocks = stocks.filter((s) => (s.revGrowth || 0) > 12).sort((a, b) => (b.revGrowth || 0) - (a.revGrowth || 0)).slice(0, 50);
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Map range to selected percentage change
+    stocks = stocks.map((s) => {
+      let changePercent = s.change1d;
+      if (range === '1w') changePercent = s.change1w ?? s.change1d;
+      else if (range === '1m') changePercent = s.change1m ?? s.change1d;
+      else if (range === '3m') changePercent = s.change3m ?? s.change1d;
+      else if (range === '6m') changePercent = s.change6m ?? s.change1d;
+      else if (range === 'ytd') changePercent = s.changeYtd ?? s.change1d;
+      else if (range === '1y') changePercent = s.change1y ?? s.change1d;
+
+      // Assign tile size value according to sizeMetric
+      let tileValue = s.marketCap || 1000000000;
+      if (sizeMetric === 'volume') tileValue = s.volume || 1000000;
+      else if (sizeMetric === 'equal') tileValue = 100000;
+
+      // Assign display color value according to colorMetric
+      let colorValue = changePercent;
+      if (colorMetric === 'volume') {
+        const ratio = s.avgVolume && s.avgVolume > 0 ? (s.volume / s.avgVolume) : 1;
+        colorValue = Number(((ratio - 1) * 100).toFixed(1));
+      } else if (colorMetric === 'pe') {
+        colorValue = s.pe || 25;
+      } else if (colorMetric === 'dist52whigh') {
+        colorValue = s.dist52wHigh ?? -10;
+      }
 
       return {
-        symbol: item.symbol,
-        name: item.name,
-        sector: item.sector,
-        price: item.price,
+        ...s,
+        price: Number(s.price.toFixed(2)),
         changePercent: Number((changePercent ?? 0).toFixed(2)),
-        changeAmount: Number(((item.price * (changePercent ?? 0)) / 100).toFixed(2)),
-        marketCap: item.marketCap || 50000000000,
-        volume: 25000000,
-        currency,
+        changeAmount: Number(((s.price * (changePercent ?? 0)) / 100).toFixed(2)),
+        tileValue,
+        colorValue,
       };
     });
 
-    // Opportunistically refresh top 12 mega-caps with live Yahoo prices in the background/fast
-    const topSymbols = stocks.slice(0, 12).map((s) => s.symbol);
-    try {
-      const liveResults = await mapConcurrent(topSymbols, 6, async (sym) => {
-        const { data } = await getLiveQuote(sym);
-        return data;
-      });
+    // Grouping
+    const groupMap = new Map();
 
-      const liveMap = new Map();
-      liveResults.forEach((resItem) => {
-        if (resItem.status === 'fulfilled' && resItem.value) {
-          liveMap.set(resItem.value.symbol, resItem.value);
-        }
-      });
-
-      stocks = stocks.map((s) => {
-        const live = liveMap.get(s.symbol);
-        if (live && live.price > 0) {
-          const changePercent = chosenRange === '1d' ? live.changePercent : s.changePercent;
-          return {
-            ...s,
-            price: live.price,
-            changePercent: Number((changePercent ?? s.changePercent).toFixed(2)),
-            changeAmount: Number(((live.price * (changePercent ?? s.changePercent)) / 100).toFixed(2)),
-            volume: live.volume || s.volume,
-          };
-        }
-        return s;
-      });
-    } catch (err) {
-      console.warn('[Heatmap Live Refresh Notice]:', err.message);
-    }
-
-    // Group stocks by sector
-    const sectorMap = new Map();
     stocks.forEach((stock) => {
-      const sectorName = stock.sector || 'Other';
-      if (!sectorMap.has(sectorName)) {
-        sectorMap.set(sectorName, {
-          name: sectorName,
+      let groupName = stock.sector || 'Other';
+      if (groupBy === 'industry') groupName = stock.industry || stock.sector || 'Other';
+      else if (groupBy === 'index') groupName = (stock.indices && stock.indices[0]) || 'Other';
+      else if (groupBy === 'capbucket') groupName = stock.capBucket || 'Mid';
+
+      if (!groupMap.has(groupName)) {
+        groupMap.set(groupName, {
+          name: groupName,
           marketCap: 0,
           stocks: [],
         });
       }
-      const sectorObj = sectorMap.get(sectorName);
-      sectorObj.stocks.push(stock);
-      sectorObj.marketCap += stock.marketCap;
+
+      const g = groupMap.get(groupName);
+      g.stocks.push(stock);
+      g.marketCap += stock.tileValue || stock.marketCap || 0;
     });
 
-    // Sort sectors by total market cap descending
-    const sectors = Array.from(sectorMap.values()).sort((a, b) => b.marketCap - a.marketCap);
-
-    // Sort stocks inside each sector by market cap descending
-    sectors.forEach((sec) => {
-      sec.stocks.sort((a, b) => b.marketCap - a.marketCap);
+    // Sort groups and stocks
+    const sectors = Array.from(groupMap.values()).sort((a, b) => b.marketCap - a.marketCap);
+    sectors.forEach((g) => {
+      g.stocks.sort((a, b) => (b.tileValue || b.marketCap) - (a.tileValue || a.marketCap));
     });
-
-    const payload = {
-      market: chosenMarket,
-      range: chosenRange,
-      lastUpdated: new Date().toISOString(),
-      sectors,
-      totalStocks: stocks.length,
-    };
-
-    cache.set(cacheKey, payload, TTL.HEATMAP);
 
     res.json({
       success: true,
-      source: 'live',
-      ...payload,
+      market: chosenMarket,
+      range,
+      groupBy,
+      sizeMetric,
+      colorMetric,
+      totalStocks: stocks.length,
+      lastUpdated: new Date().toISOString(),
+      sectors,
     });
   } catch (error) {
     next(error);
