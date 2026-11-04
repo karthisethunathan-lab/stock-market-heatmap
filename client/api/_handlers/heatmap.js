@@ -1,29 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-let usUniverse = null;
-let inUniverse = null;
-
-function getUniverseData(market) {
-  try {
-    if (!usUniverse) {
-      const usPath = path.join(process.cwd(), 'src/data/universe-us.json');
-      if (fs.existsSync(usPath)) {
-        usUniverse = JSON.parse(fs.readFileSync(usPath, 'utf-8'));
-      }
-    }
-    if (!inUniverse) {
-      const inPath = path.join(process.cwd(), 'src/data/universe-in.json');
-      if (fs.existsSync(inPath)) {
-        inUniverse = JSON.parse(fs.readFileSync(inPath, 'utf-8'));
-      }
-    }
-  } catch (err) {
-    console.error('Error loading universe in serverless:', err.message);
-  }
-
-  return (market === 'in' || market === 'india') ? (inUniverse || []) : (usUniverse || []);
-}
+import { loadUniverse } from './loadUniverse.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -47,7 +22,7 @@ export default async function handler(req, res) {
     const chosenMarket = (market === 'in' || market === 'india') ? 'in' : 'us';
     const currency = chosenMarket === 'in' ? 'INR' : 'USD';
 
-    let stocks = getUniverseData(chosenMarket).map((s) => ({ ...s, currency }));
+    let stocks = loadUniverse(chosenMarket).map((s) => ({ ...s, currency }));
 
     // Apply secondary filters
     if (filterSector && filterSector !== 'All') {

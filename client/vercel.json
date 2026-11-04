@@ -1,12 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/heatmap", "destination": "/api/heatmap.js" },
-    { "source": "/api/quote/:symbol", "destination": "/api/quote.js?symbol=:symbol" },
-    { "source": "/api/profile/:symbol", "destination": "/api/profile.js?symbol=:symbol" },
-    { "source": "/api/history/:symbol", "destination": "/api/history.js?symbol=:symbol" },
-    { "source": "/api/news/:symbol", "destination": "/api/news.js?symbol=:symbol" },
-    { "source": "/api/metrics/:symbol", "destination": "/api/metrics.js?symbol=:symbol" },
-    { "source": "/api/search", "destination": "/api/search.js" },
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/((?!api/.*).*)", "destination": "/index.html" }
   ]
 }

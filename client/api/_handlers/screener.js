@@ -1,24 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-let usUniverse = null;
-let inUniverse = null;
-
-function getUniverseData(market) {
-  try {
-    if (!usUniverse) {
-      const usPath = path.join(process.cwd(), 'src/data/universe-us.json');
-      if (fs.existsSync(usPath)) usUniverse = JSON.parse(fs.readFileSync(usPath, 'utf-8'));
-    }
-    if (!inUniverse) {
-      const inPath = path.join(process.cwd(), 'src/data/universe-in.json');
-      if (fs.existsSync(inPath)) inUniverse = JSON.parse(fs.readFileSync(inPath, 'utf-8'));
-    }
-  } catch (e) {
-    console.error(e.message);
-  }
-  return market === 'in' ? (inUniverse || []) : (usUniverse || []);
-}
+import { loadUniverse } from './loadUniverse.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,11 +33,11 @@ export default async function handler(req, res) {
 
   let pool = [];
   if (market === 'all') {
-    pool = [...getUniverseData('us'), ...getUniverseData('in')];
+    pool = [...loadUniverse('us'), ...loadUniverse('in')];
   } else if (market === 'in' || market === 'india') {
-    pool = [...getUniverseData('in')];
+    pool = [...loadUniverse('in')];
   } else {
-    pool = [...getUniverseData('us')];
+    pool = [...loadUniverse('us')];
   }
 
   if (preset) {
