@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   try {
     const rawUrl = req.url || '/api/health';
     const parsed = new URL(rawUrl, 'http://localhost');
-    const pathname = parsed.pathname;
+    let pathname = parsed.pathname.replace(/\.js$/i, '').replace(/\/$/, '');
 
     // Merge search params into req.query
     if (!req.query) req.query = {};
@@ -27,34 +27,46 @@ export default async function handler(req, res) {
       }
     });
 
-    // Exact matches
-    if (pathname === '/api/health') return await healthHandler(req, res);
-    if (pathname === '/api/heatmap') return await heatmapHandler(req, res);
-    if (pathname === '/api/market-overview') return await marketOverviewHandler(req, res);
-    if (pathname === '/api/screener') return await screenerHandler(req, res);
-    if (pathname === '/api/search') return await searchHandler(req, res);
+    const segments = pathname.split('/').filter(Boolean);
+    const resource = (segments[0] === 'api' ? segments[1] : segments[0])?.toLowerCase();
+    const symbolFromPath = segments[0] === 'api' ? segments[2] : segments[1];
 
-    // Parametric matches: /api/<resource>/<symbol>
-    const match = pathname.match(/^\/api\/(quote|profile|history|news|metrics|fundamentals|financials|analysts|peers)\/([^/?#]+)/i);
-    if (match) {
-      const resource = match[1].toLowerCase();
-      const symbol = decodeURIComponent(match[2]);
-      req.query.symbol = symbol;
-
-      switch (resource) {
-        case 'quote': return await quoteHandler(req, res);
-        case 'profile': return await profileHandler(req, res);
-        case 'history': return await historyHandler(req, res);
-        case 'news': return await newsHandler(req, res);
-        case 'metrics': return await metricsHandler(req, res);
-        case 'fundamentals': return await fundamentalsHandler(req, res);
-        case 'financials': return await financialsHandler(req, res);
-        case 'analysts': return await analystsHandler(req, res);
-        case 'peers': return await peersHandler(req, res);
-      }
+    if (symbolFromPath && !req.query.symbol) {
+      req.query.symbol = decodeURIComponent(symbolFromPath);
     }
 
-    return res.status(404).json({ error: 'Endpoint not found', path: pathname });
+    switch (resource) {
+      case 'health':
+        return await healthHandler(req, res);
+      case 'heatmap':
+        return await heatmapHandler(req, res);
+      case 'market-overview':
+        return await marketOverviewHandler(req, res);
+      case 'screener':
+        return await screenerHandler(req, res);
+      case 'search':
+        return await searchHandler(req, res);
+      case 'quote':
+        return await quoteHandler(req, res);
+      case 'profile':
+        return await profileHandler(req, res);
+      case 'history':
+        return await historyHandler(req, res);
+      case 'news':
+        return await newsHandler(req, res);
+      case 'metrics':
+        return await metricsHandler(req, res);
+      case 'fundamentals':
+        return await fundamentalsHandler(req, res);
+      case 'financials':
+        return await financialsHandler(req, res);
+      case 'analysts':
+        return await analystsHandler(req, res);
+      case 'peers':
+        return await peersHandler(req, res);
+      default:
+        return res.status(404).json({ error: 'Endpoint not found', path: pathname });
+    }
   } catch (err) {
     console.error('Serverless router error:', err);
     return res.status(500).json({ error: 'Internal Server Error', message: err.message });
