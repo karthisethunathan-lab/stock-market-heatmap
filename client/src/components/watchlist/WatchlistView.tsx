@@ -22,25 +22,32 @@ export const WatchlistView: React.FC = () => {
   const [quotes, setQuotes] = useState<Map<string, StockQuote>>(new Map());
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Load named lists from localStorage
+  // Load and synchronize named lists from localStorage & context
   useEffect(() => {
+    const fallbackSymbols = ['AAPL', 'NVDA', 'TSLA', 'MSFT', 'AMZN', 'RELIANCE.NS', 'TCS.NS'];
     try {
       const saved = localStorage.getItem(WATCHLIST_STORAGE_KEY);
       if (saved) {
         const parsed: NamedWatchlist[] = JSON.parse(saved);
         if (parsed.length > 0) {
-          // Merge current context watchlist into default
           const defaultList = parsed.find((l) => l.id === 'default');
-          if (defaultList && watchlist.length > 0) {
-            defaultList.symbols = Array.from(new Set([...defaultList.symbols, ...watchlist]));
+          if (defaultList) {
+            const merged = Array.from(new Set([...defaultList.symbols, ...watchlist]));
+            defaultList.symbols = merged.length > 0 ? merged : fallbackSymbols;
           }
           setNamedLists(parsed);
+          return;
         }
       }
     } catch {
       // Ignore
     }
-  }, []);
+
+    const initialSymbols = watchlist.length > 0 ? watchlist : fallbackSymbols;
+    setNamedLists([
+      { id: 'default', name: 'Main Watchlist', symbols: initialSymbols, createdAt: new Date().toISOString() },
+    ]);
+  }, [watchlist]);
 
   // Save named lists to localStorage
   const saveLists = (updated: NamedWatchlist[]) => {
