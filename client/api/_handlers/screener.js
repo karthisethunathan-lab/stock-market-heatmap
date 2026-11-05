@@ -1,10 +1,47 @@
 import { loadUniverse } from './loadUniverse.js';
 
+// In-memory quote cache across warm serverless container invocations
+const quoteCache = new Map(); // symbol -> { price, changePercent, volume, high52, timestamp }
+
+async function fetchLiveQuotes(symbols) {
+  if (!symbols || symbols.length === 0) return;
+  const fetches = symbols.map(async (s) => {
+    try {
+      const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=1d&range=1d`;
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(2500),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (meta && typeof meta.regularMarketPrice === 'number' && meta.regularMarketPrice > 0) {
+        quoteCache.set(s, {
+          price: meta.regularMarketPrice,
+          changePercent: typeof meta.regularMarketChangePercent === 'number'
+            ? meta.regularMarketChangePercent
+            : meta.chartPreviousClose
+              ? ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100
+              : 0,
+          volume: meta.regularMarketVolume || 0,
+          high52: meta.fiftyTwoWeekHigh,
+          low52: meta.fiftyTwoWeekLow,
+          timestamp: Date.now(),
+        });
+      }
+    } catch {
+      // Timeout or individual error is skipped
+    }
+  });
+
+  await Promise.allSettled(fetches);
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
+  res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -28,7 +65,7 @@ export default async function handler(req, res) {
     sortBy = 'marketCap',
     sortOrder = 'desc',
     page = 1,
-    limit = 25,
+    limit = 20,
   } = req.query;
 
   let pool = [];
@@ -42,6 +79,30 @@ export default async function handler(req, res) {
   } else {
     pool = loadUniverse('us').map((s) => ({ ...s, currency: 'USD' }));
   }
+
+  // Pre-normalize change and price values from universe and cached live quotes
+  pool = pool.map((s) => {
+    const live = quoteCache.get(s.symbol);
+    const price = live && live.price > 0 ? live.price : s.price;
+    const chg = live && typeof live.changePercent === 'number'
+      ? Number(live.changePercent.toFixed(2))
+      : (s.change1d ?? s.changePercent ?? 0);
+    const volume = live && live.volume ? live.volume : s.volume;
+    const dist52wHigh = live && live.high52
+      ? Number((((price - live.high52) / live.high52) * 100).toFixed(1))
+      : s.dist52wHigh;
+    const isIndian = s.symbol.endsWith('.NS') || market === 'in' || market === 'india';
+
+    return {
+      ...s,
+      price: Number(price.toFixed(2)),
+      change1d: chg,
+      changePercent: chg,
+      volume,
+      dist52wHigh,
+      currency: isIndian ? 'INR' : 'USD',
+    };
+  });
 
   if (preset) {
     switch (preset.toLowerCase()) {
@@ -65,6 +126,8 @@ export default async function handler(req, res) {
         break;
       case 'near-52w-high':
         pool = pool.filter((s) => (s.dist52wHigh || -99) >= -5.0).sort((a, b) => (b.dist52wHigh || -99) - (a.dist52wHigh || -99));
+        break;
+      default:
         break;
     }
   }
@@ -97,6 +160,10 @@ export default async function handler(req, res) {
     filtered.sort((a, b) => {
       let valA = a[sortBy];
       let valB = b[sortBy];
+      if (sortBy === 'change1d' || sortBy === 'changePercent') {
+        valA = a.changePercent ?? a.change1d ?? 0;
+        valB = b.changePercent ?? b.change1d ?? 0;
+      }
       if (valA === undefined || valA === null) valA = sortOrder === 'asc' ? Infinity : -Infinity;
       if (valB === undefined || valB === null) valB = sortOrder === 'asc' ? Infinity : -Infinity;
 
@@ -113,14 +180,52 @@ export default async function handler(req, res) {
   const startIndex = (pageNum - 1) * limitNum;
   const paginated = filtered.slice(startIndex, startIndex + limitNum);
 
+  // Fetch live quotes for the page symbols if missing or stale (>20 seconds)
+  const now = Date.now();
+  const symbolsToRefresh = paginated
+    .filter((s) => {
+      const live = quoteCache.get(s.symbol);
+      return !live || (now - (live.timestamp || 0)) > 20000;
+    })
+    .map((s) => s.symbol);
+
+  if (symbolsToRefresh.length > 0) {
+    await fetchLiveQuotes(symbolsToRefresh);
+  }
+
+  // Final map with live quotes overlaid
+  const items = paginated.map((s) => {
+    const live = quoteCache.get(s.symbol);
+    const price = live && live.price > 0 ? live.price : s.price;
+    const change = live && typeof live.changePercent === 'number'
+      ? Number(live.changePercent.toFixed(2))
+      : (s.change1d ?? s.changePercent ?? 0);
+    const volume = live && live.volume ? live.volume : s.volume;
+    const dist52wHigh = live && live.high52
+      ? Number((((price - live.high52) / live.high52) * 100).toFixed(1))
+      : s.dist52wHigh;
+    const isIndian = s.symbol.endsWith('.NS') || market === 'in' || market === 'india';
+
+    return {
+      ...s,
+      price: Number(price.toFixed(2)),
+      changePercent: change,
+      change1d: change,
+      volume,
+      dist52wHigh,
+      currency: isIndian ? 'INR' : 'USD',
+    };
+  });
+
   return res.status(200).json({
     success: true,
     data: {
-      items: paginated,
+      items,
       total,
       page: pageNum,
       limit: limitNum,
       totalPages: Math.ceil(total / limitNum),
+      lastUpdated: new Date().toISOString(),
     },
   });
 }

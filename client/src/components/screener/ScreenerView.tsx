@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ScreenerFilters, StockTile } from '../../types';
 import { fetchScreener } from '../../lib/api';
 import { formatCompactNumber, formatCurrency, formatPercent } from '../../lib/utils';
-import { Download, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, SlidersHorizontal, RefreshCw, RotateCcw } from 'lucide-react';
 
 interface ScreenerViewProps {
   onSelectStock: (symbol: string) => void;
@@ -66,8 +66,26 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
 
   const handleApplyCustomFilters = (e: React.FormEvent) => {
     e.preventDefault();
+    if (page === 1) {
+      loadData();
+    } else {
+      setPage(1);
+    }
+  };
+
+  const handleResetFilters = () => {
+    setSector('All');
+    setCapBucket('All');
+    setMinPe('');
+    setMaxPe('');
+    setMinDivYield('');
+    setMinRoe('');
+    setMaxDebtEquity('');
+    setMinRevGrowth('');
+    setPreset('');
+    setSortBy('marketCap');
+    setSortOrder('desc');
     setPage(1);
-    loadData();
   };
 
   const handleSort = (field: string) => {
@@ -88,7 +106,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
       `"${s.name.replace(/"/g, '""')}"`,
       `"${s.sector}"`,
       s.price,
-      s.changePercent,
+      s.changePercent !== undefined ? s.changePercent : (s.change1d ?? 0),
       s.marketCap,
       s.pe ?? '',
       s.roe ?? '',
@@ -119,6 +137,15 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
+            title="Refresh live quotes"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          </button>
+
           <button
             onClick={handleExportCSV}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
@@ -220,12 +247,13 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
           </div>
         </div>
 
-        {/* Numeric Quantitative Filter Thresholds */}
-        <div className="grid grid-cols-2 sm:grid-cols-7 gap-2.5 pt-2 border-t border-slate-800 text-xs">
+        {/* Secondary Numerical Filters */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 pt-2 border-t border-slate-800/80 text-xs">
           <div className="flex flex-col gap-1">
             <span className="text-[11px] text-slate-400">Min P/E</span>
             <input
               type="number"
+              step="0.5"
               placeholder="e.g. 10"
               value={minPe}
               onChange={(e) => setMinPe(e.target.value)}
@@ -237,6 +265,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             <span className="text-[11px] text-slate-400">Max P/E</span>
             <input
               type="number"
+              step="0.5"
               placeholder="e.g. 35"
               value={maxPe}
               onChange={(e) => setMaxPe(e.target.value)}
@@ -248,7 +277,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             <span className="text-[11px] text-slate-400">Min Div Yield (%)</span>
             <input
               type="number"
-              step="0.1"
+              step="0.5"
               placeholder="e.g. 2.0"
               value={minDivYield}
               onChange={(e) => setMinDivYield(e.target.value)}
@@ -260,6 +289,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             <span className="text-[11px] text-slate-400">Min ROE (%)</span>
             <input
               type="number"
+              step="1"
               placeholder="e.g. 15"
               value={minRoe}
               onChange={(e) => setMinRoe(e.target.value)}
@@ -291,12 +321,20 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             />
           </div>
 
-          <div className="flex flex-col justify-end">
+          <div className="flex items-end gap-1.5 col-span-2 sm:col-span-1">
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition text-xs border border-slate-700/60"
+              title="Reset all filters"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
             <button
               type="submit"
-              className="w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition"
+              className="flex-1 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition text-xs shadow-md shadow-blue-600/20"
             >
-              Filter
+              Apply
             </button>
           </div>
         </div>
@@ -349,7 +387,9 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
               {loading ? (
                 <tr>
                   <td colSpan={10} className="py-8 text-center text-slate-500 font-sans">
-                    Loading screener results...
+                    <span className="flex items-center justify-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin text-blue-400" /> Loading screener results...
+                    </span>
                   </td>
                 </tr>
               ) : results.length === 0 ? (
@@ -360,7 +400,8 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
                 </tr>
               ) : (
                 results.map((s) => {
-                  const isPos = (s.changePercent ?? 0) >= 0;
+                  const changeVal = s.changePercent !== undefined ? s.changePercent : (s.change1d ?? 0);
+                  const isPos = changeVal >= 0;
                   const isIndian = s.symbol?.endsWith('.NS') || market === 'in';
                   const stockCurrency = s.currency || (isIndian ? 'INR' : 'USD');
                   return (
@@ -376,7 +417,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
                         {formatCurrency(s.price, stockCurrency)}
                       </td>
                       <td className={`py-2.5 px-3 text-right font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {formatPercent(s.changePercent)}
+                        {formatPercent(changeVal)}
                       </td>
                       <td className="py-2.5 px-3 text-right text-slate-300">
                         {formatCompactNumber(s.marketCap, stockCurrency)}

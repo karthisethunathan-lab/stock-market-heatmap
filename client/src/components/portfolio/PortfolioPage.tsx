@@ -23,19 +23,22 @@ import {
 
 export const PortfolioPage: React.FC = () => {
   const { showToast } = useApp();
+  const [baseCurrency, setBaseCurrency] = useState<'USD' | 'INR'>('USD');
+
   const {
     portfolios,
     activePortfolioId,
     setActivePortfolioId,
     activePortfolio,
     calculated,
+    usdInrRate,
     createPortfolio,
     renamePortfolio,
     deletePortfolio,
     deleteHolding,
     replaceHoldings,
     refreshPrices,
-  } = usePortfolios();
+  } = usePortfolios(baseCurrency);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [newPortfolioName, setNewPortfolioName] = useState('');
@@ -43,7 +46,6 @@ export const PortfolioPage: React.FC = () => {
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
   const [editNameText, setEditNameText] = useState('');
   const [viewMode, setViewMode] = useState<'overview' | 'heatmap'>('overview');
-  const [baseCurrency, setBaseCurrency] = useState<'USD' | 'INR'>('USD');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -241,23 +243,28 @@ export const PortfolioPage: React.FC = () => {
         {/* Right: Actions Toolbar & Base Currency Toggle */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Base Currency Toggle */}
-          <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-xs">
-            <button
-              onClick={() => setBaseCurrency('USD')}
-              className={`px-2 py-1 rounded font-mono font-medium transition ${
-                baseCurrency === 'USD' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              USD ($)
-            </button>
-            <button
-              onClick={() => setBaseCurrency('INR')}
-              className={`px-2 py-1 rounded font-mono font-medium transition ${
-                baseCurrency === 'INR' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              INR (₹)
-            </button>
+          <div className="flex items-center gap-1.5">
+            <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-xs">
+              <button
+                onClick={() => setBaseCurrency('USD')}
+                className={`px-2 py-1 rounded font-mono font-medium transition ${
+                  baseCurrency === 'USD' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                USD ($)
+              </button>
+              <button
+                onClick={() => setBaseCurrency('INR')}
+                className={`px-2 py-1 rounded font-mono font-medium transition ${
+                  baseCurrency === 'INR' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                INR (₹)
+              </button>
+            </div>
+            <span className="text-[10px] font-mono text-slate-500 hidden sm:inline" title="Live USD/INR Exchange Rate">
+              (₹{usdInrRate.toFixed(2)})
+            </span>
           </div>
 
           {/* View toggle: Overview vs Heatmap */}

@@ -4,12 +4,22 @@ import { storage } from '../lib/storage';
 import { fetchQuote } from '../lib/api';
 import { useApp } from '../context/ThemeContext';
 
-export function usePortfolios() {
+export function usePortfolios(baseCurrency: 'USD' | 'INR' = 'USD') {
   const { showToast } = useApp();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [activePortfolioId, setActivePortfolioId] = useState<string>('');
   const [priceMap, setPriceMap] = useState<Map<string, { price: number; changePercent: number }>>(new Map());
   const [loading, setLoading] = useState<boolean>(true);
+  const [usdInrRate, setUsdInrRate] = useState<number>(94.47);
+
+  // Fetch live USD/INR exchange rate on mount
+  useEffect(() => {
+    fetchQuote('INR=X').then((res) => {
+      if (res.data?.price && res.data.price > 50) {
+        setUsdInrRate(res.data.price);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Load portfolios from storage
   useEffect(() => {
@@ -98,7 +108,6 @@ export function usePortfolios() {
     const newHolding: PortfolioHolding = {
       ...holdingData,
       id: `holding-${Date.now()}`,
-      symbol: holdingData.symbol.toUpperCase(),
     };
 
     const updated = portfolios.map((p) => {
@@ -162,7 +171,7 @@ export function usePortfolios() {
     refreshPrices();
   };
 
-  // Calculations for active portfolio
+  // Calculations for active portfolio with Base Currency conversion
   const calculated = useMemo(() => {
     if (!activePortfolio || activePortfolio.holdings.length === 0) {
       return {
@@ -174,32 +183,44 @@ export function usePortfolios() {
         dayPnl: 0,
         dayPnlPercent: 0,
         hasMixedCurrencies: false,
-        primaryCurrency: 'USD',
+        primaryCurrency: baseCurrency,
         stockAllocations: [] as { name: string; value: number }[],
         sectorAllocations: [] as { name: string; value: number }[],
         portfolioSectors: [] as SectorGroup[],
       };
     }
 
-    const currencies = new Set(activePortfolio.holdings.map((h) => h.currency || 'USD'));
-    const hasMixedCurrencies = currencies.size > 1;
-    const primaryCurrency = activePortfolio.holdings[0]?.currency || 'USD';
+    const effectiveRate = usdInrRate > 0 ? usdInrRate : 94.47;
 
     let totalInvested = 0;
     let totalCurrentValue = 0;
     let totalDayPnl = 0;
 
-    // First pass: compute values
+    // First pass: compute values with live base currency conversion
     const intermediate = activePortfolio.holdings.map((h) => {
+      const isHoldingIndian = h.symbol.toUpperCase().endsWith('.NS') || h.currency === 'INR';
+      const holdingCurrency = isHoldingIndian ? 'INR' : 'USD';
+
       const live = priceMap.get(h.symbol.toUpperCase());
-      const currentPrice = live ? live.price : h.buyPrice;
+      const rawCurrentPrice = live ? live.price : h.buyPrice;
       const dayChangePercent = live ? live.changePercent : 0;
 
-      const investedValue = h.quantity * h.buyPrice;
-      const currentValue = h.quantity * currentPrice;
-      const pnl = currentValue - investedValue;
+      // Currency conversion factor
+      let fxRate = 1.0;
+      if (baseCurrency === 'INR' && holdingCurrency === 'USD') {
+        fxRate = effectiveRate;
+      } else if (baseCurrency === 'USD' && holdingCurrency === 'INR') {
+        fxRate = 1.0 / effectiveRate;
+      }
+
+      const displayBuyPrice = Number((h.buyPrice * fxRate).toFixed(2));
+      const displayCurrentPrice = Number((rawCurrentPrice * fxRate).toFixed(2));
+
+      const investedValue = Number((h.quantity * displayBuyPrice).toFixed(2));
+      const currentValue = Number((h.quantity * displayCurrentPrice).toFixed(2));
+      const pnl = Number((currentValue - investedValue).toFixed(2));
       const pnlPercent = investedValue > 0 ? (pnl / investedValue) * 100 : 0;
-      const dayPnl = currentValue * (dayChangePercent / 100);
+      const dayPnl = Number((currentValue * (dayChangePercent / 100)).toFixed(2));
 
       totalInvested += investedValue;
       totalCurrentValue += currentValue;
@@ -207,7 +228,9 @@ export function usePortfolios() {
 
       return {
         ...h,
-        currentPrice,
+        buyPrice: displayBuyPrice,
+        currentPrice: displayCurrentPrice,
+        currency: baseCurrency,
         dayChangePercent,
         investedValue,
         currentValue,
@@ -225,11 +248,11 @@ export function usePortfolios() {
 
     const totalPnl = totalCurrentValue - totalInvested;
     const totalPnlPercent = totalInvested > 0 ? (totalPnl / totalInvested) * 100 : 0;
-    const dayPnlPercent = totalCurrentValue > 0 ? (totalDayPnl / totalCurrentValue) * 100 : 0;
+    const dayPnlPercent = totalCurrentValue > 0 ? (totalDayPnl / (totalCurrentValue - totalDayPnl)) * 100 : 0;
 
     // Allocation by stock
     const stockAllocations = calculatedHoldings.map((h) => ({
-      name: h.symbol,
+      name: h.symbol.replace('.NS', ''),
       value: Math.round(h.currentValue * 100) / 100,
     })).sort((a, b) => b.value - a.value);
 
@@ -262,9 +285,9 @@ export function usePortfolios() {
         sector: h.sector,
         price: h.currentPrice,
         changePercent: h.dayChangePercent,
-        marketCap: h.currentValue, // tile size = current holding value
+        marketCap: h.currentValue,
         volume: 0,
-        currency: h.currency,
+        currency: baseCurrency,
       });
       g.marketCap += h.currentValue;
     });
@@ -273,19 +296,19 @@ export function usePortfolios() {
 
     return {
       holdings: calculatedHoldings,
-      totalInvested,
-      totalCurrentValue,
-      totalPnl,
-      totalPnlPercent,
-      dayPnl: totalDayPnl,
-      dayPnlPercent,
-      hasMixedCurrencies,
-      primaryCurrency,
+      totalInvested: Number(totalInvested.toFixed(2)),
+      totalCurrentValue: Number(totalCurrentValue.toFixed(2)),
+      totalPnl: Number(totalPnl.toFixed(2)),
+      totalPnlPercent: Number(totalPnlPercent.toFixed(2)),
+      dayPnl: Number(totalDayPnl.toFixed(2)),
+      dayPnlPercent: Number(dayPnlPercent.toFixed(2)),
+      hasMixedCurrencies: false,
+      primaryCurrency: baseCurrency,
       stockAllocations,
       sectorAllocations,
       portfolioSectors,
     };
-  }, [activePortfolio, priceMap]);
+  }, [activePortfolio, priceMap, baseCurrency, usdInrRate]);
 
   return {
     portfolios,
@@ -294,6 +317,7 @@ export function usePortfolios() {
     activePortfolio,
     loading,
     calculated,
+    usdInrRate,
     createPortfolio,
     renamePortfolio,
     deletePortfolio,

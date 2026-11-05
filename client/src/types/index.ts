@@ -19,6 +19,7 @@ export interface StockTile {
   capBucket?: 'Mega' | 'Large' | 'Mid' | 'Small';
   price: number;
   changePercent: number;
+  change1d?: number;
   changeAmount?: number;
   marketCap: number;
   volume: number;
