@@ -3,6 +3,12 @@ import { MarketType, TimeframeType, SectorGroup, GroupByOption, SizeMetric, Colo
 import { fetchHeatmap, FetchHeatmapParams } from '../lib/api';
 import { useApp } from '../context/ThemeContext';
 
+export interface MarketStatusInfo {
+  isOpen: boolean;
+  state: string;
+  desc: string;
+}
+
 export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
   const { showToast } = useApp();
 
@@ -29,10 +35,36 @@ export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<string>('live');
   const [lastUpdated, setLastUpdated] = useState<string>('');
+  const [marketStatus, setMarketStatus] = useState<MarketStatusInfo>({
+    isOpen: true,
+    state: 'REGULAR',
+    desc: 'Market Open',
+  });
 
-  // Auto-refresh countdown
+  // Real-time price flash animation state (symbol -> 'up' | 'down')
+  const [priceFlashes, setPriceFlashes] = useState<Record<string, 'up' | 'down'>>({});
+  const flashTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const prevPricesRef = useRef<Map<string, number>>(new Map());
+
+  const triggerFlash = useCallback((symbol: string, direction: 'up' | 'down') => {
+    setPriceFlashes((prev) => ({ ...prev, [symbol]: direction }));
+    const existingTimer = flashTimersRef.current.get(symbol);
+    if (existingTimer) clearTimeout(existingTimer);
+    const newTimer = setTimeout(() => {
+      setPriceFlashes((prev) => {
+        const next = { ...prev };
+        delete next[symbol];
+        return next;
+      });
+      flashTimersRef.current.delete(symbol);
+    }, 1200);
+    flashTimersRef.current.set(symbol, newTimer);
+  }, []);
+
+  // Auto-refresh countdown (15s during open market, 45s when closed)
   const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
-  const [refreshCountdown, setRefreshCountdown] = useState<number>(45);
+  const refreshInterval = marketStatus.isOpen ? 15 : 45;
+  const [refreshCountdown, setRefreshCountdown] = useState<number>(refreshInterval);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync state changes with URL search params
@@ -122,10 +154,26 @@ export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
       };
 
       const res = await fetchHeatmap(params);
-      setSectors(res.sectors || []);
+      const incomingSectors = res.sectors || [];
+      
+      // Compare prices with previous prices to trigger visual flashes
+      incomingSectors.forEach((sec) => {
+        sec.stocks.forEach((st) => {
+          const oldPrice = prevPricesRef.current.get(st.symbol);
+          if (oldPrice !== undefined && Math.abs(st.price - oldPrice) > 0.005) {
+            triggerFlash(st.symbol, st.price > oldPrice ? 'up' : 'down');
+          }
+          prevPricesRef.current.set(st.symbol, st.price);
+        });
+      });
+
+      setSectors(incomingSectors);
       setDataSource(res.source || 'live');
       setLastUpdated(res.lastUpdated || new Date().toISOString());
-      setRefreshCountdown(45);
+      if (res.marketStatus) {
+        setMarketStatus(res.marketStatus);
+      }
+      setRefreshCountdown(res.marketStatus?.isOpen ? 15 : 45);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to load heatmap';
       setError(msg);
@@ -133,24 +181,118 @@ export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
     } finally {
       if (!isSilent) setLoading(false);
     }
-  }, [market, timeframe, groupBy, sizeMetric, colorMetric, selectedSector, selectedIndex, selectedCapBucket, selectedPreset, showToast]);
+  }, [market, timeframe, groupBy, sizeMetric, colorMetric, selectedSector, selectedIndex, selectedCapBucket, selectedPreset, showToast, triggerFlash]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // Auto-refresh timer
+  // Finnhub WebSocket connection for streaming US real-time trade ticks
+  useEffect(() => {
+    if (market !== 'us' || typeof window === 'undefined') return;
+
+    let socket: WebSocket | null = null;
+    let isSubscribed = true;
+
+    try {
+      socket = new WebSocket('wss://ws.finnhub.io?token=dbkup3pr01qjsmfrafdgdbkup3pr01qjsmfrafe0');
+
+      const topUS = [
+        'AAPL', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'META', 'TSLA', 'AVGO',
+        'BRK.B', 'JPM', 'LLY', 'V', 'UNH', 'XOM', 'MA', 'COST', 'HD', 'PG', 'NFLX', 'AMD'
+      ];
+
+      socket.onopen = () => {
+        if (!isSubscribed || !socket) return;
+        topUS.forEach((sym) => {
+          socket?.send(JSON.stringify({ type: 'subscribe', symbol: sym }));
+        });
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'trade' && Array.isArray(payload.data)) {
+            payload.data.forEach((trade: { s: string; p: number; t: number; v: number }) => {
+              const sym = trade.s;
+              const newPrice = trade.p;
+              if (!sym || !newPrice) return;
+
+              setSectors((prevSectors) => {
+                let changed = false;
+                const nextSectors = prevSectors.map((sec) => {
+                  const sIdx = sec.stocks.findIndex((st) => st.symbol === sym);
+                  if (sIdx === -1) return sec;
+
+                  changed = true;
+                  const oldStock = sec.stocks[sIdx];
+                  const oldPrice = oldStock.price;
+                  const priceDiff = newPrice - oldPrice;
+
+                  if (Math.abs(priceDiff) > 0.005) {
+                    triggerFlash(sym, priceDiff > 0 ? 'up' : 'down');
+                    prevPricesRef.current.set(sym, newPrice);
+                  }
+
+                  const prevClose = oldStock.changePercent !== 0
+                    ? oldPrice / (1 + oldStock.changePercent / 100)
+                    : oldPrice;
+                  const newChange = Number((((newPrice - prevClose) / prevClose) * 100).toFixed(2));
+
+                  const nextStocks = [...sec.stocks];
+                  nextStocks[sIdx] = {
+                    ...oldStock,
+                    price: Number(newPrice.toFixed(2)),
+                    changePercent: newChange,
+                    colorValue: newChange,
+                    isLive: true,
+                  };
+
+                  return { ...sec, stocks: nextStocks };
+                });
+
+                return changed ? nextSectors : prevSectors;
+              });
+            });
+          }
+        } catch {
+          // Ignore JSON parse errors from ping frames
+        }
+      };
+
+      socket.onerror = () => {
+        // Will fallback smoothly to polling
+      };
+    } catch {
+      // WebSocket not available, fallback to polling
+    }
+
+    return () => {
+      isSubscribed = false;
+      if (socket) {
+        try {
+          socket.close();
+        } catch {
+          // Ignore socket close errors
+        }
+      }
+    };
+  }, [market, triggerFlash]);
+
+  // Dynamic auto-refresh timer (15s during market open, 45s when closed)
   useEffect(() => {
     if (!autoRefresh) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
 
+    const intervalSeconds = marketStatus.isOpen ? 15 : 45;
+
     timerRef.current = setInterval(() => {
       setRefreshCountdown((prev) => {
         if (prev <= 1) {
           loadData(true);
-          return 45;
+          return intervalSeconds;
         }
         return prev - 1;
       });
@@ -159,11 +301,11 @@ export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [autoRefresh, loadData]);
+  }, [autoRefresh, loadData, marketStatus.isOpen]);
 
   const toggleAutoRefresh = () => setAutoRefresh((prev) => !prev);
   const refreshNow = () => {
-    setRefreshCountdown(45);
+    setRefreshCountdown(marketStatus.isOpen ? 15 : 45);
     loadData();
   };
 
@@ -195,6 +337,8 @@ export function useHeatmap(initialMarket: 'us' | 'in' = 'us') {
     error,
     dataSource,
     lastUpdated,
+    marketStatus,
+    priceFlashes,
     autoRefresh,
     toggleAutoRefresh,
     refreshCountdown,

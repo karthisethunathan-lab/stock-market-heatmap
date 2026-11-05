@@ -33,6 +33,7 @@ export interface StockTile {
   tileValue?: number;
   colorValue?: number;
   currency: string;
+  isLive?: boolean;
 }
 
 export interface SectorGroup {
@@ -51,6 +52,12 @@ export interface HeatmapResponse {
   source?: string;
   sectors: SectorGroup[];
   totalStocks: number;
+  isLive?: boolean;
+  marketStatus?: {
+    isOpen: boolean;
+    state: string;
+    desc: string;
+  };
 }
 
 export interface StockQuote {

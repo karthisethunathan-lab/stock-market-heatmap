@@ -11,6 +11,7 @@ interface TreemapD3Props {
   onSelectStock: (symbol: string) => void;
   colorMode?: ColorMode;
   colorMetric?: ColorMetric;
+  priceFlashes?: Record<string, 'up' | 'down'>;
 }
 
 interface HierarchyLeaf {
@@ -37,6 +38,7 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
   onSelectStock,
   colorMode = 'standard',
   colorMetric = 'change',
+  priceFlashes = {},
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapElementRef = useRef<HTMLDivElement>(null);
@@ -310,11 +312,18 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
           const tileHeight = Math.max(0, leaf.y1 - leaf.y0);
           const stock = leaf.data;
           const color = getTileMetricColor(stock);
+          const flash = priceFlashes[stock.symbol];
 
           const showSymbol = tileWidth >= 30 && tileHeight >= 20;
           const showChange = tileWidth >= 42 && tileHeight >= 32;
           const showPrice = tileWidth >= 65 && tileHeight >= 48;
           const showFullName = tileWidth >= 115 && tileHeight >= 75;
+
+          const flashClass = flash === 'up'
+            ? 'ring-2 ring-emerald-400 brightness-130 scale-[1.02] z-30 shadow-lg shadow-emerald-500/40 animate-pulse'
+            : flash === 'down'
+              ? 'ring-2 ring-rose-400 brightness-130 scale-[1.02] z-30 shadow-lg shadow-rose-500/40 animate-pulse'
+              : '';
 
           return (
             <div
@@ -338,7 +347,7 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
               }}
               onMouseMove={(e) => handleMouseMove(e, stock)}
               onMouseLeave={handleMouseLeave}
-              className="absolute flex flex-col items-center justify-center p-0.5 cursor-pointer transition-all duration-150 border border-black/40 hover:brightness-125 hover:z-20 hover:scale-[1.015] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/80"
+              className={`absolute flex flex-col items-center justify-center p-0.5 cursor-pointer transition-all duration-200 border border-black/40 hover:brightness-125 hover:z-20 hover:scale-[1.015] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/80 ${flashClass}`}
             >
               {showSymbol && (
                 <div

@@ -37,6 +37,8 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
     error,
     refreshNow,
     refreshCountdown,
+    marketStatus,
+    priceFlashes,
   } = useHeatmap(market);
 
   // Compute market breadth (Advances / Declines)
@@ -104,11 +106,24 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
         </div>
 
         <div className="flex items-center gap-4 text-slate-400 text-[11px]">
+          {/* Live Market Badge */}
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700/60">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                marketStatus.isOpen ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+              }`}
+            />
+            <span className={marketStatus.isOpen ? 'text-emerald-300 font-semibold' : 'text-amber-300'}>
+              {marketStatus.isOpen ? 'Live Market' : 'Market Closed'}
+            </span>
+            <span className="text-slate-500 text-[10px]">({marketStatus.desc})</span>
+          </div>
+
           <span>
             Universe: <strong className="text-slate-200">{marketStats.totalStocks}</strong> tiles
           </span>
           <span className="hidden sm:inline">
-            Refreshes in: <strong className="text-slate-200">{refreshCountdown}s</strong>
+            Update: <strong className="text-slate-200">{refreshCountdown}s</strong>
           </span>
           <button
             onClick={refreshNow}
@@ -153,6 +168,7 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
               onSelectStock={openStock}
               colorMode={colorMode}
               colorMetric={colorMetric}
+              priceFlashes={priceFlashes}
             />
           )}
         </div>

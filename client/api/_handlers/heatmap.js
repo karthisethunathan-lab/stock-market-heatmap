@@ -1,10 +1,87 @@
 import { loadUniverse } from './loadUniverse.js';
 
+// In-memory quote cache across warm serverless container invocations
+const quoteCache = {
+  quotes: new Map(), // symbol -> { price, changePercent, volume, high52, low52, timestamp }
+  lastUpdated: { us: 0, in: 0 },
+  inFlight: { us: false, in: false },
+};
+
+function getMarketStatus(market) {
+  const tz = market === 'in' ? 'Asia/Kolkata' : 'America/New_York';
+  const now = new Date();
+  const dateStr = now.toLocaleString('en-US', { timeZone: tz });
+  const localDate = new Date(dateStr);
+  const day = localDate.getDay();
+  const hours = localDate.getHours();
+  const mins = localDate.getMinutes();
+  const totalMins = hours * 60 + mins;
+
+  if (day === 0 || day === 6) {
+    return { isOpen: false, state: 'CLOSED', desc: 'Weekend (Market Closed)' };
+  }
+
+  if (market === 'in') {
+    // NSE: 09:15 to 15:30 IST (555 to 930 mins)
+    if (totalMins >= 555 && totalMins <= 930) {
+      return { isOpen: true, state: 'REGULAR', desc: 'NSE Live (9:15–15:30 IST)' };
+    }
+    return { isOpen: false, state: 'CLOSED', desc: 'NSE Closed' };
+  } else {
+    // US: Regular 9:30 to 16:00 ET (570 to 960 mins)
+    if (totalMins >= 570 && totalMins <= 960) {
+      return { isOpen: true, state: 'REGULAR', desc: 'NYSE/Nasdaq Live' };
+    }
+    if (totalMins >= 240 && totalMins < 570) {
+      return { isOpen: true, state: 'PRE', desc: 'US Pre-Market' };
+    }
+    if (totalMins > 960 && totalMins <= 1200) {
+      return { isOpen: true, state: 'POST', desc: 'US After-Hours' };
+    }
+    return { isOpen: false, state: 'CLOSED', desc: 'US Market Closed' };
+  }
+}
+
+async function fetchLiveQuotes(symbols) {
+  if (!symbols || symbols.length === 0) return;
+  const fetches = symbols.map(async (s) => {
+    try {
+      const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=1d&range=1d`;
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(2500),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (meta && typeof meta.regularMarketPrice === 'number' && meta.regularMarketPrice > 0) {
+        quoteCache.quotes.set(s, {
+          price: meta.regularMarketPrice,
+          changePercent: typeof meta.regularMarketChangePercent === 'number'
+            ? meta.regularMarketChangePercent
+            : meta.chartPreviousClose
+              ? ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100
+              : 0,
+          volume: meta.regularMarketVolume || 0,
+          high52: meta.fiftyTwoWeekHigh,
+          low52: meta.fiftyTwoWeekLow,
+          timestamp: Date.now(),
+        });
+      }
+    } catch {
+      // Individual quote timeout or error is safely skipped
+    }
+  });
+
+  await Promise.allSettled(fetches);
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
+  // Disable edge caching so clients always receive fresh real-time quotes on poll
+  res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -21,8 +98,46 @@ export default async function handler(req, res) {
 
     const chosenMarket = (market === 'in' || market === 'india') ? 'in' : 'us';
     const currency = chosenMarket === 'in' ? 'INR' : 'USD';
+    const marketStatus = getMarketStatus(chosenMarket);
 
     let stocks = loadUniverse(chosenMarket).map((s) => ({ ...s, currency }));
+
+    // Fetch fresh live quotes for top constituents if stale (>15 seconds)
+    const now = Date.now();
+    const isStale = (now - (quoteCache.lastUpdated[chosenMarket] || 0)) > 15000;
+
+    if (isStale && !quoteCache.inFlight[chosenMarket]) {
+      quoteCache.inFlight[chosenMarket] = true;
+      try {
+        // Pick top 45 stocks by market cap representing the core market index
+        const topSymbols = stocks
+          .slice()
+          .sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0))
+          .slice(0, 45)
+          .map((s) => s.symbol);
+
+        await fetchLiveQuotes(topSymbols);
+        quoteCache.lastUpdated[chosenMarket] = Date.now();
+      } finally {
+        quoteCache.inFlight[chosenMarket] = false;
+      }
+    }
+
+    // Overlay cached live quotes onto universe
+    stocks = stocks.map((s) => {
+      const live = quoteCache.quotes.get(s.symbol);
+      if (live && live.price > 0) {
+        return {
+          ...s,
+          price: live.price,
+          change1d: Number(live.changePercent.toFixed(2)),
+          volume: live.volume || s.volume,
+          dist52wHigh: live.high52 ? Number((((live.price - live.high52) / live.high52) * 100).toFixed(1)) : s.dist52wHigh,
+          isLive: true,
+        };
+      }
+      return s;
+    });
 
     // Apply secondary filters
     if (filterSector && filterSector !== 'All') {
@@ -134,6 +249,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       market: chosenMarket,
+      marketStatus,
+      isLive: marketStatus.isOpen,
       range,
       groupBy,
       sizeMetric,
