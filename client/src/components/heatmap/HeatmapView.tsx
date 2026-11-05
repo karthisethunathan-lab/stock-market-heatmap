@@ -135,54 +135,51 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
         </div>
       </div>
 
-      {/* Main Content Layout: Treemap (Left 9 cols) + Side Panels (Right 3 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Treemap Container */}
-        <div className="lg:col-span-9 xl:col-span-9">
-          {loading && sectors.length === 0 ? (
-            <div className="w-full h-[680px] rounded-xl border border-slate-800 p-4 flex flex-col gap-3">
-              <Skeleton className="w-full h-8" />
-              <div className="grid grid-cols-4 gap-3 h-full">
-                <Skeleton className="col-span-2 row-span-2 h-full" />
-                <Skeleton className="col-span-1 h-full" />
-                <Skeleton className="col-span-1 h-full" />
-                <Skeleton className="col-span-1 h-full" />
-                <Skeleton className="col-span-1 h-full" />
-              </div>
+      {/* Full-Width Treemap Container */}
+      <div className="w-full">
+        {loading && sectors.length === 0 ? (
+          <div className="w-full h-[700px] rounded-xl border border-slate-800 p-4 flex flex-col gap-3">
+            <Skeleton className="w-full h-8" />
+            <div className="grid grid-cols-4 gap-3 h-full">
+              <Skeleton className="col-span-2 row-span-2 h-full" />
+              <Skeleton className="col-span-1 h-full" />
+              <Skeleton className="col-span-1 h-full" />
+              <Skeleton className="col-span-1 h-full" />
+              <Skeleton className="col-span-1 h-full" />
             </div>
-          ) : error && sectors.length === 0 ? (
-            <div className="w-full h-[550px] rounded-xl border border-rose-900/40 bg-rose-950/10 flex flex-col items-center justify-center p-6 text-center">
-              <AlertTriangle className="w-12 h-12 text-rose-400 mb-3" />
-              <h3 className="text-lg font-bold text-slate-100 mb-1">Failed to Load Heatmap</h3>
-              <p className="text-sm text-slate-400 max-w-md mb-4">{error}</p>
-              <button
-                onClick={refreshNow}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors"
-              >
-                <RefreshCw className="w-4 h-4" /> Retry
-              </button>
-            </div>
-          ) : (
-            <TreemapD3
-              sectors={sectors}
-              onSelectStock={openStock}
-              colorMode={colorMode}
-              colorMetric={colorMetric}
-              priceFlashes={priceFlashes}
-            />
-          )}
-        </div>
-
-        {/* Side Panels: Sector Performance & Top Gainers/Losers */}
-        <div className="lg:col-span-3 xl:col-span-3 flex flex-col gap-4">
-          <SectorPerformanceBar
+          </div>
+        ) : error && sectors.length === 0 ? (
+          <div className="w-full h-[550px] rounded-xl border border-rose-900/40 bg-rose-950/10 flex flex-col items-center justify-center p-6 text-center">
+            <AlertTriangle className="w-12 h-12 text-rose-400 mb-3" />
+            <h3 className="text-lg font-bold text-slate-100 mb-1">Failed to Load Heatmap</h3>
+            <p className="text-sm text-slate-400 max-w-md mb-4">{error}</p>
+            <button
+              onClick={refreshNow}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" /> Retry
+            </button>
+          </div>
+        ) : (
+          <TreemapD3
             sectors={sectors}
-            selectedSector={selectedSector}
-            onSelectSector={(sec) => setSelectedSector(selectedSector === sec ? 'All' : sec)}
+            onSelectStock={openStock}
+            colorMode={colorMode}
+            colorMetric={colorMetric}
+            priceFlashes={priceFlashes}
           />
+        )}
+      </div>
 
-          <GainersLosersPanel allStocks={allStocks} onSelectStock={openStock} />
-        </div>
+      {/* Bottom Analytics Panels: Sector Performance & Top Gainers/Losers side-by-side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+        <SectorPerformanceBar
+          sectors={sectors}
+          selectedSector={selectedSector}
+          onSelectSector={(sec) => setSelectedSector(selectedSector === sec ? 'All' : sec)}
+        />
+
+        <GainersLosersPanel allStocks={allStocks} onSelectStock={openStock} />
       </div>
     </div>
   );

@@ -46,6 +46,27 @@ html:not(.dark) body {
   color: #0f172a;
 }
 
+/* Moving ticker tape animation for top market overview strip */
+@keyframes ticker-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
 html:not(.dark) header,
 html:not(.dark) aside,
 html:not(.dark) footer {

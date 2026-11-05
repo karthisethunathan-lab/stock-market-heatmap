@@ -32,8 +32,8 @@ export const SectorPerformanceBar: React.FC<SectorPerformanceBarProps> = ({
   const maxAbs = Math.max(0.1, ...performance.map((p) => Math.abs(p.avgChange)));
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col gap-2.5 shadow-sm">
-      <div className="flex items-center justify-between">
+    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col gap-2.5 shadow-sm h-full">
+      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
         <h3 className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
           <BarChart3 className="w-3.5 h-3.5 text-blue-400" /> Sector Performance
         </h3>
@@ -50,11 +50,11 @@ export const SectorPerformanceBar: React.FC<SectorPerformanceBarProps> = ({
             <div
               key={sec.name}
               onClick={() => onSelectSector && onSelectSector(sec.name)}
-              className={`flex items-center justify-between text-xs px-2 py-1 rounded cursor-pointer transition ${
-                isSelected ? 'bg-blue-900/40 border border-blue-500/50' : 'hover:bg-slate-800/60'
+              className={`flex items-center justify-between text-xs px-2.5 py-1.5 rounded-lg cursor-pointer transition ${
+                isSelected ? 'bg-blue-900/40 border border-blue-500/50' : 'hover:bg-slate-800/70 border border-transparent'
               }`}
             >
-              <span className="text-slate-300 font-medium truncate max-w-[110px]" title={sec.name}>
+              <span className="text-slate-300 font-medium truncate max-w-[180px]" title={sec.name}>
                 {sec.name}
               </span>
 

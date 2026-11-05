@@ -73,37 +73,45 @@ export const MarketOverviewStrip: React.FC<MarketOverviewStripProps> = ({ onSele
     );
   };
 
+  // Duplicate indices array for seamless infinite moving ticker tape
+  const tickerItems = [...data.indices, ...data.indices];
+
   return (
-    <div className="w-full bg-slate-950/80 border-b border-slate-800/80 px-4 py-1.5 flex items-center justify-between text-xs overflow-x-auto scrollbar-thin">
-      {/* Index ticker items */}
-      <div className="flex items-center gap-4 flex-nowrap">
-        {data.indices.map((idx) => {
-          const isPos = idx.changePercent >= 0;
-          return (
-            <div
-              key={idx.id}
-              onClick={() => onSelectStock && onSelectStock(idx.symbol)}
-              className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-800/60 px-2 py-0.5 rounded transition whitespace-nowrap"
-              title={`${idx.name} (${idx.symbol})`}
-            >
-              <span className="font-semibold text-slate-300">{idx.name}</span>
-              <span className="font-mono text-slate-100">{idx.price.toLocaleString()}</span>
-              <span
-                className={`font-mono flex items-center ${
-                  isPos ? 'text-emerald-400' : 'text-rose-400'
-                }`}
+    <div className="w-full bg-slate-950/90 border-b border-slate-800/80 py-1.5 flex items-center justify-between text-xs overflow-hidden relative select-none">
+      {/* Moving Marquee Ticker Track with left/right fade masks */}
+      <div className="flex-1 overflow-hidden relative">
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#080b12] to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#080b12] to-transparent z-10" />
+
+        <div className="animate-ticker flex items-center gap-6 whitespace-nowrap pl-4">
+          {tickerItems.map((idx, index) => {
+            const isPos = idx.changePercent >= 0;
+            return (
+              <div
+                key={`${idx.id}-${index}`}
+                onClick={() => onSelectStock && onSelectStock(idx.symbol)}
+                className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-800/80 px-2.5 py-1 rounded transition whitespace-nowrap"
+                title={`${idx.name} (${idx.symbol})`}
               >
-                {isPos ? '+' : ''}
-                {idx.changePercent.toFixed(2)}%
-              </span>
-              {renderSparkline(idx.sparkline, isPos)}
-            </div>
-          );
-        })}
+                <span className="font-semibold text-slate-300">{idx.name}</span>
+                <span className="font-mono text-slate-100">{idx.price.toLocaleString()}</span>
+                <span
+                  className={`font-mono flex items-center ${
+                    isPos ? 'text-emerald-400' : 'text-rose-400'
+                  }`}
+                >
+                  {isPos ? '+' : ''}
+                  {idx.changePercent.toFixed(2)}%
+                </span>
+                {renderSparkline(idx.sparkline, isPos)}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Market Badges (US & India) */}
-      <div className="hidden lg:flex items-center gap-3 pl-4 border-l border-slate-800 flex-shrink-0 text-[11px]">
+      {/* Market Badges (US & India) anchored on right */}
+      <div className="hidden lg:flex items-center gap-3 px-4 border-l border-slate-800/80 flex-shrink-0 text-[11px] bg-slate-950/95 z-20">
         {/* US Badge */}
         <div className="flex items-center gap-1.5">
           <span

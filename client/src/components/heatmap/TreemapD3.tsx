@@ -44,8 +44,8 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
   const mapElementRef = useRef<HTMLDivElement>(null);
 
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
-    width: 1000,
-    height: 680,
+    width: 1200,
+    height: 720,
   });
 
   const [hoveredStock, setHoveredStock] = useState<StockTile | null>(null);
@@ -228,7 +228,7 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
     <div
       ref={containerRef}
       className={`relative w-full ${
-        isFullscreen ? 'h-screen p-4' : 'h-[680px]'
+        isFullscreen ? 'h-screen p-4' : 'h-[650px] lg:h-[720px]'
       } bg-[#080d1a] rounded-xl border border-slate-800/80 overflow-hidden select-none flex flex-col`}
     >
       {/* Top Header Strip with Zoom Breadcrumbs & Action Controls */}
