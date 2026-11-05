@@ -361,6 +361,8 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
               ) : (
                 results.map((s) => {
                   const isPos = (s.changePercent ?? 0) >= 0;
+                  const isIndian = s.symbol?.endsWith('.NS') || market === 'in';
+                  const stockCurrency = s.currency || (isIndian ? 'INR' : 'USD');
                   return (
                     <tr
                       key={s.symbol}
@@ -371,13 +373,13 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
                       <td className="py-2.5 px-3 font-sans text-slate-300 truncate max-w-[140px]">{s.name}</td>
                       <td className="py-2.5 px-3 font-sans text-slate-400 truncate max-w-[120px]">{s.sector}</td>
                       <td className="py-2.5 px-3 text-right text-slate-100 font-medium">
-                        {formatCurrency(s.price, s.currency)}
+                        {formatCurrency(s.price, stockCurrency)}
                       </td>
                       <td className={`py-2.5 px-3 text-right font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
                         {formatPercent(s.changePercent)}
                       </td>
                       <td className="py-2.5 px-3 text-right text-slate-300">
-                        {formatCompactNumber(s.marketCap, s.currency)}
+                        {formatCompactNumber(s.marketCap, stockCurrency)}
                       </td>
                       <td className="py-2.5 px-3 text-right text-slate-300">{s.pe ? s.pe.toFixed(1) : 'N/A'}</td>
                       <td className="py-2.5 px-3 text-right text-slate-300">{s.roe ? `${s.roe}%` : 'N/A'}</td>

@@ -96,7 +96,6 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                         isDayPositive ? 'text-emerald-400' : 'text-rose-400'
                       }`}
                     >
-                      {isDayPositive ? '+' : ''}
                       {formatPercent(h.dayChangePercent)}
                     </span>
                   </td>

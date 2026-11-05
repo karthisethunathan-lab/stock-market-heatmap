@@ -49,9 +49,14 @@ export const StockDrawer: React.FC = () => {
   } = useStockDetail(selectedSymbol);
 
   const [activeTab, setActiveTab] = useState<DrawerTab>('overview');
+  const [logoError, setLogoError] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [alertsModalOpen, setAlertsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setLogoError(false);
+  }, [selectedSymbol]);
 
   // Synchronize URL with /stock/:symbol deep-linking
   useEffect(() => {
@@ -112,18 +117,16 @@ export const StockDrawer: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-800 bg-[#0c111e]/95 backdrop-blur-md sticky top-0 z-30">
           <div className="flex items-center gap-3.5">
-            {profile?.logo ? (
+            {!logoError && profile?.logo ? (
               <img
                 src={profile.logo}
                 alt={selectedSymbol}
                 className="w-11 h-11 rounded-xl bg-slate-900 border border-slate-800 p-1.5 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
+                onError={() => setLogoError(true)}
               />
             ) : (
               <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-mono font-bold text-base text-white shadow-md">
-                {selectedSymbol.slice(0, 3)}
+                {selectedSymbol.replace('.NS', '').slice(0, 3)}
               </div>
             )}
 

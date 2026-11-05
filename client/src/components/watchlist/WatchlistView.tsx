@@ -281,7 +281,7 @@ export const WatchlistView: React.FC = () => {
                         isPos ? 'text-emerald-400' : 'text-rose-400'
                       }`}
                     >
-                      {q ? `${isPos ? '+' : ''}${formatPercent(q.changePercent)}` : '--'}
+                      {q ? formatPercent(q.changePercent) : '--'}
                     </td>
                     <td className="py-3 px-4 text-right text-slate-400 font-mono text-[11px]">
                       {q?.dayLow ? `${formatCurrency(q.dayLow, curr)} - ${formatCurrency(q.dayHigh, curr)}` : '--'}

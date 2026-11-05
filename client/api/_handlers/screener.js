@@ -33,11 +33,14 @@ export default async function handler(req, res) {
 
   let pool = [];
   if (market === 'all') {
-    pool = [...loadUniverse('us'), ...loadUniverse('in')];
+    pool = [
+      ...loadUniverse('us').map((s) => ({ ...s, currency: 'USD' })),
+      ...loadUniverse('in').map((s) => ({ ...s, currency: 'INR' })),
+    ];
   } else if (market === 'in' || market === 'india') {
-    pool = [...loadUniverse('in')];
+    pool = loadUniverse('in').map((s) => ({ ...s, currency: 'INR' }));
   } else {
-    pool = [...loadUniverse('us')];
+    pool = loadUniverse('us').map((s) => ({ ...s, currency: 'USD' }));
   }
 
   if (preset) {
