@@ -28,9 +28,11 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const filters: ScreenerFilters = {
         market,
@@ -54,7 +56,9 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
       setTotal(res.total || 0);
       setTotalPages(res.totalPages || 1);
     } catch (err) {
-      console.error(err);
+      const msg = err instanceof Error ? err.message : 'Failed to fetch screener results';
+      setError(msg);
+      console.error('Screener error:', err);
     } finally {
       setLoading(false);
     }
@@ -390,6 +394,20 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
                     <span className="flex items-center justify-center gap-2">
                       <RefreshCw className="w-4 h-4 animate-spin text-blue-400" /> Loading screener results...
                     </span>
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={10} className="py-8 text-center text-rose-400 font-sans">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span>⚠️ {error}</span>
+                      <button
+                        onClick={loadData}
+                        className="mt-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition"
+                      >
+                        Retry
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ) : results.length === 0 ? (

@@ -8,7 +8,6 @@ import {
   SearchResult,
   MarketType,
   TimeframeType,
-  SectorGroup,
   StockFundamentals,
   FinancialStatements,
   MarketOverviewData,
@@ -105,48 +104,16 @@ export async function fetchHeatmap(params: FetchHeatmapParams): Promise<HeatmapR
   try {
     const res = await request<HeatmapResponse>(`/heatmap.js?${queryStr}`);
     if (res.data?.sectors?.length > 0) return res.data;
-  } catch {
+  } catch (err1) {
     try {
       const res = await request<HeatmapResponse>(`/heatmap?${queryStr}`);
       if (res.data?.sectors?.length > 0) return res.data;
     } catch {
-      // Local universe fallback
+      throw err1 instanceof Error ? err1 : new Error('Unable to connect to live market data feed');
     }
   }
 
-  // Pure client fallback using pre-packaged universe json
-  const isIndia = market === 'in';
-  const universe = isIndia ? inUniverseData : usUniverseData;
-  const currency = isIndia ? 'INR' : 'USD';
-
-  const groupMap = new Map<string, SectorGroup>();
-  universe.forEach((s: any) => {
-    const groupName = s.sector || 'Other';
-    if (!groupMap.has(groupName)) {
-      groupMap.set(groupName, { name: groupName, marketCap: 0, stocks: [] });
-    }
-    const g = groupMap.get(groupName)!;
-    g.stocks.push({
-      ...s,
-      currency,
-      changePercent: s.change1d || 0,
-      price: s.price || 100,
-      marketCap: s.marketCap || 50000000000,
-      volume: s.volume || 10000000,
-      tileValue: s.marketCap,
-      colorValue: s.change1d,
-    });
-    g.marketCap += s.marketCap || 0;
-  });
-
-  return {
-    market,
-    range,
-    lastUpdated: new Date().toISOString(),
-    source: 'local-universe',
-    sectors: Array.from(groupMap.values()),
-    totalStocks: universe.length,
-  };
+  throw new Error('Unable to connect to live market data feed');
 }
 
 export async function fetchQuote(symbol: string): Promise<{ data: StockQuote; source?: string }> {

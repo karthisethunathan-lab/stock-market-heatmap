@@ -119,6 +119,12 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
             <span className="text-slate-500 text-[10px]">({marketStatus.desc})</span>
           </div>
 
+          {error && sectors.length > 0 && (
+            <span className="text-amber-400 text-[11px] font-medium flex items-center gap-1" title={error}>
+              ⚠️ Feed error (showing cached data)
+            </span>
+          )}
+
           <span>
             Universe: <strong className="text-slate-200">{marketStats.totalStocks}</strong> tiles
           </span>
