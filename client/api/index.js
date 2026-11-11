@@ -15,6 +15,9 @@ import searchHandler from './_handlers/search.js';
 
 export default async function handler(req, res) {
   try {
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+
     const rawUrl = req.url || '/api/health';
     const parsed = new URL(rawUrl, 'http://localhost');
     let pathname = parsed.pathname.replace(/\.js$/i, '').replace(/\/$/, '');
