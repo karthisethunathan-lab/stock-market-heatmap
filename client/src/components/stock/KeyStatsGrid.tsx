@@ -26,11 +26,11 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
     { label: 'Day Low', value: formatCurrency(quote.dayLow, currency) },
     { label: 'Prev Close', value: formatCurrency(quote.previousClose, currency) },
     { label: 'Volume', value: formatCompactNumber(quote.volume) },
-    { label: 'Market Cap', value: formatCompactNumber(metrics?.marketCap || (quote.price * 5e9), currency) },
-    { label: 'P/E Ratio', value: metrics?.peRatio ? metrics.peRatio.toFixed(2) : '24.2' },
-    { label: 'EPS (TTM)', value: metrics?.eps ? formatCurrency(metrics.eps, currency) : `$${(quote.price / 28).toFixed(2)}` },
-    { label: 'Dividend Yield', value: metrics?.dividendYield ? `${metrics.dividendYield.toFixed(2)}%` : '1.35%' },
-    { label: 'Beta', value: metrics?.beta ? metrics.beta.toFixed(2) : '1.08' },
+    { label: 'Market Cap', value: metrics?.marketCap ? formatCompactNumber(metrics.marketCap, currency) : 'N/A' },
+    { label: 'P/E Ratio', value: metrics?.peRatio ? metrics.peRatio.toFixed(2) : 'N/A' },
+    { label: 'EPS (TTM)', value: metrics?.eps ? formatCurrency(metrics.eps, currency) : 'N/A' },
+    { label: 'Dividend Yield', value: metrics?.dividendYield ? `${metrics.dividendYield.toFixed(2)}%` : 'N/A' },
+    { label: 'Beta', value: metrics?.beta ? metrics.beta.toFixed(2) : 'N/A' },
   ];
 
   return (

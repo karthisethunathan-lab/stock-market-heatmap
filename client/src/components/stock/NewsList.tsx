@@ -7,7 +7,15 @@ interface NewsListProps {
 }
 
 export const NewsList: React.FC<NewsListProps> = ({ news }) => {
-  if (!news || news.length === 0) return null;
+  if (!news || news.length === 0) {
+    return (
+      <div className="p-8 text-center text-slate-400 flex flex-col items-center gap-2">
+        <Newspaper className="w-8 h-8 text-slate-600 mb-1" />
+        <p className="text-sm font-medium text-slate-300">No Recent News Available</p>
+        <p className="text-xs text-slate-500">There are no market news articles indexed for this symbol right now.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 p-4 bg-slate-900/80 rounded-xl border border-slate-800">

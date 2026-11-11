@@ -243,21 +243,37 @@ export const FinancialsTab: React.FC<FinancialsTabProps> = ({ symbol }) => {
                 </>
               )}
               {statementType === 'balance' && (
-                <>
-                  {renderTableRow('Total Assets', data.balanceSheet, 'totalAssets', currency, true)}
-                  {renderTableRow('Total Liabilities', data.balanceSheet, 'totalLiabilities', currency)}
-                  {renderTableRow('Shareholders Equity', data.balanceSheet, 'equity', currency, true)}
-                  {renderTableRow('Cash & Equivalents', data.balanceSheet, 'cash', currency)}
-                  {renderTableRow('Total Debt', data.balanceSheet, 'totalDebt', currency)}
-                </>
+                data.balanceSheet.length > 0 ? (
+                  <>
+                    {renderTableRow('Total Assets', data.balanceSheet, 'totalAssets', currency, true)}
+                    {renderTableRow('Total Liabilities', data.balanceSheet, 'totalLiabilities', currency)}
+                    {renderTableRow('Shareholders Equity', data.balanceSheet, 'equity', currency, true)}
+                    {renderTableRow('Cash & Equivalents', data.balanceSheet, 'cash', currency)}
+                    {renderTableRow('Total Debt', data.balanceSheet, 'totalDebt', currency)}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-8 text-center text-slate-500 font-sans text-xs">
+                      Detailed balance sheet table is not provided by the public feed for this ticker. See Cash vs Total Debt above and the Fundamentals tab.
+                    </td>
+                  </tr>
+                )
               )}
               {statementType === 'cashflow' && (
-                <>
-                  {renderTableRow('Operating Cash Flow', data.cashFlow, 'operatingCashFlow', currency, true)}
-                  {renderTableRow('Capital Expenditures', data.cashFlow, 'capex', currency)}
-                  {renderTableRow('Free Cash Flow (FCF)', data.cashFlow, 'freeCashFlow', currency, true)}
-                  {renderTableRow('Dividends Paid', data.cashFlow, 'dividendsPaid', currency)}
-                </>
+                data.cashFlow.length > 0 ? (
+                  <>
+                    {renderTableRow('Operating Cash Flow', data.cashFlow, 'operatingCashFlow', currency, true)}
+                    {renderTableRow('Capital Expenditures', data.cashFlow, 'capex', currency)}
+                    {renderTableRow('Free Cash Flow (FCF)', data.cashFlow, 'freeCashFlow', currency, true)}
+                    {renderTableRow('Dividends Paid', data.cashFlow, 'dividendsPaid', currency)}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-8 text-center text-slate-500 font-sans text-xs">
+                      Detailed cash flow statement table is not provided by the public feed for this ticker. See Free Cash Flow (FCF) vs OCF above.
+                    </td>
+                  </tr>
+                )
               )}
             </tbody>
           </table>

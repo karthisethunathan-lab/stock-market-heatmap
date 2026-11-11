@@ -2,11 +2,52 @@ import axios from 'axios';
 
 const FINNHUB_KEY = process.env.FINNHUB_API_KEY || 'dbkup3pr01qjsmfrafdgdbkup3pr01qjsmfrafe0';
 
+async function fetchRssNews(symbol) {
+  try {
+    const isIndia = symbol.endsWith('.NS') || symbol.endsWith('.BO');
+    const query = isIndia ? `${symbol.replace(/\.(NS|BO)$/i, '')} share price NSE` : `${symbol} stock`;
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!res.ok) return [];
+    const xml = await res.text();
+    const items = [];
+    const regex = /<item>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<link>(.*?)<\/link>[\s\S]*?<pubDate>(.*?)<\/pubDate>(?:[\s\S]*?<source[^>]*>(.*?)<\/source>)?/g;
+    let match;
+
+    while ((match = regex.exec(xml)) !== null && items.length < 8) {
+      const rawTitle = match[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+      const source = match[4] ? match[4].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').trim() : 'Financial News';
+
+      items.push({
+        id: link,
+        headline: rawTitle,
+        summary: '',
+        source,
+        url: link,
+        image: '',
+        datetime: new Date(pubDate).getTime() || Date.now(),
+      });
+    }
+
+    return items;
+  } catch (err) {
+    console.warn(`[News RSS Error for ${symbol}]:`, err.message);
+    return [];
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=1200');
+  res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -15,10 +56,11 @@ export default async function handler(req, res) {
   const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
   try {
+    // 1. For US stocks, try Finnhub company-news first
     if (!symbol.endsWith('.NS') && !symbol.endsWith('.BO')) {
       const response = await axios.get(`https://finnhub.io/api/v1/company-news`, {
         params: { symbol, from: monthAgo, to: today, token: FINNHUB_KEY },
-        timeout: 6000,
+        timeout: 5000,
       });
 
       if (Array.isArray(response.data) && response.data.length > 0) {
@@ -35,40 +77,37 @@ export default async function handler(req, res) {
             datetime: n.datetime ? n.datetime * 1000 : Date.now(),
           }));
 
-        return res.status(200).json({
-          success: true,
-          source: 'finnhub',
-          data: formatted,
-        });
+        if (formatted.length > 0) {
+          return res.status(200).json({
+            success: true,
+            source: 'finnhub',
+            data: formatted,
+          });
+        }
       }
     }
 
-    // Default financial news feed
+    // 2. Genuine RSS feed fallback for Indian stocks & US fallbacks
+    const rssNews = await fetchRssNews(symbol);
+    if (rssNews.length > 0) {
+      return res.status(200).json({
+        success: true,
+        source: 'google-news',
+        data: rssNews,
+      });
+    }
+
+    // 3. If no articles exist, return clean empty list
     return res.status(200).json({
       success: true,
       source: 'news-feed',
-      data: [
-        {
-          id: `news-1-${symbol}`,
-          headline: `${symbol} sees continued volume and institutional investor activity`,
-          summary: `Equity analysts note key sector rotation and strong balance sheet metrics for ${symbol}.`,
-          source: 'Financial Times',
-          url: `https://finance.yahoo.com/quote/${symbol}/news`,
-          image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80',
-          datetime: Date.now() - 3600 * 1000,
-        },
-        {
-          id: `news-2-${symbol}`,
-          headline: `Quarterly preview: What market participants are watching for ${symbol}`,
-          summary: `Revenue growth, operating margins, and forward fiscal guidance remain front of mind.`,
-          source: 'Bloomberg Markets',
-          url: `https://finance.yahoo.com/quote/${symbol}/news`,
-          image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&auto=format&fit=crop&q=80',
-          datetime: Date.now() - 7200 * 1000,
-        },
-      ],
+      data: [],
     });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
+    return res.status(200).json({
+      success: true,
+      source: 'unavailable',
+      data: [],
+    });
   }
 }

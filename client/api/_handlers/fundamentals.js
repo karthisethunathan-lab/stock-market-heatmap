@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
 import { loadUniverse } from './loadUniverse.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
+  res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -16,69 +17,94 @@ export default async function handler(req, res) {
   const universe = loadUniverse(isIndia ? 'in' : 'us');
   const matched = universe.find((s) => s.symbol.toUpperCase() === symbol) || {};
 
-  let currentPrice = matched.price || 100;
+  let currentPrice = null;
   let quoteName = matched.name || symbol;
+  let chartMeta = {};
 
   try {
     const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=2d`;
-    const yRes = await axios.get(yUrl, { timeout: 4000, headers: { 'User-Agent': 'Mozilla/5.0' } });
-    const meta = yRes.data?.chart?.result?.[0]?.meta;
-    if (meta?.regularMarketPrice) {
-      currentPrice = meta.regularMarketPrice;
-      quoteName = meta.longName || meta.shortName || quoteName;
+    const yRes = await axios.get(yUrl, { timeout: 5000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+    chartMeta = yRes.data?.chart?.result?.[0]?.meta || {};
+    if (chartMeta.regularMarketPrice) {
+      currentPrice = chartMeta.regularMarketPrice;
+      quoteName = chartMeta.longName || chartMeta.shortName || quoteName;
     }
   } catch {
-    // Keep fallback
+    currentPrice = matched.price || null;
   }
 
-  const marketCap = matched.marketCap || (currentPrice * 1000000000);
-  const pe = matched.pe || Number((15 + (symbol.charCodeAt(0) % 25)).toFixed(1));
-  const pb = matched.pb || Number((1.5 + (symbol.charCodeAt(1) % 10) * 0.8).toFixed(1));
-  const eps = Number((currentPrice / Math.max(1, pe)).toFixed(2));
-  const divYield = matched.dividendYield || 0;
-  const roe = matched.roe || Number((12 + (symbol.charCodeAt(0) % 20)).toFixed(1));
-  const debtEquity = matched.debtEquity || Number((0.2 + (symbol.charCodeAt(2) || 5) * 0.1).toFixed(2));
-  const revGrowth = matched.revGrowth || Number((4 + (symbol.charCodeAt(1) || 5) % 18).toFixed(1));
+  // Fetch real quote summary modules from Yahoo Finance
+  const summary = await fetchYahooQuoteSummary(symbol, [
+    'summaryDetail',
+    'defaultKeyStatistics',
+    'financialData',
+    'assetProfile',
+  ]);
 
-  const high52w = Number((currentPrice * 1.15).toFixed(2));
-  const low52w = Number((currentPrice * 0.75).toFixed(2));
-  const ma50 = Number((currentPrice * 0.97).toFixed(2));
-  const ma200 = Number((currentPrice * 0.92).toFixed(2));
+  const sd = summary?.summaryDetail || {};
+  const ks = summary?.defaultKeyStatistics || {};
+  const fd = summary?.financialData || {};
 
-  const sharesOutstanding = Math.round(marketCap / currentPrice);
-  const totalDebt = Math.round(marketCap * (debtEquity / 2.5));
-  const cash = Math.round(marketCap * 0.12);
-  const enterpriseValue = marketCap + totalDebt - cash;
-  const ebitda = Math.round(marketCap / Math.max(8, pe * 0.65));
-  const evEbitda = Number((enterpriseValue / Math.max(1, ebitda)).toFixed(1));
-  const fwdPe = Number((pe * 0.88).toFixed(1));
-  const peg = Number((pe / Math.max(5, revGrowth)).toFixed(2));
-  const earningsYield = Number(((1 / Math.max(1, pe)) * 100).toFixed(2));
+  const marketCap = val(sd.marketCap) || val(ks.enterpriseValue) || matched.marketCap || null;
+  const enterpriseValue = val(ks.enterpriseValue) || null;
+  const peRatioTTM = val(sd.trailingPE) !== null ? Number(val(sd.trailingPE).toFixed(2)) : null;
+  const forwardPE = val(sd.forwardPE) !== null ? Number(val(sd.forwardPE).toFixed(2)) : null;
+  const pegRatio = val(ks.pegRatio) !== null ? Number(val(ks.pegRatio).toFixed(2)) : null;
+  const priceToBook = val(ks.priceToBook) !== null ? Number(val(ks.priceToBook).toFixed(2)) : null;
+  const priceToSales = val(sd.priceToSalesTrailing12Months) !== null ? Number(val(sd.priceToSalesTrailing12Months).toFixed(2)) : null;
+  const evToEbitda = val(ks.enterpriseToEbitda) !== null ? Number(val(ks.enterpriseToEbitda).toFixed(2)) : null;
+  const earningsYield = peRatioTTM && peRatioTTM > 0 ? Number(((1 / peRatioTTM) * 100).toFixed(2)) : null;
 
-  const grossMargin = Number((42 + (symbol.charCodeAt(0) % 25)).toFixed(1));
-  const operatingMargin = Number((grossMargin * 0.55).toFixed(1));
-  const netMargin = Number((operatingMargin * 0.72).toFixed(1));
-  const roa = Number((roe * 0.45).toFixed(1));
-  const roce = Number((roe * 0.85).toFixed(1));
+  const grossMargin = val(fd.grossMargins) !== null ? Number((val(fd.grossMargins) * 100).toFixed(2)) : null;
+  const operatingMargin = val(fd.operatingMargins) !== null ? Number((val(fd.operatingMargins) * 100).toFixed(2)) : null;
+  const netMargin = val(fd.profitMargins) !== null ? Number((val(fd.profitMargins) * 100).toFixed(2)) : null;
+  const roe = val(fd.returnOnEquity) !== null ? Number((val(fd.returnOnEquity) * 100).toFixed(2)) : null;
+  const roa = val(fd.returnOnAssets) !== null ? Number((val(fd.returnOnAssets) * 100).toFixed(2)) : null;
 
-  const currentRatio = Number((1.2 + (symbol.charCodeAt(1) % 15) * 0.1).toFixed(2));
-  const quickRatio = Number((currentRatio * 0.8).toFixed(2));
-  const interestCoverage = Number((8 + (symbol.charCodeAt(0) % 12)).toFixed(1));
-  const freeCashFlow = Math.round(ebitda * 0.55);
+  const revGrowthYoY = val(fd.revenueGrowth) !== null ? Number((val(fd.revenueGrowth) * 100).toFixed(2)) : null;
+  const epsGrowthYoY = val(fd.earningsGrowth) !== null ? Number((val(fd.earningsGrowth) * 100).toFixed(2)) : null;
 
-  const bookValuePerShare = Number((currentPrice / Math.max(1, pb)).toFixed(2));
-  const revenuePerShare = Number(((marketCap * 0.35) / sharesOutstanding).toFixed(2));
-  const cashPerShare = Number((cash / sharesOutstanding).toFixed(2));
+  const debtToEquity = val(fd.debtToEquity) !== null ? Number((val(fd.debtToEquity) / 100).toFixed(2)) : null;
+  const currentRatio = val(fd.currentRatio) !== null ? Number(val(fd.currentRatio).toFixed(2)) : null;
+  const quickRatio = val(fd.quickRatio) !== null ? Number(val(fd.quickRatio).toFixed(2)) : null;
+  const totalDebt = val(fd.totalDebt) || null;
+  const totalCash = val(fd.totalCash) || null;
+  const freeCashFlow = val(fd.freeCashflow) || null;
 
+  const divYield = val(sd.dividendYield) !== null ? Number((val(sd.dividendYield) * 100).toFixed(2)) : null;
+  const annualDividend = val(sd.dividendRate) !== null ? Number(val(sd.dividendRate).toFixed(2)) : null;
+  const payoutRatio = val(sd.payoutRatio) !== null ? Number((val(sd.payoutRatio) * 100).toFixed(2)) : null;
+  const exDividendDate = sd.exDividendDate ? new Date(val(sd.exDividendDate) * 1000).toISOString().slice(0, 10) : null;
+
+  const eps = val(ks.trailingEps) !== null ? Number(val(ks.trailingEps).toFixed(2)) : null;
+  const bookValuePerShare = val(ks.bookValue) !== null ? Number(val(ks.bookValue).toFixed(2)) : null;
+  const revenuePerShare = val(fd.revenuePerShare) !== null ? Number(val(fd.revenuePerShare).toFixed(2)) : null;
+  const cashPerShare = val(fd.totalCashPerShare) !== null ? Number(val(fd.totalCashPerShare).toFixed(2)) : null;
+  const sharesOutstanding = val(ks.sharesOutstanding) || null;
+
+  const insidersPercent = val(ks.heldPercentInsiders) !== null ? Number((val(ks.heldPercentInsiders) * 100).toFixed(2)) : null;
+  const institutionsPercent = val(ks.heldPercentInstitutions) !== null ? Number((val(ks.heldPercentInstitutions) * 100).toFixed(2)) : null;
+  const floatShares = val(ks.floatShares) || null;
+  const shortInterest = val(ks.shortPercentOfFloat) !== null ? Number((val(ks.shortPercentOfFloat) * 100).toFixed(2)) : null;
+
+  const beta = val(sd.beta) !== null ? Number(val(sd.beta).toFixed(2)) : (val(ks.beta) !== null ? Number(val(ks.beta).toFixed(2)) : null);
+  const avgVolume3M = val(sd.averageVolume3Month) || null;
+  const high52w = chartMeta.fiftyTwoWeekHigh ?? val(sd.fiftyTwoWeekHigh) ?? null;
+  const low52w = chartMeta.fiftyTwoWeekLow ?? val(sd.fiftyTwoWeekLow) ?? null;
+  const ma50 = val(sd.fiftyDayAverage) !== null ? Number(val(sd.fiftyDayAverage).toFixed(2)) : null;
+  const ma200 = val(sd.twoHundredDayAverage) !== null ? Number(val(sd.twoHundredDayAverage).toFixed(2)) : null;
+
+  // Genuine rule-based tags
   const quickTakes = [];
-  if (pe > 0 && pe < 20) quickTakes.push({ label: 'Low P/E Value', type: 'positive' });
-  if (pe > 45) quickTakes.push({ label: 'Growth Premium Valuation', type: 'neutral' });
-  if (roe > 20) quickTakes.push({ label: 'High ROE', type: 'positive' });
-  if (debtEquity < 0.5) quickTakes.push({ label: 'Low Debt', type: 'positive' });
-  if (debtEquity > 1.8) quickTakes.push({ label: 'High Leverage', type: 'warning' });
-  if (divYield > 2.0) quickTakes.push({ label: 'Pays Dividend', type: 'positive' });
-  if (currentPrice >= high52w * 0.94) quickTakes.push({ label: 'Near 52W High', type: 'neutral' });
-  if (revGrowth > 15) quickTakes.push({ label: 'Strong YoY Revenue Growth', type: 'positive' });
+  if (netMargin !== null && netMargin > 0) quickTakes.push({ label: 'Profitable', type: 'positive' });
+  if (peRatioTTM !== null && peRatioTTM > 0 && peRatioTTM < 20) quickTakes.push({ label: 'Low P/E Value', type: 'positive' });
+  if (peRatioTTM !== null && peRatioTTM > 50) quickTakes.push({ label: 'Growth Valuation', type: 'neutral' });
+  if (roe !== null && roe > 18) quickTakes.push({ label: 'High ROE', type: 'positive' });
+  if (debtToEquity !== null && debtToEquity < 0.5) quickTakes.push({ label: 'Low Debt', type: 'positive' });
+  if (debtToEquity !== null && debtToEquity > 1.8) quickTakes.push({ label: 'High Leverage', type: 'warning' });
+  if (divYield !== null && divYield > 1.5) quickTakes.push({ label: 'Pays Dividend', type: 'positive' });
+  if (currentPrice && high52w && currentPrice >= high52w * 0.95) quickTakes.push({ label: 'Near 52W High', type: 'neutral' });
+  if (revGrowthYoY !== null && revGrowthYoY > 15) quickTakes.push({ label: 'Strong YoY Revenue Growth', type: 'positive' });
 
   return res.status(200).json({
     success: true,
@@ -86,72 +112,74 @@ export default async function handler(req, res) {
       symbol,
       name: quoteName,
       currency: isIndia ? 'INR' : 'USD',
-      source: isIndia ? 'Yahoo Finance' : 'Finnhub & Yahoo Finance',
+      source: 'Yahoo Finance',
       lastUpdated: new Date().toISOString(),
       valuation: {
         marketCap,
         enterpriseValue,
-        peRatioTTM: pe,
-        forwardPE: fwdPe,
-        pegRatio: peg,
-        priceToBook: pb,
-        priceToSales: Number((marketCap / Math.max(1, marketCap * 0.3)).toFixed(2)),
-        evToEbitda: evEbitda,
+        peRatioTTM,
+        forwardPE,
+        pegRatio,
+        priceToBook,
+        priceToSales,
+        evToEbitda,
         earningsYield,
       },
-      profitability: { grossMargin, operatingMargin, netMargin, roe, roa, roce },
+      profitability: {
+        grossMargin,
+        operatingMargin,
+        netMargin,
+        roe,
+        roa,
+        roce: null, // Clean N/A
+      },
       growth: {
-        revenueGrowthYoY: revGrowth,
-        epsGrowthYoY: Number((revGrowth * 1.15).toFixed(1)),
-        revenue3YCagr: Number((revGrowth * 0.92).toFixed(1)),
-        revenue5YCagr: Number((revGrowth * 0.85).toFixed(1)),
-        eps3YCagr: Number((revGrowth * 1.05).toFixed(1)),
-        eps5YCagr: Number((revGrowth * 0.98).toFixed(1)),
+        revenueGrowthYoY: revGrowthYoY,
+        epsGrowthYoY,
+        revenue3YCagr: null,
+        revenue5YCagr: null,
+        eps3YCagr: null,
+        eps5YCagr: null,
       },
       financialHealth: {
-        debtToEquity: debtEquity,
+        debtToEquity,
         currentRatio,
         quickRatio,
-        interestCoverage,
+        interestCoverage: null,
         totalDebt,
-        totalCash: cash,
+        totalCash,
         freeCashFlow,
       },
       dividends: {
         yield: divYield,
-        annualDividend: Number(((currentPrice * divYield) / 100).toFixed(2)),
-        payoutRatio: divYield > 0 ? Number((divYield * pe).toFixed(1)) : 0,
-        exDividendDate: '2024-11-15',
-        history5Y: [
-          { year: 2020, dividend: Number(((currentPrice * divYield * 0.7) / 100).toFixed(2)) },
-          { year: 2021, dividend: Number(((currentPrice * divYield * 0.8) / 100).toFixed(2)) },
-          { year: 2022, dividend: Number(((currentPrice * divYield * 0.9) / 100).toFixed(2)) },
-          { year: 2023, dividend: Number(((currentPrice * divYield * 0.95) / 100).toFixed(2)) },
-          { year: 2024, dividend: Number(((currentPrice * divYield) / 100).toFixed(2)) },
-        ],
+        annualDividend,
+        payoutRatio,
+        exDividendDate,
+        history5Y: [],
       },
-      perShare: { eps, bookValuePerShare, revenuePerShare, cashPerShare, sharesOutstanding },
-      ownership: isIndia ? {
-        promoterHolding: Number((45 + (symbol.charCodeAt(0) % 25)).toFixed(1)),
-        institutionalHolding: Number((32 + (symbol.charCodeAt(1) % 15)).toFixed(1)),
-        publicHolding: Number((23 - (symbol.charCodeAt(0) % 10)).toFixed(1)),
+      perShare: {
+        eps,
+        bookValuePerShare,
+        revenuePerShare,
+        cashPerShare,
         sharesOutstanding,
-      } : {
-        insidersPercent: Number((1.2 + (symbol.charCodeAt(0) % 8)).toFixed(1)),
-        institutionsPercent: Number((65 + (symbol.charCodeAt(1) % 25)).toFixed(1)),
-        floatShares: Math.round(sharesOutstanding * 0.92),
+      },
+      ownership: {
+        insidersPercent,
+        institutionsPercent,
+        floatShares,
         sharesOutstanding,
-        shortInterest: Number((1.5 + (symbol.charCodeAt(2) || 0) % 5).toFixed(2)),
+        shortInterest: isIndia ? null : shortInterest,
       },
       trading: {
-        beta: matched.beta || 1.1,
-        avgVolume3M: matched.avgVolume || 15000000,
+        beta,
+        avgVolume3M,
         fiftyTwoWeekHigh: high52w,
         fiftyTwoWeekLow: low52w,
         fiftyDayMA: ma50,
         twoHundredDayMA: ma200,
-        isAbove50MA: currentPrice > ma50,
-        isAbove200MA: currentPrice > ma200,
+        isAbove50MA: currentPrice && ma50 ? currentPrice > ma50 : null,
+        isAbove200MA: currentPrice && ma200 ? currentPrice > ma200 : null,
       },
       quickTakes,
     },

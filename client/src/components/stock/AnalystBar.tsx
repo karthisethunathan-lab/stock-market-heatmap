@@ -6,15 +6,11 @@ interface AnalystBarProps {
 }
 
 export const AnalystBar: React.FC<AnalystBarProps> = ({ recommendation }) => {
-  const rec = recommendation || {
-    strongBuy: 16,
-    buy: 24,
-    hold: 8,
-    sell: 2,
-    strongSell: 1,
-  };
+  if (!recommendation) return null;
 
-  const total = (rec.strongBuy || 0) + (rec.buy || 0) + (rec.hold || 0) + (rec.sell || 0) + (rec.strongSell || 0) || 1;
+  const rec = recommendation;
+  const total = (rec.strongBuy || 0) + (rec.buy || 0) + (rec.hold || 0) + (rec.sell || 0) + (rec.strongSell || 0);
+  if (total === 0) return null;
   const buyTotal = (rec.strongBuy || 0) + (rec.buy || 0);
   const buyPercent = Math.round((buyTotal / total) * 100);
 
