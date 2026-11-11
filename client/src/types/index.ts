@@ -279,6 +279,22 @@ export interface FinancialStatements {
   incomeStatement: IncomeStatementRow[];
   balanceSheet: BalanceSheetRow[];
   cashFlow: CashFlowRow[];
+  balanceSheetSummary?: {
+    totalCash: number | null;
+    totalDebt: number | null;
+    netDebt: number | null;
+    currentRatio: number | null;
+    quickRatio: number | null;
+    debtToEquity: number | null;
+    bookValue: number | null;
+    sharesOutstanding?: number | null;
+  };
+  cashFlowSummary?: {
+    operatingCashFlow: number | null;
+    freeCashFlow: number | null;
+    fcfConversion: number | null;
+    ocfMargin: number | null;
+  };
   charts: {
     revenueAndNetIncome: Array<{ period: string; revenue: number; netIncome: number }>;
     marginTrend: Array<{ period: string; grossMargin: number; operatingMargin: number; netMargin: number }>;

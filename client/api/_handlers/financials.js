@@ -146,6 +146,26 @@ export default async function handler(req, res) {
 
   const nextEarningsDate = summary.calendarEvents?.earnings?.earningsDate?.[0]?.fmt || null;
 
+  const balanceSheetSummary = {
+    totalCash,
+    totalDebt,
+    netDebt: (totalDebt !== null && totalCash !== null) ? totalDebt - totalCash : null,
+    currentRatio: val(fd.currentRatio),
+    quickRatio: val(fd.quickRatio),
+    debtToEquity: val(fd.debtToEquity),
+    bookValue: val(ks.bookValue),
+    sharesOutstanding,
+  };
+
+  const cashFlowSummary = {
+    operatingCashFlow: ocf,
+    freeCashFlow: fcf,
+    fcfConversion: (fcf !== null && ocf && ocf > 0) ? Number(((fcf / ocf) * 100).toFixed(1)) : null,
+    ocfMargin: (ocf !== null && val(fd.totalRevenue) && val(fd.totalRevenue) > 0)
+      ? Number(((ocf / val(fd.totalRevenue)) * 100).toFixed(1))
+      : null,
+  };
+
   return res.status(200).json({
     success: true,
     source: 'Yahoo Finance',
@@ -157,6 +177,8 @@ export default async function handler(req, res) {
       incomeStatement: incomeWithYoY,
       balanceSheet: [],
       cashFlow: [],
+      balanceSheetSummary,
+      cashFlowSummary,
       charts: {
         revenueAndNetIncome: revenueSeries,
         marginTrend: marginSeries,
