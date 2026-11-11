@@ -72,105 +72,123 @@ export const FinancialsTab: React.FC<FinancialsTabProps> = ({ symbol }) => {
 
   return (
     <div className="p-4 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-160px)] scrollbar-thin">
-      {/* Top Controls: View Mode, Timeframe, & Statement Selector */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 p-3 rounded-xl shadow-xs">
-        
-        {/* Left: View Mode Toggle (Tables vs Charts) */}
-        <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-xs">
+      {/* 4 Statement Selection Tabs - 100% Fully Visible in a Responsive Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
+        <button
+          onClick={() => {
+            setStatementType('income');
+            setViewMode('tables');
+          }}
+          className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
+            statementType === 'income' && viewMode === 'tables'
+              ? 'bg-blue-600 text-white shadow-md ring-1 ring-blue-400'
+              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-850'
+          }`}
+        >
+          <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span className="truncate">Income Statement</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setStatementType('balance');
+            setViewMode('tables');
+          }}
+          className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
+            statementType === 'balance' && viewMode === 'tables'
+              ? 'bg-blue-600 text-white shadow-md ring-1 ring-blue-400'
+              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-850'
+          }`}
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+          <span className="truncate">Balance Sheet</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setStatementType('cashflow');
+            setViewMode('tables');
+          }}
+          className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
+            statementType === 'cashflow' && viewMode === 'tables'
+              ? 'bg-blue-600 text-white shadow-md ring-1 ring-blue-400'
+              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-850'
+          }`}
+        >
+          <Activity className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span className="truncate">Cash Flow</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setStatementType('earnings');
+            setViewMode('tables');
+          }}
+          className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
+            statementType === 'earnings' && viewMode === 'tables'
+              ? 'bg-blue-600 text-white shadow-md ring-1 ring-blue-400'
+              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-850'
+          }`}
+        >
+          <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+          <span className="truncate">Earnings Surprises</span>
+        </button>
+      </div>
+
+      {/* Sub-bar Controls: Mode Switcher, Annual/Quarterly, Currency */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/80 border border-slate-800/90 px-3 py-2 rounded-xl text-xs">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Tables vs Charts Toggle */}
+          <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-[11px]">
             <button
               onClick={() => setViewMode('tables')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
-                viewMode === 'tables' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded font-medium transition ${
+                viewMode === 'tables' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <TableIcon className="w-3.5 h-3.5" /> Statement Tables
+              <TableIcon className="w-3 h-3" /> Tables
             </button>
             <button
               onClick={() => setViewMode('charts')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
-                viewMode === 'charts' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded font-medium transition ${
+                viewMode === 'charts' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <BarChart2 className="w-3.5 h-3.5" /> Visual Charts
+              <BarChart2 className="w-3 h-3" /> Visual Charts
             </button>
           </div>
 
-          {/* Annual vs Quarterly Toggle */}
-          <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-xs">
-            <button
-              onClick={() => setTimeframe('annual')}
-              className={`px-2.5 py-1.5 rounded-md font-medium transition ${
-                timeframe === 'annual' ? 'bg-slate-800 text-blue-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Annual
-            </button>
-            <button
-              onClick={() => setTimeframe('quarterly')}
-              className={`px-2.5 py-1.5 rounded-md font-medium transition ${
-                timeframe === 'quarterly' ? 'bg-slate-800 text-blue-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Quarterly
-            </button>
-          </div>
+          {/* Annual vs Quarterly Toggle (relevant for Income Statement and Charts) */}
+          {(statementType === 'income' || viewMode === 'charts') && (
+            <div className="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 text-[11px]">
+              <button
+                onClick={() => setTimeframe('annual')}
+                className={`px-2 py-1 rounded font-medium transition ${
+                  timeframe === 'annual' ? 'bg-slate-800 text-blue-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Annual
+              </button>
+              <button
+                onClick={() => setTimeframe('quarterly')}
+                className={`px-2 py-1 rounded font-medium transition ${
+                  timeframe === 'quarterly' ? 'bg-slate-800 text-blue-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Quarterly
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Currency & Reporting Unit Badge */}
-        <div className="text-xs text-slate-300 flex items-center gap-2 font-mono">
-          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
-            Currency: <strong className="text-white">{currency}</strong>
+        <div className="text-[11px] text-slate-400 flex items-center gap-1.5 font-mono">
+          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">
+            {currency}
           </span>
-          <span className="text-slate-400 hidden sm:inline">({data.reportingUnit || (isIndia ? '₹ Crore' : 'USD Billions')})</span>
+          <span className="hidden sm:inline">({data.reportingUnit || (isIndia ? '₹ Crore' : 'USD Billions')})</span>
         </div>
       </div>
-
-      {/* Statement Category Selector (Always Available in Tables Mode) */}
-      {viewMode === 'tables' && (
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-          <button
-            onClick={() => setStatementType('income')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              statementType === 'income'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
-            }`}
-          >
-            <DollarSign className="w-3.5 h-3.5" /> Income Statement
-          </button>
-          <button
-            onClick={() => setStatementType('balance')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              statementType === 'balance'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" /> Balance Sheet & Solvency
-          </button>
-          <button
-            onClick={() => setStatementType('cashflow')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              statementType === 'cashflow'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
-            }`}
-          >
-            <Activity className="w-3.5 h-3.5" /> Cash Flow & Capital
-          </button>
-          <button
-            onClick={() => setStatementType('earnings')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              statementType === 'earnings'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
-            }`}
-          >
-            <Calendar className="w-3.5 h-3.5" /> Earnings Surprises
-          </button>
-        </div>
-      )}
 
       {/* Main Content: Tables View */}
       {viewMode === 'tables' && (
