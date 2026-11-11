@@ -17,7 +17,8 @@ export function formatCurrency(amount?: number | null, currency: string = 'USD',
 }
 
 export function formatCompactNumber(num?: number | null, currency?: string): string {
-  if (num === undefined || num === null || isNaN(num) || num === 0) return '0';
+  if (num === undefined || num === null || isNaN(num)) return '--';
+  if (num === 0) return currency === 'INR' ? '₹0' : (currency === 'USD' ? '$0' : '0');
   const isINR = currency === 'INR';
 
   if (isINR) {

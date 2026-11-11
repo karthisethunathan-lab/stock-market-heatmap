@@ -101,3 +101,85 @@ export function val(field) {
   if (typeof field === 'number') return isNaN(field) ? null : field;
   return null;
 }
+
+/**
+ * Batch fetch live quotes for an array of US or Indian symbols
+ * Returns Map<symbol, { price, changePercent, volume, marketCap, pe, high52, low52, currency, timestamp }>
+ */
+export async function fetchBatchQuotes(symbols) {
+  const quoteMap = new Map();
+  if (!symbols || symbols.length === 0) return quoteMap;
+
+  const cleanSymbols = Array.from(new Set(symbols.map((s) => s.toUpperCase().trim()))).filter(Boolean);
+
+  // Split into chunks of 150 to keep query string safe and Yahoo responsive
+  const chunkSize = 150;
+  const chunks = [];
+  for (let i = 0; i < cleanSymbols.length; i += chunkSize) {
+    chunks.push(cleanSymbols.slice(i, i + chunkSize));
+  }
+
+  let session = null;
+  try {
+    session = await getYahooCrumb();
+  } catch (err) {
+    console.warn('[Batch quotes] Failed to obtain crumb:', err.message);
+  }
+
+  await Promise.allSettled(
+    chunks.map(async (chunk) => {
+      try {
+        const crumbParam = session?.crumb ? `&crumb=${encodeURIComponent(session.crumb)}` : '';
+        const url = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(chunk.join(','))}${crumbParam}`;
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Cookie': session?.cookie || '',
+          },
+          signal: AbortSignal.timeout(6000),
+        });
+
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            cachedCrumb = null;
+            cachedCookie = null;
+          }
+          return;
+        }
+
+        const data = await res.json();
+        const results = data?.quoteResponse?.result || [];
+
+        for (const q of results) {
+          if (q && q.symbol && typeof q.regularMarketPrice === 'number' && q.regularMarketPrice > 0) {
+            quoteMap.set(q.symbol.toUpperCase(), {
+              symbol: q.symbol,
+              price: q.regularMarketPrice,
+              changePercent: typeof q.regularMarketChangePercent === 'number'
+                ? q.regularMarketChangePercent
+                : q.regularMarketPreviousClose
+                  ? ((q.regularMarketPrice - q.regularMarketPreviousClose) / q.regularMarketPreviousClose) * 100
+                  : 0,
+              changeAmount: typeof q.regularMarketChange === 'number'
+                ? q.regularMarketChange
+                : (q.regularMarketPreviousClose ? q.regularMarketPrice - q.regularMarketPreviousClose : 0),
+              volume: q.regularMarketVolume || 0,
+              marketCap: q.marketCap || 0,
+              pe: q.trailingPE || q.forwardPE || null,
+              high52: q.fiftyTwoWeekHigh || null,
+              low52: q.fiftyTwoWeekLow || null,
+              currency: q.currency || (q.symbol.endsWith('.NS') ? 'INR' : 'USD'),
+              dividendYield: q.dividendYield !== undefined ? q.dividendYield : q.trailingAnnualDividendYield,
+              timestamp: Date.now(),
+            });
+          }
+        }
+      } catch (err) {
+        console.warn(`[Batch quotes chunk failed]:`, err.message);
+      }
+    })
+  );
+
+  return quoteMap;
+}
+

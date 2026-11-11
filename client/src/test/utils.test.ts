@@ -36,6 +36,11 @@ describe('Financial Utility Functions', () => {
     // Indian Lakh / Crore grouping
     expect(formatCompactNumber(25000000, 'INR')).toBe('₹2.50 Cr');
     expect(formatCompactNumber(500000, 'INR')).toBe('₹5.00 L');
+
+    // Missing or zero handling
+    expect(formatCompactNumber(null)).toBe('--');
+    expect(formatCompactNumber(undefined)).toBe('--');
+    expect(formatCompactNumber(0)).toBe('0');
   });
 
   it('formats percentage moves with + or - signs', () => {

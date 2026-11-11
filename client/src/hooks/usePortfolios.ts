@@ -10,7 +10,7 @@ export function usePortfolios(baseCurrency: 'USD' | 'INR' = 'USD') {
   const [activePortfolioId, setActivePortfolioId] = useState<string>('');
   const [priceMap, setPriceMap] = useState<Map<string, { price: number; changePercent: number }>>(new Map());
   const [loading, setLoading] = useState<boolean>(true);
-  const [usdInrRate, setUsdInrRate] = useState<number>(94.47);
+  const [usdInrRate, setUsdInrRate] = useState<number>(93.68);
 
   // Fetch live USD/INR exchange rate on mount
   useEffect(() => {
@@ -41,14 +41,14 @@ export function usePortfolios(baseCurrency: 'USD' | 'INR' = 'USD') {
     if (!activePortfolio || activePortfolio.holdings.length === 0) return;
 
     const symbols = Array.from(new Set(activePortfolio.holdings.map((h) => h.symbol)));
-    const newPriceMap = new Map(priceMap);
+    const updates = new Map<string, { price: number; changePercent: number }>();
 
     await Promise.allSettled(
       symbols.map(async (sym) => {
         try {
           const res = await fetchQuote(sym);
           if (res.data?.price) {
-            newPriceMap.set(sym.toUpperCase(), {
+            updates.set(sym.toUpperCase(), {
               price: res.data.price,
               changePercent: res.data.changePercent || 0,
             });
@@ -59,8 +59,12 @@ export function usePortfolios(baseCurrency: 'USD' | 'INR' = 'USD') {
       })
     );
 
-    setPriceMap(newPriceMap);
-  }, [activePortfolio, priceMap]);
+    setPriceMap((prev) => {
+      const next = new Map(prev);
+      updates.forEach((val, key) => next.set(key, val));
+      return next;
+    });
+  }, [activePortfolio]);
 
   useEffect(() => {
     refreshPrices();

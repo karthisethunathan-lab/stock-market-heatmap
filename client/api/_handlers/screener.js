@@ -1,41 +1,8 @@
 import { loadUniverse } from './loadUniverse.js';
+import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 
 // In-memory quote cache across warm serverless container invocations
-const quoteCache = new Map(); // symbol -> { price, changePercent, volume, high52, timestamp }
-
-async function fetchLiveQuotes(symbols) {
-  if (!symbols || symbols.length === 0) return;
-  const fetches = symbols.map(async (s) => {
-    try {
-      const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=1d&range=1d`;
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0' },
-        signal: AbortSignal.timeout(2500),
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (meta && typeof meta.regularMarketPrice === 'number' && meta.regularMarketPrice > 0) {
-        quoteCache.set(s, {
-          price: meta.regularMarketPrice,
-          changePercent: typeof meta.regularMarketChangePercent === 'number'
-            ? meta.regularMarketChangePercent
-            : meta.chartPreviousClose
-              ? ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100
-              : 0,
-          volume: meta.regularMarketVolume || 0,
-          high52: meta.fiftyTwoWeekHigh,
-          low52: meta.fiftyTwoWeekLow,
-          timestamp: Date.now(),
-        });
-      }
-    } catch {
-      // Timeout or individual error is skipped
-    }
-  });
-
-  await Promise.allSettled(fetches);
-}
+const quoteCache = new Map(); // symbol -> { price, changePercent, volume, marketCap, pe, high52, timestamp }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -190,7 +157,14 @@ export default async function handler(req, res) {
     .map((s) => s.symbol);
 
   if (symbolsToRefresh.length > 0) {
-    await fetchLiveQuotes(symbolsToRefresh);
+    try {
+      const liveMap = await fetchBatchQuotes(symbolsToRefresh);
+      for (const [sym, quote] of liveMap.entries()) {
+        quoteCache.set(sym, quote);
+      }
+    } catch (err) {
+      console.warn('[Screener batch quote fetch failed]:', err.message);
+    }
   }
 
   // Final map with live quotes overlaid
@@ -201,6 +175,8 @@ export default async function handler(req, res) {
       ? Number(live.changePercent.toFixed(2))
       : (s.change1d ?? s.changePercent ?? 0);
     const volume = live && live.volume ? live.volume : s.volume;
+    const marketCap = live && live.marketCap ? live.marketCap : s.marketCap;
+    const pe = live && live.pe ? live.pe : s.pe;
     const dist52wHigh = live && live.high52
       ? Number((((price - live.high52) / live.high52) * 100).toFixed(1))
       : s.dist52wHigh;
@@ -211,6 +187,8 @@ export default async function handler(req, res) {
       price: Number(price.toFixed(2)),
       changePercent: change,
       change1d: change,
+      marketCap,
+      pe,
       volume,
       dist52wHigh,
       currency: isIndian ? 'INR' : 'USD',

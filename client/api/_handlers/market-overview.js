@@ -99,16 +99,16 @@ function getIndiaMarketStatus(date = new Date()) {
 }
 
 const INDICES = [
-  { id: 'sp500', symbol: '^GSPC', name: 'S&P 500', market: 'US', defaultPrice: 5880.5, defaultChange: 24.3, defaultPercent: 0.41 },
-  { id: 'nasdaq', symbol: '^IXIC', name: 'Nasdaq 100', market: 'US', defaultPrice: 20680.2, defaultChange: 142.8, defaultPercent: 0.69 },
-  { id: 'dow', symbol: '^DJI', name: 'Dow Jones', market: 'US', defaultPrice: 43720.0, defaultChange: -52.4, defaultPercent: -0.12 },
-  { id: 'russell', symbol: '^RUT', name: 'Russell 2000', market: 'US', defaultPrice: 2340.5, defaultChange: 18.2, defaultPercent: 0.78 },
-  { id: 'vix', symbol: '^VIX', name: 'VIX', market: 'US', defaultPrice: 14.85, defaultChange: -0.65, defaultPercent: -4.19 },
-  { id: 'nifty50', symbol: '^NSEI', name: 'Nifty 50', market: 'India', defaultPrice: 24200.5, defaultChange: 110.2, defaultPercent: 0.46 },
-  { id: 'sensex', symbol: '^BSESN', name: 'Sensex', market: 'India', defaultPrice: 79800.0, defaultChange: 350.5, defaultPercent: 0.44 },
-  { id: 'banknifty', symbol: '^NSEBANK', name: 'Bank Nifty', market: 'India', defaultPrice: 52150.0, defaultChange: -85.0, defaultPercent: -0.16 },
-  { id: 'indiavix', symbol: '^INDIAVIX', name: 'India VIX', market: 'India', defaultPrice: 13.92, defaultChange: -0.42, defaultPercent: -2.93 },
-  { id: 'usdinr', symbol: 'INR=X', name: 'USD / INR', market: 'FX', defaultPrice: 84.42, defaultChange: 0.05, defaultPercent: 0.06 },
+  { id: 'sp500', symbol: '^GSPC', name: 'S&P 500', market: 'US', defaultPrice: 7520.5, defaultChange: 24.3, defaultPercent: 0.32 },
+  { id: 'nasdaq', symbol: '^IXIC', name: 'Nasdaq 100', market: 'US', defaultPrice: 25065.0, defaultChange: 142.8, defaultPercent: 0.57 },
+  { id: 'dow', symbol: '^DJI', name: 'Dow Jones', market: 'US', defaultPrice: 52230.0, defaultChange: -52.4, defaultPercent: -0.10 },
+  { id: 'russell', symbol: '^RUT', name: 'Russell 2000', market: 'US', defaultPrice: 2821.0, defaultChange: 18.2, defaultPercent: 0.65 },
+  { id: 'vix', symbol: '^VIX', name: 'VIX', market: 'US', defaultPrice: 18.45, defaultChange: -0.65, defaultPercent: -3.40 },
+  { id: 'nifty50', symbol: '^NSEI', name: 'Nifty 50', market: 'India', defaultPrice: 25255.0, defaultChange: 110.2, defaultPercent: 0.44 },
+  { id: 'sensex', symbol: '^BSESN', name: 'Sensex', market: 'India', defaultPrice: 81879.0, defaultChange: 350.5, defaultPercent: 0.43 },
+  { id: 'banknifty', symbol: '^NSEBANK', name: 'Bank Nifty', market: 'India', defaultPrice: 60792.0, defaultChange: -85.0, defaultPercent: -0.14 },
+  { id: 'indiavix', symbol: '^INDIAVIX', name: 'India VIX', market: 'India', defaultPrice: 17.55, defaultChange: -0.42, defaultPercent: -2.34 },
+  { id: 'usdinr', symbol: 'INR=X', name: 'USD / INR', market: 'FX', defaultPrice: 93.68, defaultChange: -0.84, defaultPercent: -0.25 },
 ];
 
 export default async function handler(req, res) {
@@ -119,9 +119,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const results = [];
-
-  for (const item of INDICES) {
+  const fetchPromises = INDICES.map(async (item) => {
     let price = item.defaultPrice;
     let change = item.defaultChange;
     let changePercent = item.defaultPercent;
@@ -130,7 +128,7 @@ export default async function handler(req, res) {
     try {
       const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.symbol)}?interval=15m&range=1d`;
       const resp = await axios.get(url, {
-        timeout: 3000,
+        timeout: 4000,
         headers: { 'User-Agent': 'Mozilla/5.0' },
       });
       const meta = resp.data?.chart?.result?.[0]?.meta;
@@ -147,19 +145,15 @@ export default async function handler(req, res) {
         sparkline = quotes.close.filter((c) => c !== null && c !== undefined).slice(-12);
       }
     } catch {
-      // Ignore
+      // Graceful fallback to default values
     }
 
+    // Clean flat fallback line if no intraday points were returned (markets closed/weekend)
     if (sparkline.length === 0) {
-      let cur = price * 0.99;
-      for (let i = 0; i < 12; i++) {
-        cur += (Math.random() - 0.48) * (price * 0.003);
-        sparkline.push(Number(cur.toFixed(2)));
-      }
-      sparkline.push(price);
+      sparkline = [price, price];
     }
 
-    results.push({
+    return {
       id: item.id,
       symbol: item.symbol,
       name: item.name,
@@ -168,8 +162,24 @@ export default async function handler(req, res) {
       change,
       changePercent,
       sparkline,
-    });
-  }
+    };
+  });
+
+  const settled = await Promise.allSettled(fetchPromises);
+  const results = settled.map((r, i) => {
+    if (r.status === 'fulfilled') return r.value;
+    const item = INDICES[i];
+    return {
+      id: item.id,
+      symbol: item.symbol,
+      name: item.name,
+      market: item.market,
+      price: item.defaultPrice,
+      change: item.defaultChange,
+      changePercent: item.defaultPercent,
+      sparkline: [item.defaultPrice, item.defaultPrice],
+    };
+  });
 
   return res.status(200).json({
     success: true,

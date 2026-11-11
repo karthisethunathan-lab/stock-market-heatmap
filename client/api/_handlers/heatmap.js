@@ -1,4 +1,5 @@
 import { loadUniverse } from './loadUniverse.js';
+import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = {
@@ -42,38 +43,16 @@ function getMarketStatus(market) {
   }
 }
 
-async function fetchLiveQuotes(symbols) {
+async function updateUniverseLiveQuotes(symbols) {
   if (!symbols || symbols.length === 0) return;
-  const fetches = symbols.map(async (s) => {
-    try {
-      const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=1d&range=1d`;
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0' },
-        signal: AbortSignal.timeout(2500),
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (meta && typeof meta.regularMarketPrice === 'number' && meta.regularMarketPrice > 0) {
-        quoteCache.quotes.set(s, {
-          price: meta.regularMarketPrice,
-          changePercent: typeof meta.regularMarketChangePercent === 'number'
-            ? meta.regularMarketChangePercent
-            : meta.chartPreviousClose
-              ? ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100
-              : 0,
-          volume: meta.regularMarketVolume || 0,
-          high52: meta.fiftyTwoWeekHigh,
-          low52: meta.fiftyTwoWeekLow,
-          timestamp: Date.now(),
-        });
-      }
-    } catch {
-      // Individual quote timeout or error is safely skipped
+  try {
+    const liveMap = await fetchBatchQuotes(symbols);
+    for (const [sym, quote] of liveMap.entries()) {
+      quoteCache.quotes.set(sym, quote);
     }
-  });
-
-  await Promise.allSettled(fetches);
+  } catch (err) {
+    console.warn('[Heatmap live quotes refresh failed]:', err.message);
+  }
 }
 
 export default async function handler(req, res) {
@@ -102,21 +81,15 @@ export default async function handler(req, res) {
 
     let stocks = loadUniverse(chosenMarket).map((s) => ({ ...s, currency }));
 
-    // Fetch fresh live quotes for top constituents if stale (>15 seconds)
+    // Fetch fresh live quotes for all universe constituents if stale (>20 seconds)
     const now = Date.now();
-    const isStale = (now - (quoteCache.lastUpdated[chosenMarket] || 0)) > 15000;
+    const isStale = (now - (quoteCache.lastUpdated[chosenMarket] || 0)) > 20000;
 
     if (isStale && !quoteCache.inFlight[chosenMarket]) {
       quoteCache.inFlight[chosenMarket] = true;
       try {
-        // Pick top 45 stocks by market cap representing the core market index
-        const topSymbols = stocks
-          .slice()
-          .sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0))
-          .slice(0, 45)
-          .map((s) => s.symbol);
-
-        await fetchLiveQuotes(topSymbols);
+        const allSymbols = stocks.map((s) => s.symbol);
+        await updateUniverseLiveQuotes(allSymbols);
         quoteCache.lastUpdated[chosenMarket] = Date.now();
       } finally {
         quoteCache.inFlight[chosenMarket] = false;
@@ -132,6 +105,8 @@ export default async function handler(req, res) {
           price: live.price,
           change1d: Number(live.changePercent.toFixed(2)),
           volume: live.volume || s.volume,
+          marketCap: live.marketCap || s.marketCap,
+          pe: live.pe || s.pe,
           dist52wHigh: live.high52 ? Number((((live.price - live.high52) / live.high52) * 100).toFixed(1)) : s.dist52wHigh,
           isLive: true,
         };
