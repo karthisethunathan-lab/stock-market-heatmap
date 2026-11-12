@@ -13,6 +13,11 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
   const isCrypto = quote.symbol?.includes('-USD');
   const isForex = quote.symbol?.includes('=X');
   const isCommodity = quote.symbol?.includes('=F');
+  const isIndex =
+    quote.symbol?.startsWith('^') ||
+    quote.symbol === '000001.SS' ||
+    quote.symbol === 'FTSEMIB.MI' ||
+    quote.symbol === 'DX-Y.NYB';
   const currency = isForex ? 'FX' : quote.currency || 'USD';
   const high52 = metrics?.fiftyTwoWeekHigh || quote.fiftyTwoWeekHigh;
   const low52 = metrics?.fiftyTwoWeekLow || quote.fiftyTwoWeekLow;
@@ -23,7 +28,20 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
     rangePercent = Math.min(100, Math.max(0, ((quote.price - low52) / (high52 - low52)) * 100));
   }
 
-  const stats = isCommodity
+  const stats = isIndex
+    ? [
+        { label: 'Index Open', value: formatCurrency(quote.open, currency) },
+        { label: 'Day High', value: formatCurrency(quote.dayHigh, currency) },
+        { label: 'Day Low', value: formatCurrency(quote.dayLow, currency) },
+        { label: 'Prev Close', value: formatCurrency(quote.previousClose, currency) },
+        { label: '52W High', value: high52 ? formatCurrency(high52, currency) : '--' },
+        { label: '52W Low', value: low52 ? formatCurrency(low52, currency) : '--' },
+        { label: 'Asset Class', value: 'Global Benchmark Index' },
+        { label: 'Exchange / Venue', value: quote.exchange || 'Major Global Exchange' },
+        { label: 'Index Type', value: 'Equities Benchmark' },
+        { label: 'Market Session', value: quote.marketState || 'REGULAR' },
+      ]
+    : isCommodity
     ? [
         { label: 'Contract Open', value: formatCurrency(quote.open, currency) },
         { label: 'Session High', value: formatCurrency(quote.dayHigh, currency) },

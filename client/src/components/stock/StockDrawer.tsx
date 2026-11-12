@@ -13,6 +13,7 @@ import { CryptoTokenomicsTab } from './CryptoTokenomicsTab';
 import { ForexMechanicsTab } from './ForexMechanicsTab';
 import { ForexCrossRatesTab } from './ForexCrossRatesTab';
 import { CommoditySpecsTab } from './CommoditySpecsTab';
+import { IndexMechanicsTab } from './IndexMechanicsTab';
 import { CompareModal } from './CompareModal';
 import { PriceAlertsModal } from '../alerts/PriceAlertsModal';
 import { AddHoldingModal } from '../portfolio/AddHoldingModal';
@@ -38,7 +39,8 @@ type DrawerTab =
   | 'tokenomics'
   | 'mechanics'
   | 'crossrates'
-  | 'specs';
+  | 'specs'
+  | 'index_mechanics';
 
 export const StockDrawer: React.FC = () => {
   const {
@@ -71,6 +73,13 @@ export const StockDrawer: React.FC = () => {
   const isCrypto = Boolean(selectedSymbol && selectedSymbol.includes('-USD'));
   const isForex = Boolean(selectedSymbol && selectedSymbol.includes('=X'));
   const isCommodity = Boolean(selectedSymbol && selectedSymbol.includes('=F'));
+  const isIndex = Boolean(
+    selectedSymbol &&
+      (selectedSymbol.startsWith('^') ||
+        selectedSymbol === '000001.SS' ||
+        selectedSymbol === 'FTSEMIB.MI' ||
+        selectedSymbol === 'DX-Y.NYB')
+  );
 
   // Ensure active tab is valid for current asset type
   useEffect(() => {
@@ -121,16 +130,25 @@ export const StockDrawer: React.FC = () => {
   const progress52 = high52 === low52 ? 50 : Math.max(0, Math.min(100, ((curPrice - low52) / (high52 - low52)) * 100));
 
   // Clean display symbol
-  const cleanDisplay = isForex
-    ? selectedSymbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1 / $2')
-    : isCrypto
-      ? selectedSymbol.replace('-USD', '')
-      : isCommodity
-        ? selectedSymbol.replace('=F', '')
-        : selectedSymbol.replace('.NS', '');
+  const cleanDisplay = isIndex
+    ? quote?.name || selectedSymbol.replace('^', '')
+    : isForex
+      ? selectedSymbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1 / $2')
+      : isCrypto
+        ? selectedSymbol.replace('-USD', '')
+        : isCommodity
+          ? selectedSymbol.replace('=F', '')
+          : selectedSymbol.replace('.NS', '');
 
   // Dynamic tabs according to asset class
-  const tabs: Array<{ id: DrawerTab; label: string }> = isCommodity
+  const tabs: Array<{ id: DrawerTab; label: string }> = isIndex
+    ? [
+        { id: 'overview', label: 'Overview' },
+        { id: 'index_mechanics', label: 'Benchmark Specs' },
+        { id: 'news', label: 'Global News' },
+        { id: 'peers', label: 'Regional Indices' },
+      ]
+    : isCommodity
     ? [
         { id: 'overview', label: 'Overview' },
         { id: 'specs', label: 'Contract Specs' },
@@ -193,7 +211,7 @@ export const StockDrawer: React.FC = () => {
                   {cleanDisplay}
                 </h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700">
-                  {isCrypto ? 'Crypto' : isForex ? 'Forex' : isCommodity ? 'Commodity' : quote?.exchange || (selectedSymbol.endsWith('.NS') ? 'NSE' : 'US')}
+                  {isIndex ? 'Global Index' : isCrypto ? 'Crypto' : isForex ? 'Forex' : isCommodity ? 'Commodity' : quote?.exchange || (selectedSymbol.endsWith('.NS') ? 'NSE' : 'US')}
                 </span>
               </div>
               <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
@@ -339,6 +357,9 @@ export const StockDrawer: React.FC = () => {
               <CompanyProfile profile={profile} />
             </div>
           )}
+
+          {/* Index Mechanics Tab */}
+          {activeTab === 'index_mechanics' && <IndexMechanicsTab symbol={selectedSymbol} />}
 
           {/* Crypto Tokenomics Tab */}
           {activeTab === 'tokenomics' && <CryptoTokenomicsTab symbol={selectedSymbol} />}

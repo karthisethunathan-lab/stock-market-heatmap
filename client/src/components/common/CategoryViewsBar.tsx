@@ -3,7 +3,7 @@ import { GroupByOption, SizeMetric, ColorMetric, TimeframeType } from '../../typ
 import { Layers, PieChart, Sliders } from 'lucide-react';
 
 interface CategoryViewsBarProps {
-  market: 'us' | 'in' | 'crypto' | 'forex' | 'commodities';
+  market: 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodities';
   groupBy: GroupByOption;
   onGroupByChange: (val: GroupByOption) => void;
   sizeMetric: SizeMetric;
@@ -45,8 +45,11 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
   const isCrypto = market === 'crypto';
   const isForex = market === 'forex';
   const isCommodities = market === 'commodities';
+  const isGlobal = market === 'global';
 
-  const indices = isCommodities
+  const indices = isGlobal
+    ? ['All', 'Americas', 'Europe', 'Asia-Pacific', 'Macro Benchmarks']
+    : isCommodities
     ? ['All', 'Precious Metals', 'Energy', 'Industrial Metals', 'Agriculture', 'Livestock']
     : isCrypto
     ? ['All', 'Top 10', 'Top 20', 'Layer 1', 'DeFi', 'Meme Coins', 'AI Cryptos', 'Layer 2']
@@ -70,7 +73,9 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           ]
         : ['All', 'S&P 500', 'Nasdaq-100', 'Dow 30', 'Popular ETFs'];
 
-  const sectors = isCommodities
+  const sectors = isGlobal
+    ? ['All', 'Americas', 'Europe', 'Asia-Pacific', 'Macro & Volatility']
+    : isCommodities
     ? [
         'All',
         'Precious Metals',
@@ -129,7 +134,17 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
             'ETFs',
           ];
 
-  const presets = isCommodities
+  const presets = isGlobal
+    ? [
+        { id: '', label: 'All Global Indices' },
+        { id: 'gainers', label: '🔥 Top Gainers' },
+        { id: 'losers', label: '❄️ Top Losers' },
+        { id: 'americas', label: '🌎 Americas' },
+        { id: 'europe', label: '🌍 Europe' },
+        { id: 'asia', label: '🌏 Asia-Pacific' },
+        { id: 'near-52w-high', label: '🏔️ Near 52W High' },
+      ]
+    : isCommodities
     ? [
         { id: '', label: 'All Commodities' },
         { id: 'gainers', label: '🔥 Top Gainers' },
@@ -191,7 +206,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
 
         {/* Sector Selector Dropdown */}
         <div className="flex items-center gap-1.5 ml-2">
-          <span className="text-slate-400">{isCrypto ? 'Category:' : 'Sector:'}</span>
+          <span className="text-slate-400">{isGlobal ? 'Region:' : isCrypto ? 'Category:' : 'Sector:'}</span>
           <select
             value={selectedSector}
             onChange={(e) => onSectorChange(e.target.value)}
@@ -221,8 +236,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           </select>
         </div>
 
-        {/* Cap Bucket Filter (hide for forex & commodities) */}
-        {!isForex && !isCommodities && (
+        {/* Cap Bucket Filter (hide for forex, commodities & global) */}
+        {!isForex && !isCommodities && !isGlobal && (
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">Cap:</span>
             <select
@@ -286,7 +301,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           >
             <option value="change">% Change ({timeframe.toUpperCase()})</option>
             <option value="volume">Volume vs Avg</option>
-            {!isCrypto && !isForex && !isCommodities && <option value="pe">P/E Ratio</option>}
+            {!isCrypto && !isForex && !isCommodities && !isGlobal && <option value="pe">P/E Ratio</option>}
             <option value="dist52whigh">Distance from 52W High</option>
           </select>
         </div>

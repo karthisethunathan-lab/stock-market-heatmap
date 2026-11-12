@@ -25,6 +25,7 @@ export default async function handler(req, res) {
         q.quoteType === 'CRYPTOCURRENCY' ||
         q.quoteType === 'CURRENCY' ||
         q.quoteType === 'FUTURE' ||
+        q.quoteType === 'INDEX' ||
         !q.quoteType
       ))
       .map((q) => {
@@ -32,11 +33,12 @@ export default async function handler(req, res) {
         const isCrypto = q.quoteType === 'CRYPTOCURRENCY' || q.symbol.includes('-USD');
         const isForex = q.quoteType === 'CURRENCY' || q.symbol.includes('=X');
         const isCommodity = q.quoteType === 'FUTURE' || q.symbol.includes('=F');
+        const isIndex = q.quoteType === 'INDEX' || q.symbol.startsWith('^');
         return {
           symbol: q.symbol,
           name: q.shortname || q.longname || q.symbol,
-          exchange: isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : isCommodity ? 'COMMODITY' : (q.exchange || (isIndia ? 'NSE' : 'US')),
-          type: q.quoteType || (isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : isCommodity ? 'FUTURE' : 'EQUITY'),
+          exchange: isIndex ? 'INDEX' : isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : isCommodity ? 'COMMODITY' : (q.exchange || (isIndia ? 'NSE' : 'US')),
+          type: isIndex ? 'INDEX' : q.quoteType || (isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : isCommodity ? 'FUTURE' : 'EQUITY'),
           currency: isIndia ? 'INR' : 'USD',
         };
       });

@@ -13,6 +13,7 @@ import {
   Coins,
   ArrowLeftRight,
   Package,
+  Globe,
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 
@@ -43,6 +44,7 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navItems: Array<{ id: TopLevelTab; label: string; icon: React.ReactNode; badge?: number }> = [
+    { id: 'global', label: 'Global Markets', icon: <Globe className="w-4 h-4 text-sky-400" /> },
     { id: 'us', label: 'US Stocks', icon: <TrendingUp className="w-4 h-4" /> },
     { id: 'in', label: 'Indian Stocks', icon: <Flame className="w-4 h-4 text-orange-400" /> },
     { id: 'crypto', label: 'Crypto', icon: <Coins className="w-4 h-4 text-amber-400" /> },

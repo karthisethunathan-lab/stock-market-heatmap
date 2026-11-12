@@ -19,6 +19,7 @@ const MainLayout: React.FC = () => {
       <MarketOverviewStrip onSelectStock={openStock} />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        {activeTab === 'global' && <HeatmapView market="global" />}
         {activeTab === 'us' && <HeatmapView market="us" />}
         {activeTab === 'in' && <HeatmapView market="in" />}
         {activeTab === 'crypto' && <HeatmapView market="crypto" />}

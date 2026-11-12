@@ -32,6 +32,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 function getInitialTabFromURL(): TopLevelTab {
   if (typeof window === 'undefined') return 'us';
   const path = window.location.pathname.toLowerCase();
+  if (path.includes('/global') || path.includes('/indices') || path.includes('/world')) return 'global';
   if (path.includes('/in') || path.includes('/india')) return 'in';
   if (path.includes('/crypto')) return 'crypto';
   if (path.includes('/forex') || path.includes('/fx')) return 'forex';

@@ -4,13 +4,16 @@ import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = {
   quotes: new Map(), // symbol -> { price, changePercent, volume, high52, low52, timestamp }
-  lastUpdated: { us: 0, in: 0, crypto: 0, forex: 0, commodities: 0 },
-  inFlight: { us: false, in: false, crypto: false, forex: false, commodities: false },
+  lastUpdated: { us: 0, in: 0, crypto: 0, forex: 0, commodities: 0, global: 0 },
+  inFlight: { us: false, in: false, crypto: false, forex: false, commodities: false, global: false },
 };
 
 function getMarketStatus(market) {
   if (market === 'crypto') {
     return { isOpen: true, state: 'REGULAR', desc: 'Crypto 24/7 Global Live' };
+  }
+  if (market === 'global') {
+    return { isOpen: true, state: 'REGULAR', desc: 'Global Markets 24/5 Benchmarks' };
   }
 
   const tz = market === 'in' ? 'Asia/Kolkata' : 'America/New_York';
@@ -105,7 +108,9 @@ export default async function handler(req, res) {
           ? 'forex'
           : (rawMarket === 'commodities' || rawMarket === 'commodity')
             ? 'commodities'
-            : 'us';
+            : (rawMarket === 'global' || rawMarket === 'indices' || rawMarket === 'world')
+              ? 'global'
+              : 'us';
 
     const defaultCurrency = chosenMarket === 'in' ? 'INR' : 'USD';
     const marketStatus = getMarketStatus(chosenMarket);

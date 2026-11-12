@@ -19,6 +19,7 @@ import inUniverseData from '../data/universe-in.json';
 import cryptoUniverseData from '../data/universe-crypto.json';
 import forexUniverseData from '../data/universe-forex.json';
 import commoditiesUniverseData from '../data/universe-commodities.json';
+import globalUniverseData from '../data/universe-global.json';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL
   ? `${(import.meta as any).env.VITE_API_URL}/api`
@@ -248,6 +249,7 @@ export async function searchStocks(query: string): Promise<SearchResult[]> {
     ...(cryptoUniverseData as any[]),
     ...(forexUniverseData as any[]),
     ...(commoditiesUniverseData as any[]),
+    ...(globalUniverseData as any[]),
   ];
   return all
     .filter((s: any) => s.symbol.toLowerCase().includes(q) || s.name.toLowerCase().includes(q))
@@ -257,11 +259,12 @@ export async function searchStocks(query: string): Promise<SearchResult[]> {
       const isCrypto = s.symbol.includes('-USD');
       const isForex = s.symbol.includes('=X');
       const isCommodity = s.symbol.includes('=F');
+      const isIndex = s.symbol.startsWith('^') || s.symbol === '000001.SS' || s.symbol === 'FTSEMIB.MI' || s.symbol === 'DX-Y.NYB';
       return {
         symbol: s.symbol,
         name: s.name,
-        exchange: isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : isCommodity ? 'COMMODITY' : (isIndia ? 'NSE' : 'US'),
-        type: isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : isCommodity ? 'COMMODITY' : 'EQUITY',
+        exchange: isIndex ? 'INDEX' : isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : isCommodity ? 'COMMODITY' : (isIndia ? 'NSE' : 'US'),
+        type: isIndex ? 'INDEX' : isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : isCommodity ? 'COMMODITY' : 'EQUITY',
         currency: s.currency || (isIndia ? 'INR' : 'USD'),
       };
     });

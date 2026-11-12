@@ -8,9 +8,29 @@ async function fetchRssNews(symbol) {
     const isCrypto = symbol.includes('-USD');
     const isForex = symbol.includes('=X');
     const isCommodity = symbol.includes('=F');
+    const isIndex = symbol.startsWith('^') || symbol === '000001.SS' || symbol === 'FTSEMIB.MI' || symbol === 'DX-Y.NYB';
 
     let query = `${symbol} stock`;
-    if (isIndia) {
+    if (isIndex) {
+      const indexMap = {
+        '^GSPC': 'S&P 500 stock market index Wall Street',
+        '^NDX': 'Nasdaq 100 tech stocks rally market',
+        '^DJI': 'Dow Jones Industrial Average index',
+        '^RUT': 'Russell 2000 small cap index',
+        '^FTSE': 'FTSE 100 London stock market',
+        '^GDAXI': 'DAX 40 Germany stock market',
+        '^FCHI': 'CAC 40 Paris stock market',
+        '^STOXX50E': 'Euro Stoxx 50 European markets',
+        '^N225': 'Nikkei 225 Tokyo stock market',
+        '^HSI': 'Hang Seng Hong Kong stock index',
+        '000001.SS': 'Shanghai Composite China stocks',
+        '^NSEI': 'Nifty 50 Indian share market',
+        '^BSESN': 'BSE Sensex Indian stock market',
+        '^VIX': 'VIX volatility index Wall Street fear',
+        'DX-Y.NYB': 'US Dollar Index DXY forex market',
+      };
+      query = indexMap[symbol] || `${symbol} world stock market index`;
+    } else if (isIndia) {
       query = `${symbol.replace(/\.(NS|BO)$/i, '')} share price NSE`;
     } else if (isCrypto) {
       const coin = symbol.replace('-USD', '');

@@ -1,11 +1,11 @@
-export type MarketType = 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'watchlist';
+export type MarketType = 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'watchlist';
 export type TimeframeType = '1d' | '1w' | '1m' | '3m' | '6m' | 'ytd' | '1y';
 export type ChartTimeframe = '1D' | '1W' | '1M' | '6M' | '1Y' | '5Y';
 export type ChartType = 'area' | 'candle';
 export type ColorMode = 'standard' | 'colorblind';
 export type ThemeMode = 'dark' | 'light';
 
-export type TopLevelTab = 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'portfolios' | 'watchlist' | 'screener';
+export type TopLevelTab = 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'portfolios' | 'watchlist' | 'screener';
 export type GroupByOption = 'sector' | 'industry' | 'index' | 'capbucket';
 export type SizeMetric = 'marketcap' | 'volume' | 'equal';
 export type ColorMetric = 'change' | 'volume' | 'pe' | 'dist52whigh';

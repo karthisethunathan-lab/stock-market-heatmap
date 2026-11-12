@@ -7,6 +7,7 @@ let inUniverse = null;
 let cryptoUniverse = null;
 let forexUniverse = null;
 let commoditiesUniverse = null;
+let globalUniverse = null;
 
 export function loadUniverse(market) {
   try {
@@ -15,12 +16,14 @@ export function loadUniverse(market) {
     const isCrypto = m === 'crypto' || m === 'cryptocurrency';
     const isForex = m === 'forex' || m === 'fx';
     const isCommodities = m === 'commodities' || m === 'commodity';
+    const isGlobal = m === 'global' || m === 'indices' || m === 'world';
 
     if (isIndia && inUniverse) return inUniverse;
     if (isCrypto && cryptoUniverse) return cryptoUniverse;
     if (isForex && forexUniverse) return forexUniverse;
     if (isCommodities && commoditiesUniverse) return commoditiesUniverse;
-    if (!isIndia && !isCrypto && !isForex && !isCommodities && usUniverse) return usUniverse;
+    if (isGlobal && globalUniverse) return globalUniverse;
+    if (!isIndia && !isCrypto && !isForex && !isCommodities && !isGlobal && usUniverse) return usUniverse;
 
     const currentDir = path.dirname(fileURLToPath(import.meta.url));
     const filename = isIndia
@@ -31,7 +34,9 @@ export function loadUniverse(market) {
           ? 'universe-forex.json'
           : isCommodities
             ? 'universe-commodities.json'
-            : 'universe-us.json';
+            : isGlobal
+              ? 'universe-global.json'
+              : 'universe-us.json';
 
     // Candidate paths in order of preference
     const candidates = [
@@ -48,6 +53,7 @@ export function loadUniverse(market) {
         else if (isCrypto) cryptoUniverse = parsed;
         else if (isForex) forexUniverse = parsed;
         else if (isCommodities) commoditiesUniverse = parsed;
+        else if (isGlobal) globalUniverse = parsed;
         else usUniverse = parsed;
         return parsed;
       }
