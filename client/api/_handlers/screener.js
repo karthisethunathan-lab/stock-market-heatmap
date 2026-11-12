@@ -4,6 +4,15 @@ import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = new Map(); // symbol -> { price, changePercent, volume, marketCap, pe, high52, timestamp }
 
+function formatPrecisionPrice(price, symbol, market) {
+  if (typeof price !== 'number' || isNaN(price)) return 0;
+  const isForex = symbol?.includes('=X') || market === 'forex' || market === 'fx';
+  if (price < 0.0001) return Number(price.toFixed(6));
+  if (price < 0.01) return Number(price.toFixed(5));
+  if (price < 1 || isForex) return Number(price.toFixed(4));
+  return Number(price.toFixed(2));
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -35,14 +44,21 @@ export default async function handler(req, res) {
     limit = 20,
   } = req.query;
 
+  const m = market.toLowerCase();
   let pool = [];
-  if (market === 'all') {
+  if (m === 'all') {
     pool = [
       ...loadUniverse('us').map((s) => ({ ...s, currency: 'USD' })),
       ...loadUniverse('in').map((s) => ({ ...s, currency: 'INR' })),
+      ...loadUniverse('crypto').map((s) => ({ ...s, currency: 'USD' })),
+      ...loadUniverse('forex').map((s) => ({ ...s, currency: s.currency || 'USD' })),
     ];
-  } else if (market === 'in' || market === 'india') {
+  } else if (m === 'in' || m === 'india') {
     pool = loadUniverse('in').map((s) => ({ ...s, currency: 'INR' }));
+  } else if (m === 'crypto' || m === 'cryptocurrency') {
+    pool = loadUniverse('crypto').map((s) => ({ ...s, currency: 'USD' }));
+  } else if (m === 'forex' || m === 'fx') {
+    pool = loadUniverse('forex').map((s) => ({ ...s, currency: s.currency || 'USD' }));
   } else {
     pool = loadUniverse('us').map((s) => ({ ...s, currency: 'USD' }));
   }
@@ -58,16 +74,16 @@ export default async function handler(req, res) {
     const dist52wHigh = live && live.high52
       ? Number((((price - live.high52) / live.high52) * 100).toFixed(1))
       : s.dist52wHigh;
-    const isIndian = s.symbol.endsWith('.NS') || market === 'in' || market === 'india';
+    const currency = s.currency || (s.symbol.endsWith('.NS') ? 'INR' : 'USD');
 
     return {
       ...s,
-      price: Number(price.toFixed(2)),
+      price: formatPrecisionPrice(price, s.symbol, m),
       change1d: chg,
       changePercent: chg,
       volume,
       dist52wHigh,
-      currency: isIndian ? 'INR' : 'USD',
+      currency,
     };
   });
 
@@ -180,18 +196,18 @@ export default async function handler(req, res) {
     const dist52wHigh = live && live.high52
       ? Number((((price - live.high52) / live.high52) * 100).toFixed(1))
       : s.dist52wHigh;
-    const isIndian = s.symbol.endsWith('.NS') || market === 'in' || market === 'india';
+    const currency = s.currency || (s.symbol.endsWith('.NS') ? 'INR' : 'USD');
 
     return {
       ...s,
-      price: Number(price.toFixed(2)),
+      price: formatPrecisionPrice(price, s.symbol, m),
       changePercent: change,
       change1d: change,
       marketCap,
       pe,
       volume,
       dist52wHigh,
-      currency: isIndian ? 'INR' : 'USD',
+      currency,
     };
   });
 

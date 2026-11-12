@@ -10,7 +10,9 @@ interface KeyStatsGridProps {
 export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) => {
   if (!quote) return null;
 
-  const currency = quote.currency || 'USD';
+  const isCrypto = quote.symbol?.includes('-USD');
+  const isForex = quote.symbol?.includes('=X');
+  const currency = isForex ? 'FX' : quote.currency || 'USD';
   const high52 = metrics?.fiftyTwoWeekHigh || quote.fiftyTwoWeekHigh;
   const low52 = metrics?.fiftyTwoWeekLow || quote.fiftyTwoWeekLow;
 
@@ -20,18 +22,44 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
     rangePercent = Math.min(100, Math.max(0, ((quote.price - low52) / (high52 - low52)) * 100));
   }
 
-  const stats = [
-    { label: 'Open', value: formatCurrency(quote.open, currency) },
-    { label: 'Day High', value: formatCurrency(quote.dayHigh, currency) },
-    { label: 'Day Low', value: formatCurrency(quote.dayLow, currency) },
-    { label: 'Prev Close', value: formatCurrency(quote.previousClose, currency) },
-    { label: 'Volume', value: formatCompactNumber(quote.volume) },
-    { label: 'Market Cap', value: metrics?.marketCap ? formatCompactNumber(metrics.marketCap, currency) : 'N/A' },
-    { label: 'P/E Ratio', value: metrics?.peRatio ? metrics.peRatio.toFixed(2) : 'N/A' },
-    { label: 'EPS (TTM)', value: metrics?.eps ? formatCurrency(metrics.eps, currency) : 'N/A' },
-    { label: 'Dividend Yield', value: metrics?.dividendYield ? `${metrics.dividendYield.toFixed(2)}%` : 'N/A' },
-    { label: 'Beta', value: metrics?.beta ? metrics.beta.toFixed(2) : 'N/A' },
-  ];
+  const stats = isCrypto
+    ? [
+        { label: 'Open', value: formatCurrency(quote.open, currency) },
+        { label: '24h High', value: formatCurrency(quote.dayHigh, currency) },
+        { label: '24h Low', value: formatCurrency(quote.dayLow, currency) },
+        { label: 'Prev Close', value: formatCurrency(quote.previousClose, currency) },
+        { label: '24h Volume', value: formatCompactNumber(quote.volume, 'USD') },
+        { label: '52W High', value: high52 ? formatCurrency(high52, currency) : '--' },
+        { label: '52W Low', value: low52 ? formatCurrency(low52, currency) : '--' },
+        { label: 'Asset Class', value: 'Cryptocurrency' },
+        { label: 'Settlement', value: 'Continuous' },
+        { label: 'Trading Hours', value: '24/7 Live' },
+      ]
+    : isForex
+      ? [
+          { label: 'Open Rate', value: formatCurrency(quote.open, 'FX') },
+          { label: 'Day High', value: formatCurrency(quote.dayHigh, 'FX') },
+          { label: 'Day Low', value: formatCurrency(quote.dayLow, 'FX') },
+          { label: 'Prev Close', value: formatCurrency(quote.previousClose, 'FX') },
+          { label: '52W High', value: high52 ? formatCurrency(high52, 'FX') : '--' },
+          { label: '52W Low', value: low52 ? formatCurrency(low52, 'FX') : '--' },
+          { label: 'Asset Class', value: 'Foreign Exchange' },
+          { label: 'Spread Type', value: 'Floating' },
+          { label: 'Market Window', value: '24/5 Global' },
+          { label: 'Exchange', value: 'Interbank' },
+        ]
+      : [
+          { label: 'Open', value: formatCurrency(quote.open, currency) },
+          { label: 'Day High', value: formatCurrency(quote.dayHigh, currency) },
+          { label: 'Day Low', value: formatCurrency(quote.dayLow, currency) },
+          { label: 'Prev Close', value: formatCurrency(quote.previousClose, currency) },
+          { label: 'Volume', value: formatCompactNumber(quote.volume) },
+          { label: 'Market Cap', value: metrics?.marketCap ? formatCompactNumber(metrics.marketCap, currency) : 'N/A' },
+          { label: 'P/E Ratio', value: metrics?.peRatio ? metrics.peRatio.toFixed(2) : 'N/A' },
+          { label: 'EPS (TTM)', value: metrics?.eps ? formatCurrency(metrics.eps, currency) : 'N/A' },
+          { label: 'Dividend Yield', value: metrics?.dividendYield ? `${metrics.dividendYield.toFixed(2)}%` : 'N/A' },
+          { label: 'Beta', value: metrics?.beta ? metrics.beta.toFixed(2) : 'N/A' },
+        ];
 
   return (
     <div className="flex flex-col gap-4 p-4 bg-slate-900/80 rounded-xl border border-slate-800">

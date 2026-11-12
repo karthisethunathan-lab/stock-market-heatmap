@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+function roundPrice(val, isForex) {
+  if (val === null || val === undefined || isNaN(val)) return 0;
+  if (val < 0.0001) return Number(val.toFixed(6));
+  if (val < 0.01) return Number(val.toFixed(5));
+  if (val < 1 || isForex) return Number(val.toFixed(4));
+  return Number(val.toFixed(2));
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -9,6 +17,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const symbol = (req.query.symbol || 'AAPL').toUpperCase().trim();
+  const isForex = symbol.includes('=X');
 
   try {
     const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`;
@@ -35,19 +44,19 @@ export default async function handler(req, res) {
     const quoteData = {
       symbol: meta.symbol || symbol,
       name: meta.longName || meta.shortName || symbol,
-      price: Number(currentPrice.toFixed(2)),
-      change: Number(change.toFixed(2)),
+      price: roundPrice(currentPrice, isForex),
+      change: roundPrice(change, isForex),
       changePercent: Number(changePercent.toFixed(2)),
-      previousClose: Number(prevClose.toFixed(2)),
-      open: Number((quotes?.open ? quotes.open[quotes.open.length - 1] : meta.regularMarketPrice).toFixed(2)),
-      dayHigh: Number((meta.regularMarketDayHigh || (quotes?.high ? Math.max(...quotes.high.filter(Boolean)) : currentPrice)).toFixed(2)),
-      dayLow: Number((meta.regularMarketDayLow || (quotes?.low ? Math.min(...quotes.low.filter(Boolean)) : currentPrice)).toFixed(2)),
+      previousClose: roundPrice(prevClose, isForex),
+      open: roundPrice(quotes?.open ? quotes.open[quotes.open.length - 1] : meta.regularMarketPrice, isForex),
+      dayHigh: roundPrice(meta.regularMarketDayHigh || (quotes?.high ? Math.max(...quotes.high.filter(Boolean)) : currentPrice), isForex),
+      dayLow: roundPrice(meta.regularMarketDayLow || (quotes?.low ? Math.min(...quotes.low.filter(Boolean)) : currentPrice), isForex),
       volume: meta.regularMarketVolume || (quotes?.volume ? quotes.volume[quotes.volume.length - 1] : 0),
-      fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh ? Number(meta.fiftyTwoWeekHigh.toFixed(2)) : null,
-      fiftyTwoWeekLow: meta.fiftyTwoWeekLow ? Number(meta.fiftyTwoWeekLow.toFixed(2)) : null,
+      fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh ? roundPrice(meta.fiftyTwoWeekHigh, isForex) : null,
+      fiftyTwoWeekLow: meta.fiftyTwoWeekLow ? roundPrice(meta.fiftyTwoWeekLow, isForex) : null,
       currency: meta.currency || (symbol.endsWith('.NS') ? 'INR' : 'USD'),
-      exchange: meta.exchangeName || (symbol.endsWith('.NS') ? 'NSE' : 'US'),
-      marketState: meta.currentTradingPeriod?.regular ? 'REGULAR' : 'CLOSED',
+      exchange: meta.exchangeName || (symbol.endsWith('.NS') ? 'NSE' : symbol.includes('-USD') ? 'CRYPTO' : isForex ? 'CCY' : 'US'),
+      marketState: meta.currentTradingPeriod?.regular ? 'REGULAR' : (symbol.includes('-USD') ? 'REGULAR' : 'CLOSED'),
       lastUpdated: new Date().toISOString(),
     };
 

@@ -21,6 +21,8 @@ const MainLayout: React.FC = () => {
       <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
         {activeTab === 'us' && <HeatmapView market="us" />}
         {activeTab === 'in' && <HeatmapView market="in" />}
+        {activeTab === 'crypto' && <HeatmapView market="crypto" />}
+        {activeTab === 'forex' && <HeatmapView market="forex" />}
         {activeTab === 'portfolios' && <PortfolioPage />}
         {activeTab === 'watchlist' && <WatchlistView />}
         {activeTab === 'screener' && <ScreenerView onSelectStock={openStock} />}

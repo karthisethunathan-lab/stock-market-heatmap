@@ -73,7 +73,7 @@ function getIndiaMarketStatus(date = new Date()) {
 
   if (!isWeekend) {
     if (total >= 9 * 60 && total < 9 * 60 + 15) {
-      status = 'PRE-MARKET';
+      status = 'PRE-OPEN';
       badgeColor = 'amber';
       sessionLabel = 'Pre-Open';
     } else if (total >= 9 * 60 + 15 && total < 15 * 60 + 30) {
@@ -81,9 +81,9 @@ function getIndiaMarketStatus(date = new Date()) {
       badgeColor = 'green';
       sessionLabel = 'Market Open';
     } else if (total >= 15 * 60 + 30 && total < 16 * 60) {
-      status = 'POST-MARKET';
+      status = 'POST-CLOSING';
       badgeColor = 'blue';
-      sessionLabel = 'Post-Close';
+      sessionLabel = 'Post Closing';
     }
   }
 
@@ -104,11 +104,14 @@ const INDICES = [
   { id: 'dow', symbol: '^DJI', name: 'Dow Jones', market: 'US', defaultPrice: 52230.0, defaultChange: -52.4, defaultPercent: -0.10 },
   { id: 'russell', symbol: '^RUT', name: 'Russell 2000', market: 'US', defaultPrice: 2821.0, defaultChange: 18.2, defaultPercent: 0.65 },
   { id: 'vix', symbol: '^VIX', name: 'VIX', market: 'US', defaultPrice: 18.45, defaultChange: -0.65, defaultPercent: -3.40 },
+  { id: 'btc', symbol: 'BTC-USD', name: 'Bitcoin', market: 'Crypto', defaultPrice: 73450.0, defaultChange: 450.0, defaultPercent: 0.61 },
+  { id: 'eth', symbol: 'ETH-USD', name: 'Ethereum', market: 'Crypto', defaultPrice: 2050.0, defaultChange: 15.0, defaultPercent: 0.73 },
   { id: 'nifty50', symbol: '^NSEI', name: 'Nifty 50', market: 'India', defaultPrice: 25255.0, defaultChange: 110.2, defaultPercent: 0.44 },
   { id: 'sensex', symbol: '^BSESN', name: 'Sensex', market: 'India', defaultPrice: 81879.0, defaultChange: 350.5, defaultPercent: 0.43 },
   { id: 'banknifty', symbol: '^NSEBANK', name: 'Bank Nifty', market: 'India', defaultPrice: 60792.0, defaultChange: -85.0, defaultPercent: -0.14 },
   { id: 'indiavix', symbol: '^INDIAVIX', name: 'India VIX', market: 'India', defaultPrice: 17.55, defaultChange: -0.42, defaultPercent: -2.34 },
-  { id: 'usdinr', symbol: 'INR=X', name: 'USD / INR', market: 'FX', defaultPrice: 93.68, defaultChange: -0.84, defaultPercent: -0.25 },
+  { id: 'usdinr', symbol: 'INR=X', name: 'USD / INR', market: 'FX', defaultPrice: 93.92, defaultChange: -0.15, defaultPercent: -0.16 },
+  { id: 'eurusd', symbol: 'EURUSD=X', name: 'EUR / USD', market: 'FX', defaultPrice: 1.108, defaultChange: 0.001, defaultPercent: 0.09 },
 ];
 
 export default async function handler(req, res) {
@@ -137,7 +140,8 @@ export default async function handler(req, res) {
       if (meta?.regularMarketPrice) {
         price = meta.regularMarketPrice;
         const prev = meta.chartPreviousClose || meta.previousClose || price;
-        change = Number((price - prev).toFixed(2));
+        const isFx = item.market === 'FX';
+        change = Number((price - prev).toFixed(isFx ? 4 : 2));
         changePercent = Number((meta.regularMarketChangePercent ?? ((change / prev) * 100)).toFixed(2));
       }
 
@@ -148,17 +152,17 @@ export default async function handler(req, res) {
       // Graceful fallback to default values
     }
 
-    // Clean flat fallback line if no intraday points were returned (markets closed/weekend)
     if (sparkline.length === 0) {
       sparkline = [price, price];
     }
 
+    const isFx = item.market === 'FX';
     return {
       id: item.id,
       symbol: item.symbol,
       name: item.name,
       market: item.market,
-      price: Number(price.toFixed(2)),
+      price: isFx ? Number(price.toFixed(4)) : Number(price.toFixed(2)),
       change,
       changePercent,
       sparkline,
@@ -184,11 +188,8 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     data: {
+      markets: [getUSMarketStatus(), getIndiaMarketStatus()],
       indices: results,
-      markets: {
-        us: getUSMarketStatus(),
-        india: getIndiaMarketStatus(),
-      },
       lastUpdated: new Date().toISOString(),
     },
   });

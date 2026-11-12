@@ -9,7 +9,7 @@ import { Skeleton } from '../common/Skeleton';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface HeatmapViewProps {
-  market: 'us' | 'in';
+  market: 'us' | 'in' | 'crypto' | 'forex';
 }
 
 export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {

@@ -33,6 +33,8 @@ function getInitialTabFromURL(): TopLevelTab {
   if (typeof window === 'undefined') return 'us';
   const path = window.location.pathname.toLowerCase();
   if (path.includes('/in') || path.includes('/india')) return 'in';
+  if (path.includes('/crypto')) return 'crypto';
+  if (path.includes('/forex') || path.includes('/fx')) return 'forex';
   if (path.includes('/portfolio')) return 'portfolios';
   if (path.includes('/watchlist')) return 'watchlist';
   if (path.includes('/screener')) return 'screener';

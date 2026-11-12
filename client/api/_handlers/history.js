@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+function roundCandlePrice(val, isForex) {
+  if (val === null || val === undefined || isNaN(val)) return 0;
+  if (val < 0.0001) return Number(val.toFixed(6));
+  if (val < 0.01) return Number(val.toFixed(5));
+  if (val < 1 || isForex) return Number(val.toFixed(4));
+  return Number(val.toFixed(2));
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -10,6 +18,7 @@ export default async function handler(req, res) {
 
   const symbol = (req.query.symbol || 'AAPL').toUpperCase().trim();
   const rawRange = (req.query.range || '1m').toLowerCase();
+  const isForex = symbol.includes('=X');
 
   let mappedRange = '1mo';
   let mappedInterval = '1d';
@@ -84,13 +93,15 @@ export default async function handler(req, res) {
         timestamp: timestamps[i] * 1000,
         date: dateObj.toISOString(),
         label: timeLabel,
-        open: Number((opens[i] ?? close).toFixed(2)),
-        high: Number((highs[i] ?? close).toFixed(2)),
-        low: Number((lows[i] ?? close).toFixed(2)),
-        close: Number(close.toFixed(2)),
+        open: roundCandlePrice(opens[i] ?? close, isForex),
+        high: roundCandlePrice(highs[i] ?? close, isForex),
+        low: roundCandlePrice(lows[i] ?? close, isForex),
+        close: roundCandlePrice(close, isForex),
         volume: volumes[i] ?? 0,
       });
     }
+
+    const prevClose = result.meta?.chartPreviousClose || candles[0]?.close || 0;
 
     return res.status(200).json({
       success: true,
@@ -100,7 +111,7 @@ export default async function handler(req, res) {
         range: rawRange,
         interval: mappedInterval,
         currency: result.meta?.currency || (symbol.endsWith('.NS') ? 'INR' : 'USD'),
-        previousClose: result.meta?.chartPreviousClose || candles[0]?.close || 0,
+        previousClose: roundCandlePrice(prevClose, isForex),
         candles,
       },
     });

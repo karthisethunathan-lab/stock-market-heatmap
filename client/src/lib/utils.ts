@@ -1,18 +1,33 @@
 import { ColorMode, PortfolioHolding } from '../types';
 
 export function formatCurrency(amount?: number | null, currency: string = 'USD', compact = false): string {
-  if (amount === undefined || amount === null || isNaN(amount)) return currency === 'INR' ? '₹0.00' : '$0.00';
+  if (amount === undefined || amount === null || isNaN(amount)) {
+    return currency === 'INR' ? '₹0.00' : currency === 'FX' ? '0.0000' : '$0.00';
+  }
 
   if (compact) {
     return formatCompactNumber(amount, currency);
   }
 
   const isINR = currency === 'INR';
+  const isFX = currency === 'FX';
+  const abs = Math.abs(amount);
+
+  let decimals = 2;
+  if (abs > 0 && abs < 0.0001) decimals = 6;
+  else if (abs > 0 && abs < 0.01) decimals = 5;
+  else if (abs > 0 && abs < 1) decimals = 4;
+  else if (isFX) decimals = 4;
+
+  if (isFX) {
+    return amount.toFixed(decimals);
+  }
+
   return new Intl.NumberFormat(isINR ? 'en-IN' : 'en-US', {
     style: 'currency',
     currency: isINR ? 'INR' : 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   }).format(amount);
 }
 

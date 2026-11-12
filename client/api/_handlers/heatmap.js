@@ -4,11 +4,15 @@ import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = {
   quotes: new Map(), // symbol -> { price, changePercent, volume, high52, low52, timestamp }
-  lastUpdated: { us: 0, in: 0 },
-  inFlight: { us: false, in: false },
+  lastUpdated: { us: 0, in: 0, crypto: 0, forex: 0 },
+  inFlight: { us: false, in: false, crypto: false, forex: false },
 };
 
 function getMarketStatus(market) {
+  if (market === 'crypto') {
+    return { isOpen: true, state: 'REGULAR', desc: 'Crypto 24/7 Global Live' };
+  }
+
   const tz = market === 'in' ? 'Asia/Kolkata' : 'America/New_York';
   const now = new Date();
   const dateStr = now.toLocaleString('en-US', { timeZone: tz });
@@ -17,6 +21,15 @@ function getMarketStatus(market) {
   const hours = localDate.getHours();
   const mins = localDate.getMinutes();
   const totalMins = hours * 60 + mins;
+
+  if (market === 'forex') {
+    // Forex trades 24/5: Opens Sunday 5:00 PM ET, Closes Friday 5:00 PM ET
+    const isClosedWeekend = (day === 5 && totalMins >= 17 * 60) || day === 6 || (day === 0 && totalMins < 17 * 60);
+    if (isClosedWeekend) {
+      return { isOpen: false, state: 'CLOSED', desc: 'Forex Closed (Opens Sun 5PM ET)' };
+    }
+    return { isOpen: true, state: 'REGULAR', desc: 'Forex 24/5 Live' };
+  }
 
   if (day === 0 || day === 6) {
     return { isOpen: false, state: 'CLOSED', desc: 'Weekend (Market Closed)' };
@@ -65,7 +78,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const market = (req.query.market || 'us').toLowerCase();
+    const rawMarket = (req.query.market || 'us').toLowerCase();
     const range = (req.query.range || '1d').toLowerCase();
     const groupBy = (req.query.groupBy || 'sector').toLowerCase();
     const filterSector = req.query.sector;
@@ -75,11 +88,21 @@ export default async function handler(req, res) {
     const sizeMetric = (req.query.sizeMetric || 'marketcap').toLowerCase();
     const colorMetric = (req.query.colorMetric || 'change').toLowerCase();
 
-    const chosenMarket = (market === 'in' || market === 'india') ? 'in' : 'us';
-    const currency = chosenMarket === 'in' ? 'INR' : 'USD';
+    const chosenMarket = (rawMarket === 'in' || rawMarket === 'india')
+      ? 'in'
+      : (rawMarket === 'crypto' || rawMarket === 'cryptocurrency')
+        ? 'crypto'
+        : (rawMarket === 'forex' || rawMarket === 'fx')
+          ? 'forex'
+          : 'us';
+
+    const defaultCurrency = chosenMarket === 'in' ? 'INR' : 'USD';
     const marketStatus = getMarketStatus(chosenMarket);
 
-    let stocks = loadUniverse(chosenMarket).map((s) => ({ ...s, currency }));
+    let stocks = loadUniverse(chosenMarket).map((s) => ({
+      ...s,
+      currency: s.currency || defaultCurrency,
+    }));
 
     // Fetch fresh live quotes for all universe constituents if stale (>20 seconds)
     const now = Date.now();
@@ -149,92 +172,102 @@ export default async function handler(req, res) {
         case 'high-dividend':
           stocks = stocks.filter((s) => (s.dividendYield || 0) > 2.0).sort((a, b) => (b.dividendYield || 0) - (a.dividendYield || 0)).slice(0, 50);
           break;
-        case 'value':
-          stocks = stocks.filter((s) => s.pe && s.pe > 0 && s.pe < 22).sort((a, b) => (a.pe || 999) - (b.pe || 999)).slice(0, 50);
-          break;
-        case 'growth':
-          stocks = stocks.filter((s) => (s.revGrowth || 0) > 12).sort((a, b) => (b.revGrowth || 0) - (a.revGrowth || 0)).slice(0, 50);
+        case 'mega-caps':
+          stocks = stocks.filter((s) => s.capBucket === 'Mega');
           break;
         default:
           break;
       }
     }
 
-    // Map range to selected percentage change and size/color
-    stocks = stocks.map((s) => {
-      let changePercent = s.change1d;
-      if (range === '1w') changePercent = s.change1w ?? s.change1d;
-      else if (range === '1m') changePercent = s.change1m ?? s.change1d;
-      else if (range === '3m') changePercent = s.change3m ?? s.change1d;
-      else if (range === '6m') changePercent = s.change6m ?? s.change1d;
-      else if (range === 'ytd') changePercent = s.changeYtd ?? s.change1d;
-      else if (range === '1y') changePercent = s.change1y ?? s.change1d;
+    // Map range to target field for color / change
+    const getRangeChange = (stock) => {
+      switch (range) {
+        case '1w':
+          return stock.change1w ?? stock.change1d ?? 0;
+        case '1m':
+          return stock.change1m ?? stock.change1d ?? 0;
+        case '3m':
+          return stock.change3m ?? stock.change1d ?? 0;
+        case '6m':
+          return stock.change6m ?? stock.change1d ?? 0;
+        case 'ytd':
+          return stock.changeYtd ?? stock.change1d ?? 0;
+        case '1y':
+          return stock.change1y ?? stock.change1d ?? 0;
+        case '1d':
+        default:
+          return stock.change1d ?? 0;
+      }
+    };
 
-      let tileValue = s.marketCap || 1000000000;
-      if (sizeMetric === 'volume') tileValue = s.volume || 1000000;
-      else if (sizeMetric === 'equal') tileValue = 100000;
+    // Calculate tile value and color metric
+    const processedStocks = stocks.map((s) => {
+      let tileValue = s.marketCap || 1e9;
+      if (sizeMetric === 'volume') {
+        tileValue = s.volume && s.volume > 0 ? s.volume : 1e6;
+      } else if (sizeMetric === 'equal') {
+        tileValue = 1000;
+      }
 
-      let colorValue = changePercent;
+      let colorVal = getRangeChange(s);
       if (colorMetric === 'volume') {
-        const ratio = s.avgVolume && s.avgVolume > 0 ? (s.volume / s.avgVolume) : 1;
-        colorValue = Number(((ratio - 1) * 100).toFixed(1));
+        const avgVol = s.avgVolume || s.volume || 1;
+        const curVol = s.volume || 1;
+        colorVal = Number((((curVol - avgVol) / avgVol) * 100).toFixed(1));
       } else if (colorMetric === 'pe') {
-        colorValue = s.pe || 25;
+        colorVal = s.pe || 20;
       } else if (colorMetric === 'dist52whigh') {
-        colorValue = s.dist52wHigh ?? -10;
+        colorVal = s.dist52wHigh || -10;
       }
 
       return {
         ...s,
-        price: Number(s.price.toFixed(2)),
-        changePercent: Number((changePercent ?? 0).toFixed(2)),
-        changeAmount: Number(((s.price * (changePercent ?? 0)) / 100).toFixed(2)),
+        changePercent: getRangeChange(s),
         tileValue,
-        colorValue,
+        colorValue: colorVal,
       };
     });
 
-    // Grouping
-    const groupMap = new Map();
+    // Grouping by sector/industry/index/capbucket
+    const groupsMap = new Map();
+    processedStocks.forEach((stock) => {
+      let groupKey = stock.sector || 'Other';
+      if (groupBy === 'industry') groupKey = stock.industry || stock.sector || 'Other';
+      else if (groupBy === 'capbucket') groupKey = `${stock.capBucket || 'Mid'} Cap`;
+      else if (groupBy === 'index') groupKey = (stock.indices && stock.indices[0]) || 'Broad Market';
 
-    stocks.forEach((stock) => {
-      let groupName = stock.sector || 'Other';
-      if (groupBy === 'industry') groupName = stock.industry || stock.sector || 'Other';
-      else if (groupBy === 'index') groupName = (stock.indices && stock.indices[0]) || 'Other';
-      else if (groupBy === 'capbucket') groupName = stock.capBucket || 'Mid';
-
-      if (!groupMap.has(groupName)) {
-        groupMap.set(groupName, {
-          name: groupName,
-          marketCap: 0,
-          stocks: [],
-        });
+      if (!groupsMap.has(groupKey)) {
+        groupsMap.set(groupKey, []);
       }
-
-      const g = groupMap.get(groupName);
-      g.stocks.push(stock);
-      g.marketCap += stock.tileValue || stock.marketCap || 0;
+      groupsMap.get(groupKey).push(stock);
     });
 
-    const sectors = Array.from(groupMap.values()).sort((a, b) => b.marketCap - a.marketCap);
-    sectors.forEach((g) => {
-      g.stocks.sort((a, b) => (b.tileValue || b.marketCap) - (a.tileValue || a.marketCap));
-    });
+    const sectors = Array.from(groupsMap.entries()).map(([name, sList]) => ({
+      name,
+      marketCap: sList.reduce((acc, curr) => acc + (curr.tileValue || curr.marketCap || 1e9), 0),
+      stocks: sList,
+    }));
 
     return res.status(200).json({
       success: true,
+      source: 'yahoo-live',
       market: chosenMarket,
-      marketStatus,
-      isLive: marketStatus.isOpen,
       range,
       groupBy,
       sizeMetric,
       colorMetric,
-      totalStocks: stocks.length,
       lastUpdated: new Date().toISOString(),
       sectors,
+      totalStocks: processedStocks.length,
+      marketStatus,
+      isLive: true,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
+    console.error('Heatmap handler error:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to fetch heatmap data',
+    });
   }
 }

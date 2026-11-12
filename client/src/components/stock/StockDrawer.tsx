@@ -9,6 +9,9 @@ import { FundamentalsTab } from './FundamentalsTab';
 import { FinancialsTab } from './FinancialsTab';
 import { AnalystsTab } from './AnalystsTab';
 import { PeersTab } from './PeersTab';
+import { CryptoTokenomicsTab } from './CryptoTokenomicsTab';
+import { ForexMechanicsTab } from './ForexMechanicsTab';
+import { ForexCrossRatesTab } from './ForexCrossRatesTab';
 import { CompareModal } from './CompareModal';
 import { PriceAlertsModal } from '../alerts/PriceAlertsModal';
 import { AddHoldingModal } from '../portfolio/AddHoldingModal';
@@ -24,7 +27,16 @@ import {
   Scale,
 } from 'lucide-react';
 
-type DrawerTab = 'overview' | 'fundamentals' | 'financials' | 'analysts' | 'news' | 'peers';
+type DrawerTab =
+  | 'overview'
+  | 'fundamentals'
+  | 'financials'
+  | 'analysts'
+  | 'news'
+  | 'peers'
+  | 'tokenomics'
+  | 'mechanics'
+  | 'crossrates';
 
 export const StockDrawer: React.FC = () => {
   const {
@@ -54,7 +66,12 @@ export const StockDrawer: React.FC = () => {
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [alertsModalOpen, setAlertsModalOpen] = useState(false);
 
+  const isCrypto = Boolean(selectedSymbol && selectedSymbol.includes('-USD'));
+  const isForex = Boolean(selectedSymbol && selectedSymbol.includes('=X'));
+
+  // Ensure active tab is valid for current asset type
   useEffect(() => {
+    setActiveTab('overview');
     setLogoError(false);
   }, [selectedSymbol]);
 
@@ -92,60 +109,79 @@ export const StockDrawer: React.FC = () => {
 
   const isUp = (quote?.changePercent || 0) >= 0;
   const isWatched = isWatchlisted(selectedSymbol);
-  const currency = quote?.currency || (selectedSymbol.endsWith('.NS') ? 'INR' : 'USD');
+  const currency = isForex ? 'FX' : quote?.currency || (selectedSymbol.endsWith('.NS') ? 'INR' : 'USD');
 
   // 52-week slider calculation
   const curPrice = quote?.price || 100;
   const high52 = quote?.fiftyTwoWeekHigh || curPrice * 1.15;
   const low52 = quote?.fiftyTwoWeekLow || curPrice * 0.75;
-  const range52 = high52 - low52 || 1;
-  const progress52 = Math.min(100, Math.max(0, ((curPrice - low52) / range52) * 100));
+  const progress52 = high52 === low52 ? 50 : Math.max(0, Math.min(100, ((curPrice - low52) / (high52 - low52)) * 100));
 
+  // Clean display symbol
+  const cleanDisplay = isForex
+    ? selectedSymbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1 / $2')
+    : isCrypto
+      ? selectedSymbol.replace('-USD', '')
+      : selectedSymbol.replace('.NS', '');
+
+  // Dynamic tabs according to asset class
+  const tabs: Array<{ id: DrawerTab; label: string }> = isCrypto
+    ? [
+        { id: 'overview', label: 'Overview' },
+        { id: 'tokenomics', label: 'Tokenomics & Supply' },
+        { id: 'news', label: 'Crypto News' },
+        { id: 'peers', label: 'Related Coins' },
+      ]
+    : isForex
+      ? [
+          { id: 'overview', label: 'Overview' },
+          { id: 'mechanics', label: 'Currency Mechanics' },
+          { id: 'news', label: 'Macro News' },
+          { id: 'crossrates', label: 'Cross Rates' },
+        ]
+      : [
+          { id: 'overview', label: 'Overview' },
+          { id: 'fundamentals', label: 'Fundamentals' },
+          { id: 'financials', label: 'Financials' },
+          { id: 'analysts', label: 'Analysts' },
+          { id: 'news', label: 'News' },
+          { id: 'peers', label: 'Peers' },
+        ];
 
   return (
     <>
-      {/* Backdrop */}
       <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 transition-opacity"
         onClick={handleClose}
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
-      {/* Drawer: Right panel on desktop, Fullscreen on mobile */}
-      <aside
-        className="fixed z-50 inset-y-0 right-0 w-full max-w-3xl bg-[#090d16] border-l border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-250 max-md:inset-0 max-md:max-w-none"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-800 bg-[#0c111e]/95 backdrop-blur-md sticky top-0 z-30">
-          <div className="flex items-center gap-3.5">
-            {!logoError && profile?.logo ? (
-              <img
-                src={profile.logo}
-                alt={selectedSymbol}
-                className="w-11 h-11 rounded-xl bg-slate-900 border border-slate-800 p-1.5 object-contain"
-                onError={() => setLogoError(true)}
-              />
-            ) : (
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-mono font-bold text-base text-white shadow-md">
-                {selectedSymbol.replace('.NS', '').slice(0, 3)}
-              </div>
-            )}
+      <aside className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-3xl bg-[#0b101d] border-l border-slate-800 shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+        {/* Header Bar */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-[#090d16]/95">
+          <div className="flex items-center gap-3">
+            {/* Logo / Asset Avatar */}
+            <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+              {profile?.logo && !logoError ? (
+                <img
+                  src={profile.logo}
+                  alt={profile.name || selectedSymbol}
+                  className="w-full h-full object-contain p-1"
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <span className="font-mono font-bold text-xs text-blue-400">
+                  {cleanDisplay.slice(0, 3)}
+                </span>
+              )}
+            </div>
 
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-mono font-bold text-white tracking-tight">
-                  {selectedSymbol}
-                </h2>
-                <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 font-sans">
-                  {profile?.exchange || quote?.exchange || 'EQUITY'}
-                </span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-semibold uppercase ${
-                    quote?.marketState === 'REGULAR'
-                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/60'
-                      : 'bg-slate-800 text-slate-400 border border-slate-700'
-                  }`}
-                >
-                  {quote?.marketState || 'REGULAR'}
+                <h1 className="font-mono font-bold text-lg text-white tracking-wide">
+                  {cleanDisplay}
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700">
+                  {isCrypto ? 'Crypto' : isForex ? 'Forex' : quote?.exchange || (selectedSymbol.endsWith('.NS') ? 'NSE' : 'US')}
                 </span>
               </div>
               <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
@@ -156,16 +192,17 @@ export const StockDrawer: React.FC = () => {
 
           <button
             onClick={handleClose}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            aria-label="Close drawer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Action Bar: Price, Change, Quick Action Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3 bg-slate-900/60 border-b border-slate-800">
-          <div>
-            <div className="text-2xl font-mono font-extrabold text-white">
+        {/* Price & Quick Actions Bar */}
+        <div className="px-5 py-3.5 bg-slate-900/50 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-baseline gap-2.5">
+            <div className="text-xl sm:text-2xl font-mono font-bold text-white tracking-tight">
               {quote ? formatCurrency(quote.price, currency) : '--'}
             </div>
             {quote && (
@@ -175,7 +212,11 @@ export const StockDrawer: React.FC = () => {
                 }`}
               >
                 {isUp ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                <span>{quote.change >= 0 ? `+${quote.change.toFixed(2)}` : quote.change.toFixed(2)}</span>
+                <span>
+                  {quote.change >= 0
+                    ? `+${isForex ? quote.change.toFixed(4) : quote.change.toFixed(2)}`
+                    : isForex ? quote.change.toFixed(4) : quote.change.toFixed(2)}
+                </span>
                 <span>({formatPercent(quote.changePercent)})</span>
               </div>
             )}
@@ -186,7 +227,7 @@ export const StockDrawer: React.FC = () => {
             <button
               onClick={() => setCompareModalOpen(true)}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-xs font-semibold transition"
-              title="Compare with other stocks"
+              title="Compare with other assets"
             >
               <Scale className="w-3.5 h-3.5 text-blue-400" />
               <span>Compare</span>
@@ -226,19 +267,12 @@ export const StockDrawer: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab Navigation: Overview | Fundamentals | Financials | Analysts | News | Peers */}
+        {/* Tab Navigation */}
         <div className="flex items-center px-4 bg-slate-950/90 border-b border-slate-800 text-xs font-semibold overflow-x-auto scrollbar-thin">
-          {[
-            { id: 'overview', label: 'Overview' },
-            { id: 'fundamentals', label: 'Fundamentals' },
-            { id: 'financials', label: 'Financials' },
-            { id: 'analysts', label: 'Analysts' },
-            { id: 'news', label: 'News' },
-            { id: 'peers', label: 'Peers' },
-          ].map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as DrawerTab)}
+              onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2.5 border-b-2 transition capitalize whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-blue-500 text-blue-400 font-bold bg-blue-950/20'
@@ -289,23 +323,33 @@ export const StockDrawer: React.FC = () => {
               {/* Key Stats Grid */}
               <KeyStatsGrid quote={quote} metrics={metrics} />
 
-              {/* Company Profile Description */}
+              {/* Company / Asset Profile Description */}
               <CompanyProfile profile={profile} />
             </div>
           )}
 
+          {/* Crypto Tokenomics Tab */}
+          {activeTab === 'tokenomics' && <CryptoTokenomicsTab symbol={selectedSymbol} />}
+
+          {/* Forex Mechanics Tab */}
+          {activeTab === 'mechanics' && <ForexMechanicsTab symbol={selectedSymbol} />}
+
+          {/* Forex Cross Rates Tab */}
+          {activeTab === 'crossrates' && <ForexCrossRatesTab symbol={selectedSymbol} />}
+
+          {/* Stocks Only Tabs */}
           {activeTab === 'fundamentals' && <FundamentalsTab symbol={selectedSymbol} />}
-
           {activeTab === 'financials' && <FinancialsTab symbol={selectedSymbol} />}
-
           {activeTab === 'analysts' && <AnalystsTab symbol={selectedSymbol} />}
 
+          {/* News Tab */}
           {activeTab === 'news' && (
             <div className="p-4 sm:p-5">
               <NewsList news={news} />
             </div>
           )}
 
+          {/* Peers Tab */}
           {activeTab === 'peers' && (
             <PeersTab symbol={selectedSymbol} onSelectStock={(sym) => selectStock(sym)} />
           )}

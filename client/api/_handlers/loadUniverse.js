@@ -4,15 +4,29 @@ import { fileURLToPath } from 'url';
 
 let usUniverse = null;
 let inUniverse = null;
+let cryptoUniverse = null;
+let forexUniverse = null;
 
 export function loadUniverse(market) {
   try {
-    const isIndia = market === 'in' || market === 'india';
+    const m = (market || 'us').toLowerCase();
+    const isIndia = m === 'in' || m === 'india';
+    const isCrypto = m === 'crypto' || m === 'cryptocurrency';
+    const isForex = m === 'forex' || m === 'fx';
+
     if (isIndia && inUniverse) return inUniverse;
-    if (!isIndia && usUniverse) return usUniverse;
+    if (isCrypto && cryptoUniverse) return cryptoUniverse;
+    if (isForex && forexUniverse) return forexUniverse;
+    if (!isIndia && !isCrypto && !isForex && usUniverse) return usUniverse;
 
     const currentDir = path.dirname(fileURLToPath(import.meta.url));
-    const filename = isIndia ? 'universe-in.json' : 'universe-us.json';
+    const filename = isIndia
+      ? 'universe-in.json'
+      : isCrypto
+        ? 'universe-crypto.json'
+        : isForex
+          ? 'universe-forex.json'
+          : 'universe-us.json';
 
     // Candidate paths in order of preference
     const candidates = [
@@ -26,6 +40,8 @@ export function loadUniverse(market) {
       if (fs.existsSync(cand)) {
         const parsed = JSON.parse(fs.readFileSync(cand, 'utf-8'));
         if (isIndia) inUniverse = parsed;
+        else if (isCrypto) cryptoUniverse = parsed;
+        else if (isForex) forexUniverse = parsed;
         else usUniverse = parsed;
         return parsed;
       }

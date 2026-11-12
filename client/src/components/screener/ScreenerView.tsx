@@ -9,7 +9,7 @@ interface ScreenerViewProps {
 }
 
 export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => {
-  const [market, setMarket] = useState<'us' | 'in' | 'all'>('us');
+  const [market, setMarket] = useState<'us' | 'in' | 'crypto' | 'forex' | 'all'>('us');
   const [sector, setSector] = useState('All');
   const [capBucket, setCapBucket] = useState('All');
   const [minPe, setMinPe] = useState('');
@@ -176,6 +176,8 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             >
               <option value="us">US Stocks (S&P 500, Nasdaq 100)</option>
               <option value="in">Indian Stocks (NIFTY 500)</option>
+              <option value="crypto">Cryptocurrencies (Top 50)</option>
+              <option value="forex">Forex (Currency Pairs)</option>
               <option value="all">Global (All Universes)</option>
             </select>
           </div>

@@ -355,7 +355,9 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
                     tileWidth < 50 ? 'text-[11px]' : tileWidth < 80 ? 'text-xs' : 'text-sm'
                   }`}
                 >
-                  {stock.symbol.replace('.NS', '')}
+                  {stock.symbol.includes('=X')
+                    ? stock.symbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1/$2')
+                    : stock.symbol.replace('.NS', '').replace('-USD', '')}
                 </div>
               )}
 

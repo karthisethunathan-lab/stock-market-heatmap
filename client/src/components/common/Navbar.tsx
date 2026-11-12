@@ -12,6 +12,8 @@ import {
   Activity,
   SlidersHorizontal,
   Flame,
+  Coins,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 
@@ -46,6 +48,8 @@ export const Navbar: React.FC = () => {
   const navItems: Array<{ id: TopLevelTab; label: string; icon: React.ReactNode; badge?: number }> = [
     { id: 'us', label: 'US Stocks', icon: <TrendingUp className="w-4 h-4" /> },
     { id: 'in', label: 'Indian Stocks', icon: <Flame className="w-4 h-4 text-orange-400" /> },
+    { id: 'crypto', label: 'Crypto', icon: <Coins className="w-4 h-4 text-amber-400" /> },
+    { id: 'forex', label: 'Forex', icon: <ArrowLeftRight className="w-4 h-4 text-cyan-400" /> },
     { id: 'portfolios', label: 'Portfolios', icon: <Briefcase className="w-4 h-4" /> },
     { id: 'watchlist', label: 'Watchlist', icon: <Bookmark className="w-4 h-4" />, badge: watchlist.length },
     { id: 'screener', label: 'Screener', icon: <SlidersHorizontal className="w-4 h-4" /> },

@@ -3,7 +3,7 @@ import { GroupByOption, SizeMetric, ColorMetric, TimeframeType } from '../../typ
 import { Layers, PieChart, Sliders } from 'lucide-react';
 
 interface CategoryViewsBarProps {
-  market: 'us' | 'in';
+  market: 'us' | 'in' | 'crypto' | 'forex';
   groupBy: GroupByOption;
   onGroupByChange: (val: GroupByOption) => void;
   sizeMetric: SizeMetric;
@@ -42,69 +42,106 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
   onPresetChange,
 }) => {
   const isIndia = market === 'in';
+  const isCrypto = market === 'crypto';
+  const isForex = market === 'forex';
 
-  const indices = isIndia
+  const indices = isCrypto
+    ? ['All', 'Top 10', 'Top 20', 'Layer 1', 'DeFi', 'Meme Coins', 'AI Cryptos', 'Layer 2']
+    : isForex
+      ? ['All', 'Majors', 'Minors', 'Emerging Markets', 'G10 Currencies', 'Yen Crosses', 'Asia FX']
+      : isIndia
+        ? [
+            'All',
+            'Nifty 50',
+            'Next 50',
+            'Midcap 150',
+            'Smallcap 250',
+            'Bank Nifty',
+            'Nifty IT',
+            'Nifty Pharma',
+            'Nifty Auto',
+            'Nifty FMCG',
+            'Nifty Metal',
+            'Nifty Realty',
+            'Nifty Energy',
+          ]
+        : ['All', 'S&P 500', 'Nasdaq-100', 'Dow 30', 'Popular ETFs'];
+
+  const sectors = isCrypto
     ? [
         'All',
-        'Nifty 50',
-        'Next 50',
-        'Midcap 150',
-        'Smallcap 250',
-        'Bank Nifty',
-        'Nifty IT',
-        'Nifty Pharma',
-        'Nifty Auto',
-        'Nifty FMCG',
-        'Nifty Metal',
-        'Nifty Realty',
-        'Nifty Energy',
+        'Layer 1 / Store of Value',
+        'Layer 1 / Smart Contracts',
+        'Layer 1 / High Performance',
+        'DeFi & Oracles',
+        'Meme Coins',
+        'AI & Decentralized Compute',
+        'Layer 2 & Scaling',
+        'Payment & Remittance',
+        'Enterprise Infrastructure',
+        'Metaverse & Gaming',
       ]
-    : ['All', 'S&P 500', 'Nasdaq-100', 'Dow 30', 'Popular ETFs'];
+    : isForex
+      ? ['All', 'Major Currencies', 'Minor Crosses', 'Emerging & Exotics']
+      : isIndia
+        ? [
+            'All',
+            'Financial Services',
+            'IT',
+            'Oil Gas & Energy',
+            'Auto',
+            'FMCG',
+            'Healthcare',
+            'Metals & Mining',
+            'Capital Goods',
+            'Realty',
+            'Telecom',
+            'Power',
+            'Consumer Durables',
+            'Chemicals',
+          ]
+        : [
+            'All',
+            'Technology',
+            'Communication Services',
+            'Consumer Discretionary',
+            'Financials',
+            'Healthcare',
+            'Industrials',
+            'Consumer Staples',
+            'Energy',
+            'Utilities',
+            'Real Estate',
+            'Basic Materials',
+            'ETFs',
+          ];
 
-  const sectors = isIndia
+  const presets = isCrypto
     ? [
-        'All',
-        'Financial Services',
-        'IT',
-        'Oil Gas & Energy',
-        'Auto',
-        'FMCG',
-        'Healthcare',
-        'Metals & Mining',
-        'Capital Goods',
-        'Realty',
-        'Telecom',
-        'Power',
-        'Consumer Durables',
-        'Chemicals',
+        { id: '', label: 'All Cryptos' },
+        { id: 'gainers', label: '🔥 Top Gainers' },
+        { id: 'losers', label: '❄️ Top Losers' },
+        { id: 'active', label: '⚡ Highest Volume' },
+        { id: 'near-52w-high', label: '🏔️ Near 52W High' },
+        { id: 'mega-caps', label: '👑 Mega Caps' },
       ]
-    : [
-        'All',
-        'Technology',
-        'Communication Services',
-        'Consumer Discretionary',
-        'Financials',
-        'Healthcare',
-        'Industrials',
-        'Consumer Staples',
-        'Energy',
-        'Utilities',
-        'Real Estate',
-        'Basic Materials',
-        'ETFs',
-      ];
-
-  const presets = [
-    { id: '', label: 'All Stocks' },
-    { id: 'gainers', label: '🔥 Top Gainers' },
-    { id: 'losers', label: '❄️ Top Losers' },
-    { id: 'active', label: '⚡ Most Active' },
-    { id: 'near-52w-high', label: '🏔️ Near 52W High' },
-    { id: '52w-low', label: '📉 52W Lows' },
-    { id: 'high-dividend', label: '💰 High Dividend' },
-    { id: 'value', label: '💎 Low P/E (Value)' },
-    { id: 'growth', label: '🚀 High Growth' },
-  ];
+    : isForex
+      ? [
+          { id: '', label: 'All Pairs' },
+          { id: 'gainers', label: '🔥 Strongest Currency' },
+          { id: 'losers', label: '❄️ Weakest Currency' },
+        ]
+      : [
+          { id: '', label: 'All Stocks' },
+          { id: 'gainers', label: '🔥 Top Gainers' },
+          { id: 'losers', label: '❄️ Top Losers' },
+          { id: 'active', label: '⚡ Most Active' },
+          { id: 'near-52w-high', label: '🏔️ Near 52W High' },
+          { id: '52w-low', label: '📉 52W Lows' },
+          { id: 'high-dividend', label: '💰 High Dividend' },
+          { id: 'value', label: '💎 Low P/E (Value)' },
+          { id: 'growth', label: '🚀 High Growth' },
+        ];
 
   return (
     <div className="w-full bg-slate-900/60 border-b border-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -124,14 +161,14 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              {mode === 'capbucket' ? 'Market Cap' : mode}
+              {mode === 'capbucket' ? 'Market Cap' : mode === 'sector' && isCrypto ? 'Category' : mode}
             </button>
           ))}
         </div>
 
         {/* Sector Selector Dropdown */}
         <div className="flex items-center gap-1.5 ml-2">
-          <span className="text-slate-400">Sector:</span>
+          <span className="text-slate-400">{isCrypto ? 'Category:' : 'Sector:'}</span>
           <select
             value={selectedSector}
             onChange={(e) => onSectorChange(e.target.value)}
@@ -147,7 +184,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
 
         {/* Index Selector Dropdown */}
         <div className="flex items-center gap-1.5 ml-1">
-          <span className="text-slate-400">Index:</span>
+          <span className="text-slate-400">{isCrypto ? 'Ecosystem:' : 'Index:'}</span>
           <select
             value={selectedIndex}
             onChange={(e) => onIndexChange(e.target.value)}
@@ -161,21 +198,23 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           </select>
         </div>
 
-        {/* Cap Bucket Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400">Cap:</span>
-          <select
-            value={selectedCapBucket}
-            onChange={(e) => onCapBucketChange(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-blue-500 outline-none"
-          >
-            <option value="All">All Caps</option>
-            <option value="Mega">Mega Cap</option>
-            <option value="Large">Large Cap</option>
-            <option value="Mid">Mid Cap</option>
-            <option value="Small">Small Cap</option>
-          </select>
-        </div>
+        {/* Cap Bucket Filter (hide for forex) */}
+        {!isForex && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400">Cap:</span>
+            <select
+              value={selectedCapBucket}
+              onChange={(e) => onCapBucketChange(e.target.value)}
+              className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-blue-500 outline-none"
+            >
+              <option value="All">All Caps</option>
+              <option value="Mega">Mega Cap</option>
+              <option value="Large">Large Cap</option>
+              <option value="Mid">Mid Cap</option>
+              <option value="Small">Small Cap</option>
+            </select>
+          </div>
+        )}
 
         {/* Presets Dropdown */}
         <div className="flex items-center gap-1.5">
@@ -224,7 +263,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           >
             <option value="change">% Change ({timeframe.toUpperCase()})</option>
             <option value="volume">Volume vs Avg</option>
-            <option value="pe">P/E Ratio</option>
+            {!isCrypto && !isForex && <option value="pe">P/E Ratio</option>}
             <option value="dist52whigh">Distance from 52W High</option>
           </select>
         </div>

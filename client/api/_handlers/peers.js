@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { loadUniverse } from './loadUniverse.js';
 
+function roundPeerPrice(val, isForex) {
+  if (val === null || val === undefined || isNaN(val)) return 0;
+  if (val < 0.0001) return Number(val.toFixed(6));
+  if (val < 0.01) return Number(val.toFixed(5));
+  if (val < 1 || isForex) return Number(val.toFixed(4));
+  return Number(val.toFixed(2));
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -13,16 +21,21 @@ export default async function handler(req, res) {
   if (!symbol) return res.status(400).json({ success: false, error: 'Symbol required' });
 
   const isIndia = symbol.endsWith('.NS') || symbol.endsWith('.BO');
-  const universe = loadUniverse(isIndia ? 'in' : 'us');
-  const currentStock = universe.find((s) => s.symbol.toUpperCase() === symbol);
+  const isCrypto = symbol.includes('-USD');
+  const isForex = symbol.includes('=X');
+
+  const universe = loadUniverse(
+    isIndia ? 'in' : isCrypto ? 'crypto' : isForex ? 'forex' : 'us'
+  );
+  const currentItem = universe.find((s) => s.symbol.toUpperCase() === symbol);
 
   const sameSector = universe.filter(
-    (s) => s.symbol.toUpperCase() !== symbol && (!currentStock || s.sector === currentStock.sector)
+    (s) => s.symbol.toUpperCase() !== symbol && (!currentItem || s.sector === currentItem.sector)
   );
 
-  const rawPeers = sameSector.slice(0, 7);
+  const rawPeers = (sameSector.length >= 3 ? sameSector : universe.filter((s) => s.symbol.toUpperCase() !== symbol)).slice(0, 7);
 
-  // Fetch live prices for these 7 peers
+  // Fetch live prices for these peers
   const peersWithLive = await Promise.all(
     rawPeers.map(async (s) => {
       let price = s.price;
@@ -48,11 +61,12 @@ export default async function handler(req, res) {
       return {
         symbol: s.symbol,
         name: s.name,
-        price,
+        price: roundPeerPrice(price, isForex),
         changePercent,
         marketCap: s.marketCap,
         pe: s.pe,
         sector: s.sector,
+        currency: s.currency || (isIndia ? 'INR' : 'USD'),
       };
     })
   );

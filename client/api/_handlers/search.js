@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (!query) return res.status(200).json({ success: true, data: [] });
 
   try {
-    const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=10&newsCount=0`;
+    const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=12&newsCount=0`;
     const response = await axios.get(url, {
       timeout: 6000,
       headers: { 'User-Agent': 'Mozilla/5.0' },
@@ -19,14 +19,25 @@ export default async function handler(req, res) {
 
     const quotes = response.data?.quotes || [];
     const results = quotes
-      .filter((q) => q.symbol && (q.quoteType === 'EQUITY' || q.quoteType === 'ETF' || !q.quoteType))
-      .map((q) => ({
-        symbol: q.symbol,
-        name: q.shortname || q.longname || q.symbol,
-        exchange: q.exchange || 'US',
-        type: q.quoteType || 'EQUITY',
-        currency: q.symbol.endsWith('.NS') ? 'INR' : 'USD',
-      }));
+      .filter((q) => q.symbol && (
+        q.quoteType === 'EQUITY' ||
+        q.quoteType === 'ETF' ||
+        q.quoteType === 'CRYPTOCURRENCY' ||
+        q.quoteType === 'CURRENCY' ||
+        !q.quoteType
+      ))
+      .map((q) => {
+        const isIndia = q.symbol.endsWith('.NS') || q.symbol.endsWith('.BO');
+        const isCrypto = q.quoteType === 'CRYPTOCURRENCY' || q.symbol.includes('-USD');
+        const isForex = q.quoteType === 'CURRENCY' || q.symbol.includes('=X');
+        return {
+          symbol: q.symbol,
+          name: q.shortname || q.longname || q.symbol,
+          exchange: isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : (q.exchange || (isIndia ? 'NSE' : 'US')),
+          type: q.quoteType || (isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : 'EQUITY'),
+          currency: isIndia ? 'INR' : 'USD',
+        };
+      });
 
     return res.status(200).json({ success: true, data: results });
   } catch (error) {
