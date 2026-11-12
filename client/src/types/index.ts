@@ -1,11 +1,11 @@
-export type MarketType = 'us' | 'in' | 'crypto' | 'forex' | 'watchlist';
+export type MarketType = 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'watchlist';
 export type TimeframeType = '1d' | '1w' | '1m' | '3m' | '6m' | 'ytd' | '1y';
 export type ChartTimeframe = '1D' | '1W' | '1M' | '6M' | '1Y' | '5Y';
 export type ChartType = 'area' | 'candle';
 export type ColorMode = 'standard' | 'colorblind';
 export type ThemeMode = 'dark' | 'light';
 
-export type TopLevelTab = 'us' | 'in' | 'crypto' | 'forex' | 'portfolios' | 'watchlist' | 'screener';
+export type TopLevelTab = 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'portfolios' | 'watchlist' | 'screener';
 export type GroupByOption = 'sector' | 'industry' | 'index' | 'capbucket';
 export type SizeMetric = 'marketcap' | 'volume' | 'equal';
 export type ColorMetric = 'change' | 'volume' | 'pe' | 'dist52whigh';
@@ -322,7 +322,7 @@ export interface MarketOverviewIndex {
   id: string;
   symbol: string;
   name: string;
-  market: 'US' | 'India' | 'FX';
+  market: 'US' | 'India' | 'FX' | 'Commodity';
   price: number;
   change: number;
   changePercent: number;
@@ -340,7 +340,7 @@ export interface MarketOverviewData {
 
 // Screener
 export interface ScreenerFilters {
-  market?: 'us' | 'in' | 'crypto' | 'forex' | 'all';
+  market?: 'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'all';
   sector?: string;
   industry?: string;
   capBucket?: string;

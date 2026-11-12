@@ -23,9 +23,10 @@ export default async function handler(req, res) {
   const isIndia = symbol.endsWith('.NS') || symbol.endsWith('.BO');
   const isCrypto = symbol.includes('-USD');
   const isForex = symbol.includes('=X');
+  const isCommodity = symbol.includes('=F');
 
   const universe = loadUniverse(
-    isIndia ? 'in' : isCrypto ? 'crypto' : isForex ? 'forex' : 'us'
+    isIndia ? 'in' : isCrypto ? 'crypto' : isForex ? 'forex' : isCommodity ? 'commodities' : 'us'
   );
   const currentItem = universe.find((s) => s.symbol.toUpperCase() === symbol);
 

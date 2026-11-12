@@ -11,9 +11,16 @@ export const CompanyProfile: React.FC<CompanyProfileProps> = ({ profile }) => {
 
   const isCrypto = profile.symbol?.includes('-USD');
   const isForex = profile.symbol?.includes('=X');
+  const isCommodity = profile.symbol?.includes('=F');
 
-  const title = isCrypto ? 'About Protocol / Token' : isForex ? 'About Currency Pair' : 'About Company';
-  const categoryLabel = isCrypto ? 'Category' : isForex ? 'Pair Type' : 'Industry';
+  const title = isCommodity
+    ? 'About Commodity Contract'
+    : isCrypto
+      ? 'About Protocol / Token'
+      : isForex
+        ? 'About Currency Pair'
+        : 'About Company';
+  const categoryLabel = isCommodity ? 'Commodity Sector' : isCrypto ? 'Category' : isForex ? 'Pair Type' : 'Industry';
 
   return (
     <div className="flex flex-col gap-3 p-4 bg-slate-900/80 rounded-xl border border-slate-800">
@@ -41,7 +48,7 @@ export const CompanyProfile: React.FC<CompanyProfileProps> = ({ profile }) => {
           <div>
             <span className="text-[10px] block uppercase font-mono">Market / Settlement</span>
             <span className="text-slate-200 font-medium">
-              {isCrypto ? 'Decentralized Blockchain' : isForex ? 'Interbank FX' : (profile.exchange || 'NYSE/NASDAQ')}
+              {isCommodity ? (profile.exchange || 'CME / NYMEX / COMEX') : isCrypto ? 'Decentralized Blockchain' : isForex ? 'Interbank FX' : (profile.exchange || 'NYSE/NASDAQ')}
             </span>
           </div>
         </div>

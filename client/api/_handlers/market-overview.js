@@ -112,6 +112,8 @@ const INDICES = [
   { id: 'indiavix', symbol: '^INDIAVIX', name: 'India VIX', market: 'India', defaultPrice: 17.55, defaultChange: -0.42, defaultPercent: -2.34 },
   { id: 'usdinr', symbol: 'INR=X', name: 'USD / INR', market: 'FX', defaultPrice: 93.92, defaultChange: -0.15, defaultPercent: -0.16 },
   { id: 'eurusd', symbol: 'EURUSD=X', name: 'EUR / USD', market: 'FX', defaultPrice: 1.108, defaultChange: 0.001, defaultPercent: 0.09 },
+  { id: 'gold', symbol: 'GC=F', name: 'Gold', market: 'Commodity', defaultPrice: 3968.0, defaultChange: -25.0, defaultPercent: -0.63 },
+  { id: 'crude', symbol: 'CL=F', name: 'Crude Oil', market: 'Commodity', defaultPrice: 87.1, defaultChange: 0.55, defaultPercent: 0.64 },
 ];
 
 export default async function handler(req, res) {

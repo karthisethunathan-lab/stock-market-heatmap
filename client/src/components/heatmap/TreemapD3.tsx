@@ -357,7 +357,7 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
                 >
                   {stock.symbol.includes('=X')
                     ? stock.symbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1/$2')
-                    : stock.symbol.replace('.NS', '').replace('-USD', '')}
+                    : stock.symbol.replace('.NS', '').replace('-USD', '').replace('=F', '')}
                 </div>
               )}
 

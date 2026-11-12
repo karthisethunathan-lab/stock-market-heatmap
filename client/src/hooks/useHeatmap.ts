@@ -9,7 +9,7 @@ export interface MarketStatusInfo {
   desc: string;
 }
 
-export function useHeatmap(initialMarket: 'us' | 'in' | 'crypto' | 'forex' = 'us') {
+export function useHeatmap(initialMarket: 'us' | 'in' | 'crypto' | 'forex' | 'commodities' = 'us') {
   const { showToast } = useApp();
 
   // Parse URL search params for shareable views

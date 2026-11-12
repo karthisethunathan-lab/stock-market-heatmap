@@ -4,8 +4,8 @@ import { fetchBatchQuotes } from './yahooQuoteSummary.js';
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = {
   quotes: new Map(), // symbol -> { price, changePercent, volume, high52, low52, timestamp }
-  lastUpdated: { us: 0, in: 0, crypto: 0, forex: 0 },
-  inFlight: { us: false, in: false, crypto: false, forex: false },
+  lastUpdated: { us: 0, in: 0, crypto: 0, forex: 0, commodities: 0 },
+  inFlight: { us: false, in: false, crypto: false, forex: false, commodities: false },
 };
 
 function getMarketStatus(market) {
@@ -29,6 +29,15 @@ function getMarketStatus(market) {
       return { isOpen: false, state: 'CLOSED', desc: 'Forex Closed (Opens Sun 5PM ET)' };
     }
     return { isOpen: true, state: 'REGULAR', desc: 'Forex 24/5 Live' };
+  }
+
+  if (market === 'commodities') {
+    // Commodity Futures trade nearly 24/5: Sunday 6:00 PM ET to Friday 5:00 PM ET
+    const isClosedWeekend = (day === 5 && totalMins >= 17 * 60) || day === 6 || (day === 0 && totalMins < 18 * 60);
+    if (isClosedWeekend) {
+      return { isOpen: false, state: 'CLOSED', desc: 'Futures Closed (Opens Sun 6PM ET)' };
+    }
+    return { isOpen: true, state: 'REGULAR', desc: 'CME/NYMEX Futures Live' };
   }
 
   if (day === 0 || day === 6) {
@@ -94,7 +103,9 @@ export default async function handler(req, res) {
         ? 'crypto'
         : (rawMarket === 'forex' || rawMarket === 'fx')
           ? 'forex'
-          : 'us';
+          : (rawMarket === 'commodities' || rawMarket === 'commodity')
+            ? 'commodities'
+            : 'us';
 
     const defaultCurrency = chosenMarket === 'in' ? 'INR' : 'USD';
     const marketStatus = getMarketStatus(chosenMarket);

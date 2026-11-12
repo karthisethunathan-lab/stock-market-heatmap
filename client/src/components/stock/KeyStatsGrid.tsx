@@ -12,6 +12,7 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
 
   const isCrypto = quote.symbol?.includes('-USD');
   const isForex = quote.symbol?.includes('=X');
+  const isCommodity = quote.symbol?.includes('=F');
   const currency = isForex ? 'FX' : quote.currency || 'USD';
   const high52 = metrics?.fiftyTwoWeekHigh || quote.fiftyTwoWeekHigh;
   const low52 = metrics?.fiftyTwoWeekLow || quote.fiftyTwoWeekLow;
@@ -22,7 +23,20 @@ export const KeyStatsGrid: React.FC<KeyStatsGridProps> = ({ quote, metrics }) =>
     rangePercent = Math.min(100, Math.max(0, ((quote.price - low52) / (high52 - low52)) * 100));
   }
 
-  const stats = isCrypto
+  const stats = isCommodity
+    ? [
+        { label: 'Contract Open', value: formatCurrency(quote.open, currency) },
+        { label: 'Session High', value: formatCurrency(quote.dayHigh, currency) },
+        { label: 'Session Low', value: formatCurrency(quote.dayLow, currency) },
+        { label: 'Settle / Prev Close', value: formatCurrency(quote.previousClose, currency) },
+        { label: 'Contract Volume', value: formatCompactNumber(quote.volume) },
+        { label: '52W High', value: high52 ? formatCurrency(high52, currency) : '--' },
+        { label: '52W Low', value: low52 ? formatCurrency(low52, currency) : '--' },
+        { label: 'Asset Class', value: 'Commodity Futures' },
+        { label: 'Venue', value: quote.exchange || 'CME / NYMEX / ICE' },
+        { label: 'Trading Session', value: '24/5 CME Globex' },
+      ]
+    : isCrypto
     ? [
         { label: 'Open', value: formatCurrency(quote.open, currency) },
         { label: '24h High', value: formatCurrency(quote.dayHigh, currency) },

@@ -7,6 +7,7 @@ async function fetchRssNews(symbol) {
     const isIndia = symbol.endsWith('.NS') || symbol.endsWith('.BO');
     const isCrypto = symbol.includes('-USD');
     const isForex = symbol.includes('=X');
+    const isCommodity = symbol.includes('=F');
 
     let query = `${symbol} stock`;
     if (isIndia) {
@@ -17,6 +18,22 @@ async function fetchRssNews(symbol) {
     } else if (isForex) {
       const pair = symbol.replace('=X', '');
       query = `${pair} forex currency central bank`;
+    } else if (isCommodity) {
+      const commMap = {
+        'GC=F': 'Gold price futures',
+        'SI=F': 'Silver price futures',
+        'CL=F': 'Crude oil WTI petroleum',
+        'BZ=F': 'Brent crude oil energy',
+        'NG=F': 'Natural gas futures energy',
+        'HG=F': 'Copper futures metal',
+        'ZC=F': 'Corn grain futures agriculture',
+        'ZW=F': 'Wheat grain futures agriculture',
+        'ZS=F': 'Soybeans futures agriculture',
+        'KC=F': 'Coffee futures market',
+        'SB=F': 'Sugar futures commodity',
+        'CC=F': 'Cocoa futures price',
+      };
+      query = commMap[symbol] || `${symbol.replace('=F', '')} commodity futures price`;
     }
 
     const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;

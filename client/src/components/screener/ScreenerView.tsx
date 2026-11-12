@@ -9,7 +9,7 @@ interface ScreenerViewProps {
 }
 
 export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => {
-  const [market, setMarket] = useState<'us' | 'in' | 'crypto' | 'forex' | 'all'>('us');
+  const [market, setMarket] = useState<'us' | 'in' | 'crypto' | 'forex' | 'commodities' | 'all'>('us');
   const [sector, setSector] = useState('All');
   const [capBucket, setCapBucket] = useState('All');
   const [minPe, setMinPe] = useState('');
@@ -136,7 +136,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
             <SlidersHorizontal className="w-5 h-5 text-blue-400" /> Multi-Factor Stock Screener
           </h1>
           <p className="text-xs text-slate-400">
-            Filter 1,020+ stocks across US and Indian markets by fundamental valuation and technical momentum
+            Filter 1,050+ assets across US, Indian, Crypto, Forex, and Commodity markets
           </p>
         </div>
 
@@ -178,6 +178,7 @@ export const ScreenerView: React.FC<ScreenerViewProps> = ({ onSelectStock }) => 
               <option value="in">Indian Stocks (NIFTY 500)</option>
               <option value="crypto">Cryptocurrencies (Top 50)</option>
               <option value="forex">Forex (Currency Pairs)</option>
+              <option value="commodities">Commodities (Futures)</option>
               <option value="all">Global (All Universes)</option>
             </select>
           </div>

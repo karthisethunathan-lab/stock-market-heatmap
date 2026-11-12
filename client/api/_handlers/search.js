@@ -24,17 +24,19 @@ export default async function handler(req, res) {
         q.quoteType === 'ETF' ||
         q.quoteType === 'CRYPTOCURRENCY' ||
         q.quoteType === 'CURRENCY' ||
+        q.quoteType === 'FUTURE' ||
         !q.quoteType
       ))
       .map((q) => {
         const isIndia = q.symbol.endsWith('.NS') || q.symbol.endsWith('.BO');
         const isCrypto = q.quoteType === 'CRYPTOCURRENCY' || q.symbol.includes('-USD');
         const isForex = q.quoteType === 'CURRENCY' || q.symbol.includes('=X');
+        const isCommodity = q.quoteType === 'FUTURE' || q.symbol.includes('=F');
         return {
           symbol: q.symbol,
           name: q.shortname || q.longname || q.symbol,
-          exchange: isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : (q.exchange || (isIndia ? 'NSE' : 'US')),
-          type: q.quoteType || (isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : 'EQUITY'),
+          exchange: isCrypto ? 'CRYPTO' : isForex ? 'FOREX' : isCommodity ? 'COMMODITY' : (q.exchange || (isIndia ? 'NSE' : 'US')),
+          type: q.quoteType || (isCrypto ? 'CRYPTOCURRENCY' : isForex ? 'CURRENCY' : isCommodity ? 'FUTURE' : 'EQUITY'),
           currency: isIndia ? 'INR' : 'USD',
         };
       });

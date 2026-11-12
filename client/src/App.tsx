@@ -23,6 +23,7 @@ const MainLayout: React.FC = () => {
         {activeTab === 'in' && <HeatmapView market="in" />}
         {activeTab === 'crypto' && <HeatmapView market="crypto" />}
         {activeTab === 'forex' && <HeatmapView market="forex" />}
+        {activeTab === 'commodities' && <HeatmapView market="commodities" />}
         {activeTab === 'portfolios' && <PortfolioPage />}
         {activeTab === 'watchlist' && <WatchlistView />}
         {activeTab === 'screener' && <ScreenerView onSelectStock={openStock} />}

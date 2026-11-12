@@ -3,7 +3,7 @@ import { GroupByOption, SizeMetric, ColorMetric, TimeframeType } from '../../typ
 import { Layers, PieChart, Sliders } from 'lucide-react';
 
 interface CategoryViewsBarProps {
-  market: 'us' | 'in' | 'crypto' | 'forex';
+  market: 'us' | 'in' | 'crypto' | 'forex' | 'commodities';
   groupBy: GroupByOption;
   onGroupByChange: (val: GroupByOption) => void;
   sizeMetric: SizeMetric;
@@ -44,8 +44,11 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
   const isIndia = market === 'in';
   const isCrypto = market === 'crypto';
   const isForex = market === 'forex';
+  const isCommodities = market === 'commodities';
 
-  const indices = isCrypto
+  const indices = isCommodities
+    ? ['All', 'Precious Metals', 'Energy', 'Industrial Metals', 'Agriculture', 'Livestock']
+    : isCrypto
     ? ['All', 'Top 10', 'Top 20', 'Layer 1', 'DeFi', 'Meme Coins', 'AI Cryptos', 'Layer 2']
     : isForex
       ? ['All', 'Majors', 'Minors', 'Emerging Markets', 'G10 Currencies', 'Yen Crosses', 'Asia FX']
@@ -67,7 +70,17 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           ]
         : ['All', 'S&P 500', 'Nasdaq-100', 'Dow 30', 'Popular ETFs'];
 
-  const sectors = isCrypto
+  const sectors = isCommodities
+    ? [
+        'All',
+        'Precious Metals',
+        'Energy',
+        'Industrial Metals',
+        'Agriculture & Grains',
+        'Soft Commodities',
+        'Livestock & Meat',
+      ]
+    : isCrypto
     ? [
         'All',
         'Layer 1 / Store of Value',
@@ -116,7 +129,17 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
             'ETFs',
           ];
 
-  const presets = isCrypto
+  const presets = isCommodities
+    ? [
+        { id: '', label: 'All Commodities' },
+        { id: 'gainers', label: '🔥 Top Gainers' },
+        { id: 'losers', label: '❄️ Top Losers' },
+        { id: 'active', label: '⚡ Highest Volume' },
+        { id: 'energy', label: '🛢️ Energy Complex' },
+        { id: 'metals', label: '🪙 Metals Complex' },
+        { id: 'near-52w-high', label: '🏔️ Near 52W High' },
+      ]
+    : isCrypto
     ? [
         { id: '', label: 'All Cryptos' },
         { id: 'gainers', label: '🔥 Top Gainers' },
@@ -198,8 +221,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           </select>
         </div>
 
-        {/* Cap Bucket Filter (hide for forex) */}
-        {!isForex && (
+        {/* Cap Bucket Filter (hide for forex & commodities) */}
+        {!isForex && !isCommodities && (
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">Cap:</span>
             <select
@@ -263,7 +286,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
           >
             <option value="change">% Change ({timeframe.toUpperCase()})</option>
             <option value="volume">Volume vs Avg</option>
-            {!isCrypto && !isForex && <option value="pe">P/E Ratio</option>}
+            {!isCrypto && !isForex && !isCommodities && <option value="pe">P/E Ratio</option>}
             <option value="dist52whigh">Distance from 52W High</option>
           </select>
         </div>

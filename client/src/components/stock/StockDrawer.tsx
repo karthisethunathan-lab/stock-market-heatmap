@@ -12,6 +12,7 @@ import { PeersTab } from './PeersTab';
 import { CryptoTokenomicsTab } from './CryptoTokenomicsTab';
 import { ForexMechanicsTab } from './ForexMechanicsTab';
 import { ForexCrossRatesTab } from './ForexCrossRatesTab';
+import { CommoditySpecsTab } from './CommoditySpecsTab';
 import { CompareModal } from './CompareModal';
 import { PriceAlertsModal } from '../alerts/PriceAlertsModal';
 import { AddHoldingModal } from '../portfolio/AddHoldingModal';
@@ -36,7 +37,8 @@ type DrawerTab =
   | 'peers'
   | 'tokenomics'
   | 'mechanics'
-  | 'crossrates';
+  | 'crossrates'
+  | 'specs';
 
 export const StockDrawer: React.FC = () => {
   const {
@@ -68,6 +70,7 @@ export const StockDrawer: React.FC = () => {
 
   const isCrypto = Boolean(selectedSymbol && selectedSymbol.includes('-USD'));
   const isForex = Boolean(selectedSymbol && selectedSymbol.includes('=X'));
+  const isCommodity = Boolean(selectedSymbol && selectedSymbol.includes('=F'));
 
   // Ensure active tab is valid for current asset type
   useEffect(() => {
@@ -122,10 +125,19 @@ export const StockDrawer: React.FC = () => {
     ? selectedSymbol.replace('=X', '').replace(/([A-Z]{3})([A-Z]{3})/, '$1 / $2')
     : isCrypto
       ? selectedSymbol.replace('-USD', '')
-      : selectedSymbol.replace('.NS', '');
+      : isCommodity
+        ? selectedSymbol.replace('=F', '')
+        : selectedSymbol.replace('.NS', '');
 
   // Dynamic tabs according to asset class
-  const tabs: Array<{ id: DrawerTab; label: string }> = isCrypto
+  const tabs: Array<{ id: DrawerTab; label: string }> = isCommodity
+    ? [
+        { id: 'overview', label: 'Overview' },
+        { id: 'specs', label: 'Contract Specs' },
+        { id: 'news', label: 'Commodity News' },
+        { id: 'peers', label: 'Related Commodities' },
+      ]
+    : isCrypto
     ? [
         { id: 'overview', label: 'Overview' },
         { id: 'tokenomics', label: 'Tokenomics & Supply' },
@@ -181,7 +193,7 @@ export const StockDrawer: React.FC = () => {
                   {cleanDisplay}
                 </h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700">
-                  {isCrypto ? 'Crypto' : isForex ? 'Forex' : quote?.exchange || (selectedSymbol.endsWith('.NS') ? 'NSE' : 'US')}
+                  {isCrypto ? 'Crypto' : isForex ? 'Forex' : isCommodity ? 'Commodity' : quote?.exchange || (selectedSymbol.endsWith('.NS') ? 'NSE' : 'US')}
                 </span>
               </div>
               <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
@@ -330,6 +342,9 @@ export const StockDrawer: React.FC = () => {
 
           {/* Crypto Tokenomics Tab */}
           {activeTab === 'tokenomics' && <CryptoTokenomicsTab symbol={selectedSymbol} />}
+
+          {/* Commodity Specs Tab */}
+          {activeTab === 'specs' && <CommoditySpecsTab symbol={selectedSymbol} />}
 
           {/* Forex Mechanics Tab */}
           {activeTab === 'mechanics' && <ForexMechanicsTab symbol={selectedSymbol} />}

@@ -52,6 +52,7 @@ export default async function handler(req, res) {
       ...loadUniverse('in').map((s) => ({ ...s, currency: 'INR' })),
       ...loadUniverse('crypto').map((s) => ({ ...s, currency: 'USD' })),
       ...loadUniverse('forex').map((s) => ({ ...s, currency: s.currency || 'USD' })),
+      ...loadUniverse('commodities').map((s) => ({ ...s, currency: 'USD' })),
     ];
   } else if (m === 'in' || m === 'india') {
     pool = loadUniverse('in').map((s) => ({ ...s, currency: 'INR' }));
@@ -59,6 +60,8 @@ export default async function handler(req, res) {
     pool = loadUniverse('crypto').map((s) => ({ ...s, currency: 'USD' }));
   } else if (m === 'forex' || m === 'fx') {
     pool = loadUniverse('forex').map((s) => ({ ...s, currency: s.currency || 'USD' }));
+  } else if (m === 'commodities' || m === 'commodity') {
+    pool = loadUniverse('commodities').map((s) => ({ ...s, currency: 'USD' }));
   } else {
     pool = loadUniverse('us').map((s) => ({ ...s, currency: 'USD' }));
   }
