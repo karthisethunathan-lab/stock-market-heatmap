@@ -116,9 +116,9 @@ export const MarketOverviewStrip: React.FC<MarketOverviewStripProps> = ({ onSele
         <div className="flex items-center gap-1.5">
           <span
             className={`w-2 h-2 rounded-full ${
-              data.markets.us.isOpen
+              data.markets?.us?.isOpen
                 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]'
-                : data.markets.us.status === 'PRE-MARKET' || data.markets.us.status === 'POST-MARKET'
+                : data.markets?.us?.status === 'PRE-MARKET' || data.markets?.us?.status === 'POST-MARKET'
                 ? 'bg-amber-500'
                 : 'bg-slate-500'
             }`}
@@ -126,21 +126,21 @@ export const MarketOverviewStrip: React.FC<MarketOverviewStripProps> = ({ onSele
           <span className="font-medium text-slate-300">US:</span>
           <span
             className={`${
-              data.markets.us.isOpen ? 'text-emerald-400 font-semibold' : 'text-slate-400'
+              data.markets?.us?.isOpen ? 'text-emerald-400 font-semibold' : 'text-slate-400'
             }`}
           >
-            {data.markets.us.sessionLabel}
+            {data.markets?.us?.sessionLabel || 'Closed'}
           </span>
-          <span className="text-slate-500">({data.markets.us.localTime})</span>
+          <span className="text-slate-500">({data.markets?.us?.localTime || '--'})</span>
         </div>
 
         {/* India Badge */}
         <div className="flex items-center gap-1.5">
           <span
             className={`w-2 h-2 rounded-full ${
-              data.markets.india.isOpen
+              data.markets?.india?.isOpen
                 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]'
-                : data.markets.india.status === 'PRE-MARKET' || data.markets.india.status === 'POST-MARKET'
+                : data.markets?.india?.status === 'PRE-MARKET' || data.markets?.india?.status === 'POST-MARKET'
                 ? 'bg-amber-500'
                 : 'bg-slate-500'
             }`}
@@ -148,12 +148,12 @@ export const MarketOverviewStrip: React.FC<MarketOverviewStripProps> = ({ onSele
           <span className="font-medium text-slate-300">India:</span>
           <span
             className={`${
-              data.markets.india.isOpen ? 'text-emerald-400 font-semibold' : 'text-slate-400'
+              data.markets?.india?.isOpen ? 'text-emerald-400 font-semibold' : 'text-slate-400'
             }`}
           >
-            {data.markets.india.sessionLabel}
+            {data.markets?.india?.sessionLabel || 'Closed'}
           </span>
-          <span className="text-slate-500">({data.markets.india.localTime})</span>
+          <span className="text-slate-500">({data.markets?.india?.localTime || '--'})</span>
         </div>
       </div>
     </div>

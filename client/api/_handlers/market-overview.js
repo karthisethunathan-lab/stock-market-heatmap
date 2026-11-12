@@ -188,7 +188,10 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     data: {
-      markets: [getUSMarketStatus(), getIndiaMarketStatus()],
+      markets: {
+        us: getUSMarketStatus(),
+        india: getIndiaMarketStatus(),
+      },
       indices: results,
       lastUpdated: new Date().toISOString(),
     },
