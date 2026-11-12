@@ -3,8 +3,6 @@ import { useApp } from '../../context/ThemeContext';
 import { TopLevelTab } from '../../types';
 import {
   Search,
-  Sun,
-  Moon,
   Eye,
   TrendingUp,
   Briefcase,
@@ -20,8 +18,6 @@ import { SearchModal } from './SearchModal';
 
 export const Navbar: React.FC = () => {
   const {
-    theme,
-    toggleTheme,
     colorMode,
     toggleColorMode,
     activeTab,
@@ -134,15 +130,6 @@ export const Navbar: React.FC = () => {
               <span className="hidden lg:inline text-[11px]">
                 {colorMode === 'colorblind' ? 'Blue/Org' : 'Red/Grn'}
               </span>
-            </button>
-
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
-              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
           </div>
         </div>

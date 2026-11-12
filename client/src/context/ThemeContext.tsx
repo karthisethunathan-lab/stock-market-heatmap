@@ -49,9 +49,7 @@ function getInitialSymbolFromURL(): string | null {
 }
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<ThemeMode>(() => {
-    return (localStorage.getItem('mp_theme') as ThemeMode) || 'dark';
-  });
+  const [theme, setTheme] = useState<ThemeMode>('dark');
 
   const [colorMode, setColorMode] = useState<ColorMode>(() => {
     return (localStorage.getItem('mp_colormode') as ColorMode) || 'standard';
@@ -62,16 +60,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Apply dark theme to <html>
+  // Permanently enforce dark theme on <html>
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('mp_theme', theme);
-  }, [theme]);
+    root.classList.add('dark');
+    localStorage.setItem('mp_theme', 'dark');
+  }, []);
 
   // Persist colorMode
   useEffect(() => {
