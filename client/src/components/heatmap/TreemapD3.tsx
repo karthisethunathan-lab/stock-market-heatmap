@@ -136,7 +136,11 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
 
     const root = d3
       .hierarchy<any>(rootData)
-      .sum((d: any) => (d.tileValue && d.tileValue > 0 ? d.tileValue : d.marketCap && d.marketCap > 0 ? d.marketCap : 1))
+      .sum((d: any) => {
+        const raw = d.tileValue && d.tileValue > 0 ? d.tileValue : d.marketCap && d.marketCap > 0 ? d.marketCap : 1;
+        // Sublinear power-damped scaling (0.58) so mid and small caps receive sufficient area to be visible and readable
+        return raw > 1e4 ? Math.pow(raw, 0.58) : raw;
+      })
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
     const treemapLayout = d3
@@ -228,57 +232,58 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
     <div
       ref={containerRef}
       className={`relative w-full ${
-        isFullscreen ? 'h-screen p-4' : 'h-[650px] lg:h-[720px]'
+        isFullscreen ? 'h-screen p-4' : 'h-[520px] sm:h-[620px] lg:h-[720px]'
       } bg-[#080d1a] rounded-xl border border-slate-800/80 overflow-hidden select-none flex flex-col`}
     >
       {/* Top Header Strip with Zoom Breadcrumbs & Action Controls */}
-      <div className="h-10 px-3 bg-slate-950/70 border-b border-slate-800/80 flex items-center justify-between text-xs z-20">
+      <div className="h-10 px-3 bg-slate-950/70 border-b border-slate-800/80 flex items-center justify-between text-xs z-20 gap-2">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-1.5 font-medium">
+        <div className="flex items-center gap-1 font-medium truncate min-w-0">
           <button
             onClick={() => setZoomedSector(null)}
-            className={`flex items-center gap-1 px-2 py-1 rounded transition ${
+            className={`flex items-center gap-1 px-2 py-1 rounded transition shrink-0 ${
               !zoomedSector
                 ? 'bg-blue-600/30 text-blue-400 font-semibold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
-            <Home className="w-3.5 h-3.5" /> All Sectors
+            <Home className="w-3.5 h-3.5" /> <span className="hidden sm:inline">All Sectors</span>
           </button>
 
           {zoomedSector && (
             <>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
-              <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-semibold">
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-semibold truncate text-[11px] sm:text-xs">
                 {zoomedSector}
               </span>
               <button
                 onClick={() => setZoomedSector(null)}
-                className="text-[11px] text-blue-400 hover:underline ml-2"
+                className="text-[11px] text-blue-400 hover:underline ml-1 shrink-0 hidden sm:inline"
               >
-                (Click to Zoom Out)
+                (Zoom Out)
               </button>
             </>
           )}
         </div>
 
         {/* Action Controls: Export PNG & Fullscreen */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleExportPNG}
             disabled={isExporting}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-50"
+            className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-50 text-[11px] sm:text-xs"
             title="Export heatmap as PNG image"
           >
-            <Camera className="w-3.5 h-3.5" /> {isExporting ? 'Saving...' : 'Export PNG'}
+            <Camera className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{isExporting ? 'Saving...' : 'Export PNG'}</span>
           </button>
 
           <button
             onClick={toggleFullscreen}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition"
+            className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-[11px] sm:text-xs"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Heatmap'}
           >
             {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+            <span className="hidden sm:inline">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
           </button>
         </div>
       </div>
@@ -314,10 +319,10 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
           const color = getTileMetricColor(stock);
           const flash = priceFlashes[stock.symbol];
 
-          const showSymbol = tileWidth >= 30 && tileHeight >= 20;
-          const showChange = tileWidth >= 42 && tileHeight >= 32;
-          const showPrice = tileWidth >= 65 && tileHeight >= 48;
-          const showFullName = tileWidth >= 115 && tileHeight >= 75;
+          const showSymbol = tileWidth >= 22 && tileHeight >= 14;
+          const showChange = tileWidth >= 32 && tileHeight >= 22;
+          const showPrice = tileWidth >= 52 && tileHeight >= 36;
+          const showFullName = tileWidth >= 95 && tileHeight >= 55;
 
           const flashClass = flash === 'up'
             ? 'ring-2 ring-emerald-400 brightness-130 scale-[1.02] z-30 shadow-lg shadow-emerald-500/40 animate-pulse'
@@ -352,7 +357,13 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
               {showSymbol && (
                 <div
                   className={`font-mono font-bold tracking-tight text-white leading-none ${
-                    tileWidth < 50 ? 'text-[11px]' : tileWidth < 80 ? 'text-xs' : 'text-sm'
+                    tileWidth < 36 || tileHeight < 20
+                      ? 'text-[9px]'
+                      : tileWidth < 55
+                        ? 'text-[10px]'
+                        : tileWidth < 80
+                          ? 'text-xs'
+                          : 'text-sm'
                   }`}
                 >
                   {stock.symbol.includes('=X')
@@ -369,8 +380,8 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
 
               {showChange && (
                 <div
-                  className={`font-mono font-medium leading-none mt-1 ${
-                    tileWidth < 50 ? 'text-[10px]' : 'text-xs'
+                  className={`font-mono font-medium leading-none mt-0.5 ${
+                    tileWidth < 38 || tileHeight < 26 ? 'text-[9px]' : tileWidth < 55 ? 'text-[10px]' : 'text-xs'
                   } text-white/95`}
                 >
                   {getTileMetricLabel(stock)}

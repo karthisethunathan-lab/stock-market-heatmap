@@ -219,9 +219,9 @@ export default async function handler(req, res) {
 
     // Calculate tile value and color metric
     const processedStocks = stocks.map((s) => {
-      let tileValue = s.marketCap || 1e9;
+      let tileValue = s.marketCap && s.marketCap > 0 ? Math.round(Math.pow(s.marketCap, 0.58)) : 1000;
       if (sizeMetric === 'volume') {
-        tileValue = s.volume && s.volume > 0 ? s.volume : 1e6;
+        tileValue = s.volume && s.volume > 0 ? Math.round(Math.pow(s.volume, 0.65)) : 1e4;
       } else if (sizeMetric === 'equal') {
         tileValue = 1000;
       }

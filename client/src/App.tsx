@@ -14,7 +14,7 @@ const MainLayout: React.FC = () => {
   const { activeTab, openStock } = useApp();
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#070a12] text-slate-100 font-sans">
+    <div className="flex flex-col min-h-screen bg-[#070a12] text-slate-100 font-sans overflow-x-hidden">
       <Navbar />
       <MarketOverviewStrip onSelectStock={openStock} />
 

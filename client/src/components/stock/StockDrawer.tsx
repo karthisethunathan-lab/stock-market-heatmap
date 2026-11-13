@@ -256,7 +256,7 @@ export const StockDrawer: React.FC = () => {
             {/* Compare Button */}
             <button
               onClick={() => setCompareModalOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-xs font-semibold transition"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-[11px] sm:text-xs font-semibold transition"
               title="Compare with other assets"
             >
               <Scale className="w-3.5 h-3.5 text-blue-400" />
@@ -266,7 +266,7 @@ export const StockDrawer: React.FC = () => {
             {/* Price Alert Button */}
             <button
               onClick={() => setAlertsModalOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-xs font-semibold transition"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white text-[11px] sm:text-xs font-semibold transition"
               title="Set Price Alert"
             >
               <Bell className="w-3.5 h-3.5 text-amber-400" />
@@ -276,7 +276,7 @@ export const StockDrawer: React.FC = () => {
             {/* Watchlist Toggle */}
             <button
               onClick={() => toggleWatchlist(selectedSymbol)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-[11px] sm:text-xs font-semibold transition-all ${
                 isWatched
                   ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
                   : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-750'
@@ -289,29 +289,31 @@ export const StockDrawer: React.FC = () => {
             {/* Add Holding Button */}
             <button
               onClick={() => setAddModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-950/40 transition-colors"
+              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-semibold shadow-md shadow-emerald-950/40 transition-colors"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
               <span>Add Holding</span>
             </button>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center px-4 bg-slate-950/90 border-b border-slate-800 text-xs font-semibold overflow-x-auto scrollbar-thin">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 border-b-2 transition capitalize whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'border-blue-500 text-blue-400 font-bold bg-blue-950/20'
-                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="relative border-b border-slate-800 bg-slate-950/90">
+          <div className="flex items-center px-4 text-xs font-semibold overflow-x-auto scrollbar-none flex-nowrap" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3.5 sm:px-4 py-2.5 border-b-2 transition capitalize whitespace-nowrap shrink-0 ${
+                  activeTab === tab.id
+                    ? 'border-blue-500 text-blue-400 font-bold bg-blue-950/20'
+                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Drawer Body - Tab Content */}
