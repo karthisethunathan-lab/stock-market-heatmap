@@ -1,19 +1,44 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHeatmap } from '../../hooks/useHeatmap';
 import { useApp } from '../../context/ThemeContext';
 import { TreemapD3 } from './TreemapD3';
+import { SectorHeatmapCard } from './SectorHeatmapCard';
 import { CategoryViewsBar } from '../common/CategoryViewsBar';
 import { SectorPerformanceBar } from './SectorPerformanceBar';
 import { GainersLosersPanel } from './GainersLosersPanel';
 import { Skeleton } from '../common/Skeleton';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { HeatmapViewMode, SectorGroup } from '../../types';
 
 interface HeatmapViewProps {
   market: 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodities';
 }
 
+// Sort sectors so Financial Services / Banking is at the top, followed by market cap
+function sortSectorsWithFinancialsFirst(rawSectors: SectorGroup[]): SectorGroup[] {
+  return [...rawSectors].sort((a, b) => {
+    const isAFin = a.name.toLowerCase().includes('finan') || a.name.toLowerCase().includes('bank');
+    const isBFin = b.name.toLowerCase().includes('finan') || b.name.toLowerCase().includes('bank');
+    if (isAFin && !isBFin) return -1;
+    if (!isAFin && isBFin) return 1;
+    const capA = a.marketCap || 0;
+    const capB = b.marketCap || 0;
+    if (capA !== capB) return capB - capA;
+    return (b.stocks?.length || 0) - (a.stocks?.length || 0);
+  });
+}
+
 export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
   const { openStock, colorMode } = useApp();
+  const [viewMode, setViewMode] = useState<HeatmapViewMode>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParam = new URLSearchParams(window.location.search).get('view');
+      if (urlParam === 'unified' || urlParam === 'stacked') return urlParam;
+      if (window.innerWidth < 768) return 'stacked';
+    }
+    return 'stacked';
+  });
+
   const {
     timeframe,
     setTimeframe,
@@ -40,6 +65,15 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
     marketStatus,
     priceFlashes,
   } = useHeatmap(market);
+
+  // Compute sorted sectors (Financials at the top when viewing all sectors)
+  const sortedSectors = useMemo(() => {
+    if (!sectors || sectors.length === 0) return [];
+    if (selectedSector && selectedSector !== 'All') {
+      return sectors.filter((s) => s.name === selectedSector);
+    }
+    return sortSectorsWithFinancialsFirst(sectors);
+  }, [sectors, selectedSector]);
 
   // Compute market breadth (Advances / Declines)
   const marketStats = useMemo(() => {
@@ -83,6 +117,8 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
         onCapBucketChange={setSelectedCapBucket}
         selectedPreset={selectedPreset}
         onPresetChange={setSelectedPreset}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
 
       {/* Market Breadth & Advance/Decline Strip */}
@@ -141,7 +177,7 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
         </div>
       </div>
 
-      {/* Full-Width Treemap Container */}
+      {/* Heatmap Area: Stacked Sector Cards or Unified Treemap */}
       <div className="w-full">
         {loading && sectors.length === 0 ? (
           <div className="w-full h-[700px] rounded-xl border border-slate-800 p-4 flex flex-col gap-3">
@@ -166,9 +202,38 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
               <RefreshCw className="w-4 h-4" /> Retry
             </button>
           </div>
+        ) : viewMode === 'stacked' ? (
+          <div className="flex flex-col gap-4 w-full">
+            {/* If a single sector was filtered via dropdown/focus, show active filter banner with clear button */}
+            {selectedSector && selectedSector !== 'All' && (
+              <div className="flex items-center justify-between px-3.5 py-2 bg-blue-950/40 border border-blue-900/60 rounded-xl text-xs">
+                <span className="text-slate-300">
+                  Focusing on: <strong className="text-blue-400 font-bold">{selectedSector}</strong>
+                </span>
+                <button
+                  onClick={() => setSelectedSector('All')}
+                  className="text-xs text-blue-400 hover:text-blue-300 hover:underline font-semibold"
+                >
+                  Show All Sectors
+                </button>
+              </div>
+            )}
+
+            {sortedSectors.map((sec) => (
+              <SectorHeatmapCard
+                key={sec.name}
+                sector={sec}
+                onSelectStock={openStock}
+                onFocusSector={(name) => setSelectedSector(name)}
+                colorMode={colorMode}
+                colorMetric={colorMetric}
+                priceFlashes={priceFlashes}
+              />
+            ))}
+          </div>
         ) : (
           <TreemapD3
-            sectors={sectors}
+            sectors={sortedSectors}
             onSelectStock={openStock}
             colorMode={colorMode}
             colorMetric={colorMetric}
@@ -180,7 +245,7 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
       {/* Bottom Analytics Panels: Sector Performance & Top Gainers/Losers side-by-side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
         <SectorPerformanceBar
-          sectors={sectors}
+          sectors={sortedSectors}
           selectedSector={selectedSector}
           onSelectSector={(sec) => setSelectedSector(selectedSector === sec ? 'All' : sec)}
         />

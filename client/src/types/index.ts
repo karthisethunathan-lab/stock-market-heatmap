@@ -9,6 +9,7 @@ export type TopLevelTab = 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodi
 export type GroupByOption = 'sector' | 'industry' | 'index' | 'capbucket';
 export type SizeMetric = 'marketcap' | 'volume' | 'equal';
 export type ColorMetric = 'change' | 'volume' | 'pe' | 'dist52whigh';
+export type HeatmapViewMode = 'stacked' | 'unified';
 
 export interface StockTile {
   symbol: string;

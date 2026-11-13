@@ -12,6 +12,9 @@ interface TreemapD3Props {
   colorMode?: ColorMode;
   colorMetric?: ColorMetric;
   priceFlashes?: Record<string, 'up' | 'down'>;
+  heightClass?: string;
+  hideToolbar?: boolean;
+  hideSectorHeader?: boolean;
 }
 
 interface HierarchyLeaf {
@@ -39,6 +42,9 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
   colorMode = 'standard',
   colorMetric = 'change',
   priceFlashes = {},
+  heightClass = 'h-[520px] sm:h-[620px] lg:h-[720px]',
+  hideToolbar = false,
+  hideSectorHeader = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapElementRef = useRef<HTMLDivElement>(null);
@@ -143,11 +149,12 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
       })
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
+    const headerOffset = hideToolbar ? 0 : zoomedSector ? 40 : 45;
     const treemapLayout = d3
       .treemap<any>()
-      .size([dimensions.width, dimensions.height - (zoomedSector ? 40 : 45)])
+      .size([dimensions.width, Math.max(120, dimensions.height - headerOffset)])
       .tile(d3.treemapSquarify.ratio(1.3))
-      .paddingTop(22)
+      .paddingTop(hideSectorHeader ? 2 : 22)
       .paddingInner(2)
       .paddingOuter(3)
       .round(true);
@@ -232,84 +239,87 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
     <div
       ref={containerRef}
       className={`relative w-full ${
-        isFullscreen ? 'h-screen p-4' : 'h-[520px] sm:h-[620px] lg:h-[720px]'
+        isFullscreen ? 'h-screen p-4' : heightClass
       } bg-[#080d1a] rounded-xl border border-slate-800/80 overflow-hidden select-none flex flex-col`}
     >
       {/* Top Header Strip with Zoom Breadcrumbs & Action Controls */}
-      <div className="h-10 px-3 bg-slate-950/70 border-b border-slate-800/80 flex items-center justify-between text-xs z-20 gap-2">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-1 font-medium truncate min-w-0">
-          <button
-            onClick={() => setZoomedSector(null)}
-            className={`flex items-center gap-1 px-2 py-1 rounded transition shrink-0 ${
-              !zoomedSector
-                ? 'bg-blue-600/30 text-blue-400 font-semibold'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Home className="w-3.5 h-3.5" /> <span className="hidden sm:inline">All Sectors</span>
-          </button>
+      {!hideToolbar && (
+        <div className="h-10 px-3 bg-slate-950/70 border-b border-slate-800/80 flex items-center justify-between text-xs z-20 gap-2">
+          {/* Breadcrumb Navigation */}
+          <div className="flex items-center gap-1 font-medium truncate min-w-0">
+            <button
+              onClick={() => setZoomedSector(null)}
+              className={`flex items-center gap-1 px-2 py-1 rounded transition shrink-0 ${
+                !zoomedSector
+                  ? 'bg-blue-600/30 text-blue-400 font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Home className="w-3.5 h-3.5" /> <span className="hidden sm:inline">All Sectors</span>
+            </button>
 
-          {zoomedSector && (
-            <>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-              <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-semibold truncate text-[11px] sm:text-xs">
-                {zoomedSector}
-              </span>
-              <button
-                onClick={() => setZoomedSector(null)}
-                className="text-[11px] text-blue-400 hover:underline ml-1 shrink-0 hidden sm:inline"
-              >
-                (Zoom Out)
-              </button>
-            </>
-          )}
+            {zoomedSector && (
+              <>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-semibold truncate text-[11px] sm:text-xs">
+                  {zoomedSector}
+                </span>
+                <button
+                  onClick={() => setZoomedSector(null)}
+                  className="text-[11px] text-blue-400 hover:underline ml-1 shrink-0 hidden sm:inline"
+                >
+                  (Zoom Out)
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Action Controls: Export PNG & Fullscreen */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleExportPNG}
+              disabled={isExporting}
+              className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-50 text-[11px] sm:text-xs"
+              title="Export heatmap as PNG image"
+            >
+              <Camera className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{isExporting ? 'Saving...' : 'Export PNG'}</span>
+            </button>
+
+            <button
+              onClick={toggleFullscreen}
+              className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-[11px] sm:text-xs"
+              title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Heatmap'}
+            >
+              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
+            </button>
+          </div>
         </div>
-
-        {/* Action Controls: Export PNG & Fullscreen */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          <button
-            onClick={handleExportPNG}
-            disabled={isExporting}
-            className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-50 text-[11px] sm:text-xs"
-            title="Export heatmap as PNG image"
-          >
-            <Camera className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{isExporting ? 'Saving...' : 'Export PNG'}</span>
-          </button>
-
-          <button
-            onClick={toggleFullscreen}
-            className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-[11px] sm:text-xs"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Heatmap'}
-          >
-            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-            <span className="hidden sm:inline">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Main Treemap Area */}
       <div ref={mapElementRef} className="relative flex-1 w-full overflow-hidden bg-[#070b14]">
         {/* Sector Category Headers (Clickable to Zoom) */}
-        {sectorHeaders.map((sec) => {
-          const secWidth = sec.x1 - sec.x0;
-          return (
-            <div
-              key={sec.name}
-              style={{
-                left: `${sec.x0 + 4}px`,
-                top: `${sec.y0 + 2}px`,
-                maxWidth: `${secWidth - 8}px`,
-              }}
-              onClick={() => setZoomedSector(zoomedSector === sec.name ? null : sec.name)}
-              className="absolute z-10 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-300 hover:text-blue-400 bg-slate-900/70 hover:bg-slate-800 px-1.5 py-0.5 rounded cursor-pointer truncate transition flex items-center gap-1"
-              title={`Click to zoom into ${sec.name} (${sec.stocksCount} stocks)`}
-            >
-              <span>{sec.name}</span>
-              <span className="text-[10px] text-slate-500">({sec.stocksCount})</span>
-            </div>
-          );
-        })}
+        {!hideSectorHeader &&
+          sectorHeaders.map((sec) => {
+            const secWidth = sec.x1 - sec.x0;
+            return (
+              <div
+                key={sec.name}
+                style={{
+                  left: `${sec.x0 + 4}px`,
+                  top: `${sec.y0 + 2}px`,
+                  maxWidth: `${secWidth - 8}px`,
+                }}
+                onClick={() => setZoomedSector(zoomedSector === sec.name ? null : sec.name)}
+                className="absolute z-10 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-300 hover:text-blue-400 bg-slate-900/70 hover:bg-slate-800 px-1.5 py-0.5 rounded cursor-pointer truncate transition flex items-center gap-1"
+                title={`Click to zoom into ${sec.name} (${sec.stocksCount} stocks)`}
+              >
+                <span>{sec.name}</span>
+                <span className="text-[10px] text-slate-500">({sec.stocksCount})</span>
+              </div>
+            );
+          })}
 
         {/* Stock Tiles */}
         {leaves.map((leaf) => {

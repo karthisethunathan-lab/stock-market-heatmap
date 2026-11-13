@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { GroupByOption, SizeMetric, ColorMetric, TimeframeType } from '../../types';
-import { Layers, PieChart, Sliders, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { GroupByOption, SizeMetric, ColorMetric, TimeframeType, HeatmapViewMode } from '../../types';
+import { Layers, PieChart, Sliders, ChevronDown, ChevronUp, Filter, LayoutList, LayoutGrid } from 'lucide-react';
 
 interface CategoryViewsBarProps {
   market: 'global' | 'us' | 'in' | 'crypto' | 'forex' | 'commodities';
@@ -20,6 +20,8 @@ interface CategoryViewsBarProps {
   onCapBucketChange: (val: string) => void;
   selectedPreset: string;
   onPresetChange: (val: string) => void;
+  viewMode?: HeatmapViewMode;
+  onViewModeChange?: (mode: HeatmapViewMode) => void;
 }
 
 export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
@@ -40,6 +42,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
   onCapBucketChange,
   selectedPreset,
   onPresetChange,
+  viewMode = 'stacked',
+  onViewModeChange,
 }) => {
   const isIndia = market === 'in';
   const isCrypto = market === 'crypto';
@@ -193,23 +197,49 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
     <div className="w-full bg-slate-900/60 border-b border-slate-800 text-xs">
       {/* Mobile Top Bar (Clean 1-row view) */}
       <div className="md:hidden flex items-center justify-between px-3 py-2 gap-2">
-        <button
-          onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition ${
-            mobileFilterOpen || activeFilterCount > 0
-              ? 'bg-blue-600/20 border-blue-500 text-blue-300'
-              : 'bg-slate-800 border-slate-700 text-slate-300'
-          }`}
-        >
-          <Filter className="w-3.5 h-3.5 text-blue-400" />
-          <span>Filters & Views</span>
-          {activeFilterCount > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-500 text-white font-mono">
-              {activeFilterCount}
-            </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition ${
+              mobileFilterOpen || activeFilterCount > 0
+                ? 'bg-blue-600/20 border-blue-500 text-blue-300'
+                : 'bg-slate-800 border-slate-700 text-slate-300'
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5 text-blue-400" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-500 text-white font-mono">
+                {activeFilterCount}
+              </span>
+            )}
+            {mobileFilterOpen ? <ChevronUp className="w-3.5 h-3.5 ml-0.5" /> : <ChevronDown className="w-3.5 h-3.5 ml-0.5" />}
+          </button>
+
+          {/* Quick View Mode Toggle on Mobile */}
+          {onViewModeChange && (
+            <div className="inline-flex rounded-lg bg-slate-800 p-0.5 border border-slate-700">
+              <button
+                onClick={() => onViewModeChange('stacked')}
+                className={`p-1.5 rounded transition ${
+                  viewMode === 'stacked' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                }`}
+                title="Sector Feed (Stacked)"
+              >
+                <LayoutList className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => onViewModeChange('unified')}
+                className={`p-1.5 rounded transition ${
+                  viewMode === 'unified' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                }`}
+                title="Unified Treemap"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+            </div>
           )}
-          {mobileFilterOpen ? <ChevronUp className="w-3.5 h-3.5 ml-0.5" /> : <ChevronDown className="w-3.5 h-3.5 ml-0.5" />}
-        </button>
+        </div>
 
         {/* Timeframe quick buttons on mobile */}
         {colorMetric === 'change' && (
@@ -232,6 +262,33 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
       {/* Mobile Collapsible Drawer */}
       {mobileFilterOpen && (
         <div className="md:hidden p-3 bg-slate-950/90 border-t border-slate-800 flex flex-col gap-2.5 animate-in slide-in-from-top-2 duration-150">
+          {/* View Mode in Drawer */}
+          {onViewModeChange && (
+            <div className="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+              <span className="text-slate-400 font-semibold flex items-center gap-1">
+                View Layout
+              </span>
+              <div className="inline-flex rounded-lg bg-slate-800 p-0.5 border border-slate-700">
+                <button
+                  onClick={() => onViewModeChange('stacked')}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1 ${
+                    viewMode === 'stacked' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400'
+                  }`}
+                >
+                  <LayoutList className="w-3 h-3" /> Sector Feed
+                </button>
+                <button
+                  onClick={() => onViewModeChange('unified')}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1 ${
+                    viewMode === 'unified' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400'
+                  }`}
+                >
+                  <LayoutGrid className="w-3 h-3" /> Unified Map
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
             <span className="text-slate-400 font-semibold flex items-center gap-1">
               <Layers className="w-3.5 h-3.5 text-blue-400" /> Grouping Mode
@@ -448,6 +505,36 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
                   {tf}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* View Mode Toggle (Sector Feed vs Unified Map) */}
+          {onViewModeChange && (
+            <div className="inline-flex rounded-lg bg-slate-800/90 p-0.5 border border-slate-700/60">
+              <button
+                onClick={() => onViewModeChange('stacked')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold transition ${
+                  viewMode === 'stacked'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+                title="Sector-by-sector stacked feed (Financials at top, best readability)"
+              >
+                <LayoutList className="w-3.5 h-3.5" />
+                <span>Sector Feed</span>
+              </button>
+              <button
+                onClick={() => onViewModeChange('unified')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold transition ${
+                  viewMode === 'unified'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+                title="Unified all-in-one treemap"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Unified Map</span>
+              </button>
             </div>
           )}
         </div>
