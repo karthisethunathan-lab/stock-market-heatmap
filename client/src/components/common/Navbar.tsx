@@ -49,7 +49,7 @@ export const Navbar: React.FC = () => {
     { id: 'in', label: 'Indian Stocks', shortLabel: 'India', icon: <Flame className="w-4 h-4 text-orange-400" /> },
     { id: 'crypto', label: 'Crypto', shortLabel: 'Crypto', icon: <Coins className="w-4 h-4 text-amber-400" /> },
     { id: 'forex', label: 'Forex', shortLabel: 'Forex', icon: <ArrowLeftRight className="w-4 h-4 text-cyan-400" /> },
-    { id: 'commodities', label: 'Commodities', shortLabel: 'Commodities', icon: <Package className="w-4 h-4 text-emerald-400" /> },
+    { id: 'commodities', label: 'Commodities', shortLabel: 'Commodity', icon: <Package className="w-4 h-4 text-emerald-400" /> },
     { id: 'portfolios', label: 'Portfolios', shortLabel: 'Portfolio', icon: <Briefcase className="w-4 h-4" /> },
     { id: 'watchlist', label: 'Watchlist', shortLabel: 'Watchlist', icon: <Bookmark className="w-4 h-4" />, badge: watchlist.length },
     { id: 'screener', label: 'Screener', shortLabel: 'Screener', icon: <SlidersHorizontal className="w-4 h-4" /> },
@@ -58,9 +58,9 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-[#090d16]/95 backdrop-blur-md transition-colors overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
+        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Logo & Brand */}
-          <div className="flex items-center gap-3 xl:gap-6 min-w-0">
+          <div className="flex items-center gap-2 xl:gap-4 2xl:gap-6 min-w-0">
             <button
               onClick={() => setActiveTab('us')}
               className="flex items-center gap-2.5 group focus:outline-none shrink-0"
@@ -79,22 +79,22 @@ export const Navbar: React.FC = () => {
             </button>
 
             {/* Desktop Navigation Tabs: Responsive compact text on standard laptops, full text on large displays */}
-            <nav className="hidden lg:flex items-center space-x-1 overflow-x-auto no-scrollbar max-w-full">
+            <nav className="hidden lg:flex items-center space-x-0.5 2xl:space-x-1 shrink-0">
               {navItems.map((item) => {
                 const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all relative shrink-0 ${
+                    className={`flex items-center gap-1.5 px-2 2xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all relative shrink-0 ${
                       isActive
                         ? 'bg-slate-800 text-blue-400 shadow-sm border border-slate-700/60 font-bold'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                     }`}
                   >
                     {item.icon}
-                    <span className="hidden xl:inline">{item.label}</span>
-                    <span className="xl:hidden">{item.shortLabel}</span>
+                    <span className="hidden 2xl:inline">{item.label}</span>
+                    <span className="2xl:hidden">{item.shortLabel}</span>
                     {item.badge !== undefined && item.badge > 0 && (
                       <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-blue-500/20 text-blue-300 border border-blue-500/40">
                         {item.badge}
