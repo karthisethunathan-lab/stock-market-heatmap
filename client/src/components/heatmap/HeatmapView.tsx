@@ -30,7 +30,10 @@ function sortSectorsWithFinancialsFirst(rawSectors: SectorGroup[]): SectorGroup[
 
 export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
   const { openStock, colorMode } = useApp();
+  const isStockMarket = market === 'us' || market === 'in';
+
   const [viewMode, setViewMode] = useState<HeatmapViewMode>(() => {
+    if (!isStockMarket) return 'unified';
     if (typeof window !== 'undefined') {
       const urlParam = new URLSearchParams(window.location.search).get('view');
       if (urlParam === 'unified' || urlParam === 'stacked') return urlParam;
@@ -38,6 +41,9 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
     }
     return 'stacked';
   });
+
+  // Effective view mode: only US and Indian stocks use stacked feed; others always use unified
+  const effectiveViewMode: HeatmapViewMode = isStockMarket ? viewMode : 'unified';
 
   const {
     timeframe,
@@ -66,14 +72,19 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
     priceFlashes,
   } = useHeatmap(market);
 
-  // Compute sorted sectors (Financials at the top when viewing all sectors)
+  // Compute sorted sectors (Financials at the top only for US and Indian stocks when viewing all sectors)
   const sortedSectors = useMemo(() => {
     if (!sectors || sectors.length === 0) return [];
     if (selectedSector && selectedSector !== 'All') {
       return sectors.filter((s) => s.name === selectedSector);
     }
-    return sortSectorsWithFinancialsFirst(sectors);
-  }, [sectors, selectedSector]);
+    // Only US and Indian stocks pin Financials at the top
+    if (isStockMarket) {
+      return sortSectorsWithFinancialsFirst(sectors);
+    }
+    // Crypto, Forex, Commodities, Global retain their clean category order as in previous build
+    return sectors;
+  }, [sectors, selectedSector, isStockMarket]);
 
   // Compute market breadth (Advances / Declines)
   const marketStats = useMemo(() => {
@@ -117,7 +128,7 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
         onCapBucketChange={setSelectedCapBucket}
         selectedPreset={selectedPreset}
         onPresetChange={setSelectedPreset}
-        viewMode={viewMode}
+        viewMode={effectiveViewMode}
         onViewModeChange={setViewMode}
       />
 
@@ -202,7 +213,7 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
               <RefreshCw className="w-4 h-4" /> Retry
             </button>
           </div>
-        ) : viewMode === 'stacked' ? (
+        ) : effectiveViewMode === 'stacked' ? (
           <div className="flex flex-col gap-4 w-full">
             {/* If a single sector was filtered via dropdown/focus, show active filter banner with clear button */}
             {selectedSector && selectedSector !== 'All' && (

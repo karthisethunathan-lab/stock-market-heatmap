@@ -46,6 +46,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
   onViewModeChange,
 }) => {
   const isIndia = market === 'in';
+  const isStockMarket = market === 'us' || market === 'in';
   const isCrypto = market === 'crypto';
   const isForex = market === 'forex';
   const isCommodities = market === 'commodities';
@@ -216,8 +217,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
             {mobileFilterOpen ? <ChevronUp className="w-3.5 h-3.5 ml-0.5" /> : <ChevronDown className="w-3.5 h-3.5 ml-0.5" />}
           </button>
 
-          {/* Quick View Mode Toggle on Mobile */}
-          {onViewModeChange && (
+          {/* Quick View Mode Toggle on Mobile (US and Indian Stocks only) */}
+          {isStockMarket && onViewModeChange && (
             <div className="inline-flex rounded-lg bg-slate-800 p-0.5 border border-slate-700">
               <button
                 onClick={() => onViewModeChange('stacked')}
@@ -262,8 +263,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
       {/* Mobile Collapsible Drawer */}
       {mobileFilterOpen && (
         <div className="md:hidden p-3 bg-slate-950/90 border-t border-slate-800 flex flex-col gap-2.5 animate-in slide-in-from-top-2 duration-150">
-          {/* View Mode in Drawer */}
-          {onViewModeChange && (
+          {/* View Mode in Drawer (US and Indian Stocks only) */}
+          {isStockMarket && onViewModeChange && (
             <div className="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
               <span className="text-slate-400 font-semibold flex items-center gap-1">
                 View Layout
@@ -508,8 +509,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
             </div>
           )}
 
-          {/* View Mode Toggle (Sector Feed vs Unified Map) */}
-          {onViewModeChange && (
+          {/* View Mode Toggle (Sector Feed vs Unified Map - US and Indian Stocks only) */}
+          {isStockMarket && onViewModeChange && (
             <div className="inline-flex rounded-lg bg-slate-800/90 p-0.5 border border-slate-700/60">
               <button
                 onClick={() => onViewModeChange('stacked')}
