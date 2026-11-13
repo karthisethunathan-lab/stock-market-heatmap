@@ -45,13 +45,40 @@ export async function getYahooCrumb() {
   }
 }
 
+export function toYahooSymbol(sym) {
+  if (!sym) return '';
+  const s = sym.toUpperCase().trim();
+  // Preserve Indian exchange suffixes (.NS, .BO)
+  if (s.endsWith('.NS') || s.endsWith('.BO')) return s;
+  // Preserve index symbols (^GSPC, etc.)
+  if (s.startsWith('^')) return s;
+  // Preserve futures, forex, crypto (=F, =X, -USD)
+  if (s.includes('=F') || s.includes('=X') || s.includes('-USD')) return s;
+  // Convert share-class dot to hyphen (e.g. BRK.B -> BRK-B, BF.B -> BF-B, BRK.A -> BRK-A)
+  if (s.includes('.')) {
+    return s.replace(/\./g, '-');
+  }
+  return s;
+}
+
+export function fromYahooSymbol(sym) {
+  if (!sym) return '';
+  const s = sym.toUpperCase().trim();
+  if (s.includes('-') && !s.includes('-USD') && !s.startsWith('^')) {
+    if (/^[A-Z]{1,5}-[A-Z]{1,2}$/.test(s)) {
+      return s.replace('-', '.');
+    }
+  }
+  return s;
+}
+
 /**
  * Fetch quote summary modules for any US or Indian symbol
  * Modules: summaryDetail, defaultKeyStatistics, financialData, recommendationTrend, earnings, calendarEvents
  */
 export async function fetchYahooQuoteSummary(symbol, modules = []) {
   if (!symbol) return null;
-  const cleanSym = symbol.toUpperCase().trim();
+  const cleanSym = toYahooSymbol(symbol);
   const moduleStr = modules.join(',');
   const cacheKey = `${cleanSym}:${moduleStr}`;
 
@@ -110,7 +137,7 @@ export async function fetchBatchQuotes(symbols) {
   const quoteMap = new Map();
   if (!symbols || symbols.length === 0) return quoteMap;
 
-  const cleanSymbols = Array.from(new Set(symbols.map((s) => s.toUpperCase().trim()))).filter(Boolean);
+  const cleanSymbols = Array.from(new Set(symbols.map((s) => toYahooSymbol(s)))).filter(Boolean);
 
   // Split into chunks of 150 to keep query string safe and Yahoo responsive
   const chunkSize = 150;
@@ -152,7 +179,9 @@ export async function fetchBatchQuotes(symbols) {
 
         for (const q of results) {
           if (q && q.symbol && typeof q.regularMarketPrice === 'number' && q.regularMarketPrice > 0) {
-            quoteMap.set(q.symbol.toUpperCase(), {
+            const rawSym = q.symbol.toUpperCase();
+            const dotSym = fromYahooSymbol(rawSym);
+            const quoteObj = {
               symbol: q.symbol,
               price: q.regularMarketPrice,
               changePercent: typeof q.regularMarketChangePercent === 'number'
@@ -171,7 +200,13 @@ export async function fetchBatchQuotes(symbols) {
               currency: q.currency || (q.symbol.endsWith('.NS') ? 'INR' : 'USD'),
               dividendYield: q.dividendYield !== undefined ? q.dividendYield : q.trailingAnnualDividendYield,
               timestamp: Date.now(),
-            });
+            };
+
+            quoteMap.set(rawSym, quoteObj);
+            // Also map dot variant (e.g. BRK.B for BRK-B) so lookups succeed regardless of format
+            if (dotSym !== rawSym) {
+              quoteMap.set(dotSym, { ...quoteObj, symbol: dotSym });
+            }
           }
         }
       } catch (err) {

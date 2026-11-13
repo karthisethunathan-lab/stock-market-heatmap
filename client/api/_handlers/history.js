@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toYahooSymbol } from './yahooQuoteSummary.js';
 
 function roundCandlePrice(val, isForex) {
   if (val === null || val === undefined || isNaN(val)) return 0;
@@ -55,7 +56,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${mappedInterval}&range=${mappedRange}&includePrePost=false`;
+    const yahooSymbol = toYahooSymbol(symbol);
+    const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=${mappedInterval}&range=${mappedRange}&includePrePost=false`;
     const response = await axios.get(url, {
       timeout: 8000,
       headers: {

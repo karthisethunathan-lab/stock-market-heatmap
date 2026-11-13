@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { loadUniverse } from './loadUniverse.js';
+import { toYahooSymbol } from './yahooQuoteSummary.js';
 
 function roundPeerPrice(val, isForex) {
   if (val === null || val === undefined || isNaN(val)) return 0;
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
       let changePercent = s.change1d;
 
       try {
-        const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s.symbol)}?interval=1d&range=2d`;
+        const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(toYahooSymbol(s.symbol))}?interval=1d&range=2d`;
         const yRes = await axios.get(url, {
           headers: { 'User-Agent': 'Mozilla/5.0' },
           timeout: 3000,

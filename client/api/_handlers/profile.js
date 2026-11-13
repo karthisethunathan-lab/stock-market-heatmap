@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { loadUniverse } from './loadUniverse.js';
-import { fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
+import { toYahooSymbol, fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
 
 const FINNHUB_KEY = process.env.FINNHUB_API_KEY || 'dbkup3pr01qjsmfrafdgdbkup3pr01qjsmfrafe0';
 
@@ -44,7 +44,8 @@ export default async function handler(req, res) {
     }
 
     // Yahoo quote & metadata
-    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
+    const yahooSymbol = toYahooSymbol(symbol);
+    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1d`;
     const yRes = await axios.get(yUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0' },
       timeout: 5000,
@@ -63,10 +64,10 @@ export default async function handler(req, res) {
       data: {
         symbol,
         name: meta.longName || meta.shortName || matched.name || symbol,
-        logo: `https://assets.parqet.com/logos/symbol/${symbol.replace(/\.(NS|BO)$/i, '')}?format=svg`,
+        logo: `https://assets.parqet.com/logos/symbol/${toYahooSymbol(symbol).replace(/\.(NS|BO)$/i, '')}?format=svg`,
         industry: summary?.assetProfile?.industry || matched.industry || matched.sector || (isIndia ? 'Indian Equities' : 'Equities'),
         exchange: meta.exchangeName || (isIndia ? 'NSE' : 'US'),
-        website: summary?.assetProfile?.website || `https://finance.yahoo.com/quote/${symbol}`,
+        website: summary?.assetProfile?.website || `https://finance.yahoo.com/quote/${toYahooSymbol(symbol)}`,
         marketCap: realMarketCap || 0,
         description: summary?.assetProfile?.longBusinessSummary || `${meta.longName || matched.name || symbol} is publicly traded on ${meta.exchangeName || (isIndia ? 'NSE' : 'the exchange')}.`,
         currency: meta.currency || (isIndia ? 'INR' : 'USD'),

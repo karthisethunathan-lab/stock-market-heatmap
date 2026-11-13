@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
+import { toYahooSymbol, fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
 import { loadUniverse } from './loadUniverse.js';
 
 export default async function handler(req, res) {
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   let chartMeta = {};
 
   try {
-    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=2d`;
+    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(toYahooSymbol(symbol))}?interval=1d&range=2d`;
     const yRes = await axios.get(yUrl, { timeout: 5000, headers: { 'User-Agent': 'Mozilla/5.0' } });
     chartMeta = yRes.data?.chart?.result?.[0]?.meta || {};
     if (chartMeta.regularMarketPrice) {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
+import { toYahooSymbol, fetchYahooQuoteSummary, val } from './yahooQuoteSummary.js';
 
 const FINNHUB_KEY = process.env.FINNHUB_API_KEY || 'dbkup3pr01qjsmfrafdgdbkup3pr01qjsmfrafe0';
 
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   // 1. Get live price from chart
   let currentPrice = null;
   try {
-    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=2d`;
+    const yUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(toYahooSymbol(symbol))}?interval=1d&range=2d`;
     const yRes = await axios.get(yUrl, { timeout: 4000, headers: { 'User-Agent': 'Mozilla/5.0' } });
     const meta = yRes.data?.chart?.result?.[0]?.meta;
     if (meta?.regularMarketPrice) currentPrice = meta.regularMarketPrice;

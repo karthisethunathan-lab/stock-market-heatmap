@@ -1,5 +1,5 @@
 import { loadUniverse } from './loadUniverse.js';
-import { fetchBatchQuotes } from './yahooQuoteSummary.js';
+import { fetchBatchQuotes, toYahooSymbol } from './yahooQuoteSummary.js';
 
 // In-memory quote cache across warm serverless container invocations
 const quoteCache = {
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
 
     // Overlay cached live quotes onto universe
     stocks = stocks.map((s) => {
-      const live = quoteCache.quotes.get(s.symbol);
+      const live = quoteCache.quotes.get(s.symbol) || quoteCache.quotes.get(toYahooSymbol(s.symbol));
       if (live && live.price > 0) {
         return {
           ...s,

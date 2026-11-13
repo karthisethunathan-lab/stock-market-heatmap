@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toYahooSymbol } from './yahooQuoteSummary.js';
 
 function roundPrice(val, isForex) {
   if (val === null || val === undefined || isNaN(val)) return 0;
@@ -17,10 +18,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const symbol = (req.query.symbol || 'AAPL').toUpperCase().trim();
+  const yahooSymbol = toYahooSymbol(symbol);
   const isForex = symbol.includes('=X');
 
   try {
-    const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`;
+    const url = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=5d`;
     const response = await axios.get(url, {
       timeout: 8000,
       headers: {
@@ -42,7 +44,7 @@ export default async function handler(req, res) {
     const changePercent = meta.regularMarketChangePercent ?? (prevClose ? (change / prevClose) * 100 : 0);
 
     const quoteData = {
-      symbol: meta.symbol || symbol,
+      symbol: symbol,
       name: meta.longName || meta.shortName || symbol,
       price: roundPrice(currentPrice, isForex),
       change: roundPrice(change, isForex),
