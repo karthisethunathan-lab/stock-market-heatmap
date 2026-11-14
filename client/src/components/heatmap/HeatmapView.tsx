@@ -33,17 +33,16 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
   const isStockMarket = market === 'us' || market === 'in';
 
   const [viewMode, setViewMode] = useState<HeatmapViewMode>(() => {
-    if (!isStockMarket) return 'unified';
     if (typeof window !== 'undefined') {
       const urlParam = new URLSearchParams(window.location.search).get('view');
       if (urlParam === 'unified' || urlParam === 'stacked') return urlParam;
       if (window.innerWidth < 768) return 'stacked';
     }
-    return 'stacked';
+    return isStockMarket ? 'stacked' : 'stacked';
   });
 
-  // Effective view mode: only US and Indian stocks use stacked feed; others always use unified
-  const effectiveViewMode: HeatmapViewMode = isStockMarket ? viewMode : 'unified';
+  // Effective view mode: stacked sector feed available across all markets (US, Indian, Crypto, Forex, Commodities, Global)
+  const effectiveViewMode: HeatmapViewMode = viewMode;
 
   const {
     timeframe,
@@ -215,17 +214,20 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
           </div>
         ) : effectiveViewMode === 'stacked' ? (
           <div className="flex flex-col gap-4 w-full">
-            {/* If a single sector was filtered via dropdown/focus, show active filter banner with clear button */}
+            {/* If a single sector was focused or filtered, show breadcrumb banner */}
             {selectedSector && selectedSector !== 'All' && (
-              <div className="flex items-center justify-between px-3.5 py-2 bg-blue-950/40 border border-blue-900/60 rounded-xl text-xs">
-                <span className="text-slate-300">
-                  Focusing on: <strong className="text-blue-400 font-bold">{selectedSector}</strong>
-                </span>
+              <div className="flex items-center justify-between px-3.5 py-2.5 bg-blue-950/50 border border-blue-800/60 rounded-xl text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                  <span className="text-slate-300">
+                    Focused Sector Heatmap: <strong className="text-blue-300 font-bold text-sm">{selectedSector}</strong>
+                  </span>
+                </div>
                 <button
                   onClick={() => setSelectedSector('All')}
-                  className="text-xs text-blue-400 hover:text-blue-300 hover:underline font-semibold"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs transition shadow-xs"
                 >
-                  Show All Sectors
+                  <span>← Back to All Sectors</span>
                 </button>
               </div>
             )}
@@ -236,6 +238,8 @@ export const HeatmapView: React.FC<HeatmapViewProps> = ({ market }) => {
                 sector={sec}
                 onSelectStock={openStock}
                 onFocusSector={(name) => setSelectedSector(name)}
+                onExitFocus={() => setSelectedSector('All')}
+                isFocused={Boolean(selectedSector && selectedSector === sec.name)}
                 colorMode={colorMode}
                 colorMetric={colorMetric}
                 priceFlashes={priceFlashes}

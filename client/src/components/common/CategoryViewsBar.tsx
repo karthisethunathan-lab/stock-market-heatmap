@@ -509,8 +509,8 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
             </div>
           )}
 
-          {/* View Mode Toggle (Sector Feed vs Unified Map - US and Indian Stocks only) */}
-          {isStockMarket && onViewModeChange && (
+          {/* View Mode Toggle (Sector Feed vs Unified Map across all markets) */}
+          {onViewModeChange && (
             <div className="inline-flex rounded-lg bg-slate-800/90 p-0.5 border border-slate-700/60">
               <button
                 onClick={() => onViewModeChange('stacked')}
@@ -519,7 +519,7 @@ export const CategoryViewsBar: React.FC<CategoryViewsBarProps> = ({
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
-                title="Sector-by-sector stacked feed (Financials at top, best readability)"
+                title="Sector-by-sector stacked feed (best readability on mobile and desktop)"
               >
                 <LayoutList className="w-3.5 h-3.5" />
                 <span>Sector Feed</span>

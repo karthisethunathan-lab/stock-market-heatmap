@@ -60,15 +60,28 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  // ResizeObserver for responsive auto-sizing
+  // ResizeObserver & initial measurement for responsive auto-sizing
   useEffect(() => {
     if (!containerRef.current) return;
+
+    const measure = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      if (rect.width > 20 && rect.height > 20) {
+        setDimensions({
+          width: Math.floor(rect.width),
+          height: Math.floor(rect.height),
+        });
+      }
+    };
+
+    measure();
 
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
       if (entry) {
         const { width, height } = entry.contentRect;
-        if (width > 200 && height > 200) {
+        if (width > 20 && height > 20) {
           setDimensions({
             width: Math.floor(width),
             height: Math.floor(height),
@@ -144,19 +157,19 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
       .hierarchy<any>(rootData)
       .sum((d: any) => {
         const raw = d.tileValue && d.tileValue > 0 ? d.tileValue : d.marketCap && d.marketCap > 0 ? d.marketCap : 1;
-        // Sublinear power-damped scaling (0.58) so mid and small caps receive sufficient area to be visible and readable
-        return raw > 1e4 ? Math.pow(raw, 0.58) : raw;
+        // Sublinear power-damped scaling (0.45) so mid and small caps receive sufficient area to be visible and readable
+        return raw > 1e4 ? Math.pow(raw, 0.45) : raw;
       })
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
     const headerOffset = hideToolbar ? 0 : zoomedSector ? 40 : 45;
     const treemapLayout = d3
       .treemap<any>()
-      .size([dimensions.width, Math.max(120, dimensions.height - headerOffset)])
-      .tile(d3.treemapSquarify.ratio(1.3))
-      .paddingTop(hideSectorHeader ? 2 : 22)
-      .paddingInner(2)
-      .paddingOuter(3)
+      .size([dimensions.width, Math.max(60, dimensions.height - headerOffset)])
+      .tile(d3.treemapSquarify.ratio(1.2))
+      .paddingTop(hideSectorHeader ? 1 : 20)
+      .paddingInner(1.5)
+      .paddingOuter(2)
       .round(true);
 
     treemapLayout(root);
@@ -329,10 +342,10 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
           const color = getTileMetricColor(stock);
           const flash = priceFlashes[stock.symbol];
 
-          const showSymbol = tileWidth >= 22 && tileHeight >= 14;
-          const showChange = tileWidth >= 32 && tileHeight >= 22;
-          const showPrice = tileWidth >= 52 && tileHeight >= 36;
-          const showFullName = tileWidth >= 95 && tileHeight >= 55;
+          const showSymbol = tileWidth >= 16 && tileHeight >= 10;
+          const showChange = tileWidth >= 28 && tileHeight >= 18;
+          const showPrice = tileWidth >= 48 && tileHeight >= 30;
+          const showFullName = tileWidth >= 85 && tileHeight >= 46;
 
           const flashClass = flash === 'up'
             ? 'ring-2 ring-emerald-400 brightness-130 scale-[1.02] z-30 shadow-lg shadow-emerald-500/40 animate-pulse'
@@ -367,13 +380,15 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
               {showSymbol && (
                 <div
                   className={`font-mono font-bold tracking-tight text-white leading-none ${
-                    tileWidth < 36 || tileHeight < 20
-                      ? 'text-[9px]'
-                      : tileWidth < 55
-                        ? 'text-[10px]'
-                        : tileWidth < 80
-                          ? 'text-xs'
-                          : 'text-sm'
+                    tileWidth < 28 || tileHeight < 15
+                      ? 'text-[8px]'
+                      : tileWidth < 36 || tileHeight < 20
+                        ? 'text-[9px]'
+                        : tileWidth < 55
+                          ? 'text-[10px]'
+                          : tileWidth < 80
+                            ? 'text-xs'
+                            : 'text-sm'
                   }`}
                 >
                   {stock.symbol.includes('=X')
@@ -391,7 +406,7 @@ export const TreemapD3: React.FC<TreemapD3Props> = ({
               {showChange && (
                 <div
                   className={`font-mono font-medium leading-none mt-0.5 ${
-                    tileWidth < 38 || tileHeight < 26 ? 'text-[9px]' : tileWidth < 55 ? 'text-[10px]' : 'text-xs'
+                    tileWidth < 32 || tileHeight < 22 ? 'text-[8px]' : tileWidth < 50 ? 'text-[9px]' : 'text-xs'
                   } text-white/95`}
                 >
                   {getTileMetricLabel(stock)}
