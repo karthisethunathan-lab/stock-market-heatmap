@@ -158,7 +158,7 @@
     "symbol": "BAJFINANCE.NS",
     "name": "Bajaj Finance Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Nifty 50"
     ],
@@ -188,7 +188,7 @@
     "symbol": "BAJAJFINSV.NS",
     "name": "Bajaj Finserv Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Financial Conglomerates",
     "indices": [
       "Nifty 50"
     ],
@@ -247,9 +247,9 @@
   },
   {
     "symbol": "CHOLAFIN.NS",
-    "name": "Cholamandalam Inv & Fin",
+    "name": "Cholamandalam Investment and Finance Company Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -279,7 +279,7 @@
     "symbol": "SHRIRAMFIN.NS",
     "name": "Shriram Finance Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Nifty 50"
     ],
@@ -309,7 +309,7 @@
     "symbol": "MUTHOOTFIN.NS",
     "name": "Muthoot Finance Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -487,9 +487,9 @@
   },
   {
     "symbol": "PFC.NS",
-    "name": "Power Finance Corporation",
+    "name": "Power Finance Corporation Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -517,9 +517,9 @@
   },
   {
     "symbol": "RECLTD.NS",
-    "name": "REC Limited",
+    "name": "REC Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -547,9 +547,9 @@
   },
   {
     "symbol": "JIOFIN.NS",
-    "name": "Jio Financial Services",
+    "name": "Jio Financial Services Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Asset Management",
     "indices": [
       "Next 50"
     ],
@@ -854,9 +854,9 @@
   },
   {
     "symbol": "POONAWALLA.NS",
-    "name": "Poonawalla Fincorp",
+    "name": "Poonawalla Fincorp Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -914,9 +914,9 @@
   },
   {
     "symbol": "BSE.NS",
-    "name": "BSE Limited",
+    "name": "BSE Ltd.",
     "sector": "Financial Services",
-    "industry": "Stock Exchanges",
+    "industry": "Financial Data & Stock Exchanges",
     "indices": [
       "Midcap 150"
     ],
@@ -1034,9 +1034,9 @@
   },
   {
     "symbol": "TCS.NS",
-    "name": "Tata Consultancy Services",
+    "name": "Tata Consultancy Services Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Nifty 50",
       "Nifty IT"
@@ -1067,7 +1067,7 @@
     "symbol": "INFY.NS",
     "name": "Infosys Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Nifty 50",
       "Nifty IT"
@@ -1098,7 +1098,7 @@
     "symbol": "HCLTECH.NS",
     "name": "HCL Technologies Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Nifty 50",
       "Nifty IT"
@@ -1129,7 +1129,7 @@
     "symbol": "WIPRO.NS",
     "name": "Wipro Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Nifty 50",
       "Nifty IT"
@@ -1160,7 +1160,7 @@
     "symbol": "TECHM.NS",
     "name": "Tech Mahindra Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Nifty 50",
       "Nifty IT"
@@ -1218,9 +1218,9 @@
   },
   {
     "symbol": "PERSISTENT.NS",
-    "name": "Persistent Systems",
+    "name": "Persistent Systems Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Next 50",
       "Nifty IT"
@@ -1251,7 +1251,7 @@
     "symbol": "COFORGE.NS",
     "name": "Coforge Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Next 50",
       "Nifty IT"
@@ -1282,7 +1282,7 @@
     "symbol": "MPHASIS.NS",
     "name": "Mphasis Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "Information Technology Services",
     "indices": [
       "Next 50",
       "Nifty IT"
@@ -1464,16 +1464,16 @@
     "fiftyTwoWeekLow": 750.3
   },
   {
-    "symbol": "ZOMATO.NS",
-    "name": "Zomato Ltd.",
+    "symbol": "ETERNAL.NS",
+    "name": "Eternal Ltd. (Zomato & Blinkit)",
     "sector": "Services",
-    "industry": "E-Commerce / Food Delivery",
+    "industry": "Food Delivery & Quick Commerce",
     "indices": [
       "Next 50"
     ],
     "capBucket": "Mega",
     "marketCap": 2400000000000,
-    "price": 270,
+    "price": 363.65,
     "change1d": -1.74,
     "change1w": 2.46,
     "change1m": 4,
@@ -2320,8 +2320,8 @@
   {
     "symbol": "BHARATFORG.NS",
     "name": "Bharat Forge Ltd.",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "sector": "Metals & Mining",
+    "industry": "Metal Fabrication",
     "indices": [
       "Next 50",
       "Nifty Auto"
@@ -2350,9 +2350,9 @@
   },
   {
     "symbol": "MOTHERSON.NS",
-    "name": "Samvardhana Motherson",
+    "name": "Samvardhana Motherson International Ltd.",
     "sector": "Auto",
-    "industry": "Auto Components",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50",
       "Nifty Auto"
@@ -2383,7 +2383,7 @@
     "symbol": "BOSCHLTD.NS",
     "name": "Bosch Ltd.",
     "sector": "Auto",
-    "industry": "Auto Components",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50",
       "Nifty Auto"
@@ -2598,7 +2598,7 @@
   },
   {
     "symbol": "NESTLEIND.NS",
-    "name": "Nestle India Ltd.",
+    "name": "Nestlé India Ltd.",
     "sector": "FMCG",
     "industry": "Packaged Foods",
     "indices": [
@@ -2846,9 +2846,9 @@
   },
   {
     "symbol": "SUNPHARMA.NS",
-    "name": "Sun Pharmaceutical Ind.",
+    "name": "Sun Pharmaceutical Industries Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Nifty 50",
       "Nifty Pharma"
@@ -2879,7 +2879,7 @@
     "symbol": "CIPLA.NS",
     "name": "Cipla Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Nifty 50",
       "Nifty Pharma"
@@ -2908,9 +2908,9 @@
   },
   {
     "symbol": "DRREDDY.NS",
-    "name": "Dr. Reddy's Laboratories",
+    "name": "Dr. Reddy's Laboratories Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Nifty 50",
       "Nifty Pharma"
@@ -3003,7 +3003,7 @@
     "symbol": "LUPIN.NS",
     "name": "Lupin Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50",
       "Nifty Pharma"
@@ -3032,9 +3032,9 @@
   },
   {
     "symbol": "AUROPHARMA.NS",
-    "name": "Aurobindo Pharma",
+    "name": "Aurobindo Pharma Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50",
       "Nifty Pharma"
@@ -3063,9 +3063,9 @@
   },
   {
     "symbol": "TORNTPHARM.NS",
-    "name": "Torrent Pharmaceuticals",
+    "name": "Torrent Pharmaceuticals Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50",
       "Nifty Pharma"
@@ -3094,9 +3094,9 @@
   },
   {
     "symbol": "ZYDUSLIFE.NS",
-    "name": "Zydus Lifesciences",
+    "name": "Zydus Lifesciences Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50",
       "Nifty Pharma"
@@ -3187,7 +3187,7 @@
     "symbol": "MANKIND.NS",
     "name": "Mankind Pharma Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50",
       "Nifty Pharma"
@@ -3218,7 +3218,7 @@
     "symbol": "TATASTEEL.NS",
     "name": "Tata Steel Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Steel",
     "indices": [
       "Nifty 50",
       "Nifty Metal"
@@ -3249,7 +3249,7 @@
     "symbol": "JSWSTEEL.NS",
     "name": "JSW Steel Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Steel",
     "indices": [
       "Nifty 50",
       "Nifty Metal"
@@ -3340,9 +3340,9 @@
   },
   {
     "symbol": "JINDALSTEL.NS",
-    "name": "Jindal Steel & Power",
+    "name": "Jindal Steel Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Steel",
     "indices": [
       "Next 50",
       "Nifty Metal"
@@ -3402,9 +3402,9 @@
   },
   {
     "symbol": "SAIL.NS",
-    "name": "Steel Authority of India",
+    "name": "Steel Authority of India Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Steel",
     "indices": [
       "Next 50",
       "Nifty Metal"
@@ -3797,7 +3797,7 @@
     "symbol": "DLF.NS",
     "name": "DLF Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Development",
     "indices": [
       "Next 50",
       "Nifty Realty"
@@ -3828,7 +3828,7 @@
     "symbol": "GODREJPROP.NS",
     "name": "Godrej Properties Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Development",
     "indices": [
       "Next 50",
       "Nifty Realty"
@@ -3857,9 +3857,9 @@
   },
   {
     "symbol": "LODHA.NS",
-    "name": "Macrotech Developers",
+    "name": "Lodha Developers Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Development",
     "indices": [
       "Next 50",
       "Nifty Realty"
@@ -3890,7 +3890,7 @@
     "symbol": "OBEROIRLTY.NS",
     "name": "Oberoi Realty Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Development",
     "indices": [
       "Midcap 150",
       "Nifty Realty"
@@ -3950,9 +3950,9 @@
   },
   {
     "symbol": "PRESTIGE.NS",
-    "name": "Prestige Estates Projects",
+    "name": "Prestige Estates Projects Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Diversified",
     "indices": [
       "Midcap 150",
       "Nifty Realty"
@@ -4162,8 +4162,8 @@
   {
     "symbol": "HAVELLS.NS",
     "name": "Havells India Ltd.",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -4282,8 +4282,8 @@
   {
     "symbol": "SRF.NS",
     "name": "SRF Ltd.",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Next 50"
     ],
@@ -4371,9 +4371,9 @@
   },
   {
     "symbol": "ABFRL.NS",
-    "name": "ABFRL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Aditya Birla Fashion and Retail Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Apparel Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -4401,9 +4401,9 @@
   },
   {
     "symbol": "ACC.NS",
-    "name": "ACC Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "ACC Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Midcap 150"
     ],
@@ -4431,9 +4431,9 @@
   },
   {
     "symbol": "AIAENG.NS",
-    "name": "AIAENG Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "AIA Engineering Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Next 50"
     ],
@@ -4461,9 +4461,9 @@
   },
   {
     "symbol": "AJANTPHARM.NS",
-    "name": "AJANTPHARM Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Ajanta Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -4491,9 +4491,9 @@
   },
   {
     "symbol": "ALKEM.NS",
-    "name": "ALKEM Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Alkem Laboratories Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -4521,9 +4521,9 @@
   },
   {
     "symbol": "ALKYLAMINE.NS",
-    "name": "ALKYLAMINE Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Alkyl Amines Chemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -4551,9 +4551,9 @@
   },
   {
     "symbol": "AMARAJABAT.NS",
-    "name": "AMARAJABAT Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Amara Raja Energy & Mobility Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Batteries & Clean Energy",
     "indices": [
       "Next 50"
     ],
@@ -4579,9 +4579,9 @@
   },
   {
     "symbol": "AMBER.NS",
-    "name": "AMBER Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Amber Enterprises India Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Next 50"
     ],
@@ -4609,9 +4609,9 @@
   },
   {
     "symbol": "ANURAS.NS",
-    "name": "ANURAS Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Anupam Rasayan India Ltd",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Midcap 150"
     ],
@@ -4639,9 +4639,9 @@
   },
   {
     "symbol": "APARINDS.NS",
-    "name": "APARINDS Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "APAR Industries Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -4669,9 +4669,9 @@
   },
   {
     "symbol": "APLAPOLLO.NS",
-    "name": "APLAPOLLO Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "APL Apollo Tubes Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Midcap 150"
     ],
@@ -4699,9 +4699,9 @@
   },
   {
     "symbol": "APTUS.NS",
-    "name": "APTUS Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Aptus Value Housing Finance India Ltd.",
+    "sector": "Financial Services",
+    "industry": "Mortgage Finance",
     "indices": [
       "Next 50"
     ],
@@ -4729,9 +4729,9 @@
   },
   {
     "symbol": "ASAHIINDIA.NS",
-    "name": "ASAHIINDIA Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Asahi India Glass Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -4759,9 +4759,9 @@
   },
   {
     "symbol": "ASTERDM.NS",
-    "name": "ASTERDM Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Aster DM Quality Care Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Care Facilities",
     "indices": [
       "Midcap 150"
     ],
@@ -4789,9 +4789,9 @@
   },
   {
     "symbol": "ASTRAL.NS",
-    "name": "ASTRAL Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Astral Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Midcap 150"
     ],
@@ -4819,9 +4819,9 @@
   },
   {
     "symbol": "ATUL.NS",
-    "name": "ATUL Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Atul Ltd",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -4849,9 +4849,9 @@
   },
   {
     "symbol": "AWHCL.NS",
-    "name": "AWHCL Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Antony Waste Handling Cell Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Waste Management",
     "indices": [
       "Next 50"
     ],
@@ -4879,9 +4879,9 @@
   },
   {
     "symbol": "BAJAJELEC.NS",
-    "name": "BAJAJELEC Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Bajaj Electricals Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Midcap 150"
     ],
@@ -4909,9 +4909,9 @@
   },
   {
     "symbol": "BALRAMCHIN.NS",
-    "name": "BALRAMCHIN Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Balrampur Chini Mills Ltd.",
+    "sector": "FMCG",
+    "industry": "Confectioners",
     "indices": [
       "Midcap 150"
     ],
@@ -4939,9 +4939,9 @@
   },
   {
     "symbol": "BATAINDIA.NS",
-    "name": "BATAINDIA Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Bata India Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Footwear & Accessories",
     "indices": [
       "Midcap 150"
     ],
@@ -4969,9 +4969,9 @@
   },
   {
     "symbol": "BAYERCROP.NS",
-    "name": "BAYERCROP Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Bayer CropScience Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -4999,9 +4999,9 @@
   },
   {
     "symbol": "BDL.NS",
-    "name": "BDL Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Bharat Dynamics Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Aerospace & Defense",
     "indices": [
       "Next 50"
     ],
@@ -5029,9 +5029,9 @@
   },
   {
     "symbol": "BERGEPAINT.NS",
-    "name": "BERGEPAINT Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Berger Paints India Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -5059,9 +5059,9 @@
   },
   {
     "symbol": "BIKAJI.NS",
-    "name": "BIKAJI Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Bikaji Foods International Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Smallcap 250"
     ],
@@ -5089,9 +5089,9 @@
   },
   {
     "symbol": "BIOCON.NS",
-    "name": "BIOCON Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Biocon Ltd.",
+    "sector": "Healthcare",
+    "industry": "Biotechnology",
     "indices": [
       "Next 50"
     ],
@@ -5119,9 +5119,9 @@
   },
   {
     "symbol": "BIRLACORPN.NS",
-    "name": "BIRLACORPN Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Birla Corporation Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Midcap 150"
     ],
@@ -5149,9 +5149,9 @@
   },
   {
     "symbol": "BLS.NS",
-    "name": "BLS Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "BLS International Services Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Business Services",
     "indices": [
       "Midcap 150"
     ],
@@ -5179,9 +5179,9 @@
   },
   {
     "symbol": "BLUESTARCO.NS",
-    "name": "BLUESTARCO Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Blue Star Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Midcap 150"
     ],
@@ -5209,9 +5209,9 @@
   },
   {
     "symbol": "BORORENEW.NS",
-    "name": "BORORENEW Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Borosil Renewables Ltd.",
+    "sector": "IT",
+    "industry": "Solar",
     "indices": [
       "Smallcap 250"
     ],
@@ -5239,9 +5239,9 @@
   },
   {
     "symbol": "BRIGADE.NS",
-    "name": "BRIGADE Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Brigade Enterprises Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate - Development",
     "indices": [
       "Midcap 150"
     ],
@@ -5269,9 +5269,9 @@
   },
   {
     "symbol": "BSOFT.NS",
-    "name": "BSOFT Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Birlasoft Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -5299,9 +5299,9 @@
   },
   {
     "symbol": "CAMPUS.NS",
-    "name": "CAMPUS Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Campus Activewear Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Footwear & Accessories",
     "indices": [
       "Midcap 150"
     ],
@@ -5329,9 +5329,9 @@
   },
   {
     "symbol": "CANFINHOME.NS",
-    "name": "CANFINHOME Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Can Fin Homes Ltd.",
+    "sector": "Financial Services",
+    "industry": "Mortgage Finance",
     "indices": [
       "Next 50"
     ],
@@ -5359,9 +5359,9 @@
   },
   {
     "symbol": "CARBORUNIV.NS",
-    "name": "CARBORUNIV Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Carborundum Universal Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Tools & Accessories",
     "indices": [
       "Midcap 150"
     ],
@@ -5389,9 +5389,9 @@
   },
   {
     "symbol": "CASTROLIND.NS",
-    "name": "CASTROLIND Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Castrol India Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil & Gas Refining & Marketing",
     "indices": [
       "Smallcap 250"
     ],
@@ -5419,9 +5419,9 @@
   },
   {
     "symbol": "CEATLTD.NS",
-    "name": "CEATLTD Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "CEAT Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50"
     ],
@@ -5449,9 +5449,9 @@
   },
   {
     "symbol": "CENTURYPLY.NS",
-    "name": "CENTURYPLY Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Century Plyboards (India) Ltd.",
+    "sector": "Chemicals",
+    "industry": "Lumber & Wood Production",
     "indices": [
       "Midcap 150"
     ],
@@ -5479,9 +5479,9 @@
   },
   {
     "symbol": "CENTURYTEX.NS",
-    "name": "CENTURYTEX Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Century Textiles & Industries Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate & Paper",
     "indices": [
       "Midcap 150"
     ],
@@ -5507,9 +5507,9 @@
   },
   {
     "symbol": "CERA.NS",
-    "name": "CERA Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Cera Sanitaryware Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Next 50"
     ],
@@ -5537,9 +5537,9 @@
   },
   {
     "symbol": "CESC.NS",
-    "name": "CESC Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "CESC Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Regulated Electric",
     "indices": [
       "Next 50"
     ],
@@ -5567,9 +5567,9 @@
   },
   {
     "symbol": "CGCL.NS",
-    "name": "CGCL Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Capri Global Capital Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -5597,9 +5597,9 @@
   },
   {
     "symbol": "CGPOWER.NS",
-    "name": "CGPOWER Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "CG Power and Industrial Solutions Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -5627,9 +5627,9 @@
   },
   {
     "symbol": "CHAMBLFERT.NS",
-    "name": "CHAMBLFERT Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Chambal Fertilisers and Chemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -5657,9 +5657,9 @@
   },
   {
     "symbol": "CHEMPLASTS.NS",
-    "name": "CHEMPLASTS Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Chemplast Sanmar Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -5687,9 +5687,9 @@
   },
   {
     "symbol": "CLEAN.NS",
-    "name": "CLEAN Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Clean Science and Technology Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Midcap 150"
     ],
@@ -5717,9 +5717,9 @@
   },
   {
     "symbol": "COROMANDEL.NS",
-    "name": "COROMANDEL Limited",
+    "name": "Coromandel International Ltd.",
     "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Midcap 150"
     ],
@@ -5747,9 +5747,9 @@
   },
   {
     "symbol": "CROMPTON.NS",
-    "name": "CROMPTON Limited",
+    "name": "Crompton Greaves Consumer Electricals Ltd.",
     "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Next 50"
     ],
@@ -5777,9 +5777,9 @@
   },
   {
     "symbol": "CUB.NS",
-    "name": "CUB Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "City Union Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -5807,9 +5807,9 @@
   },
   {
     "symbol": "DATAPATTNS.NS",
-    "name": "DATAPATTNS Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Data Patterns (India) Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Aerospace & Defense",
     "indices": [
       "Smallcap 250"
     ],
@@ -5837,9 +5837,9 @@
   },
   {
     "symbol": "DEEPAKFERT.NS",
-    "name": "DEEPAKFERT Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Deepak Fertilisers And Petrochemicals Corporation Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -5867,9 +5867,9 @@
   },
   {
     "symbol": "DEEPAKNTR.NS",
-    "name": "DEEPAKNTR Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Deepak Nitrite Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -5897,9 +5897,9 @@
   },
   {
     "symbol": "DELHIVERY.NS",
-    "name": "DELHIVERY Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Delhivery Ltd.",
+    "sector": "Services",
+    "industry": "Supply Chain & Logistics",
     "indices": [
       "Midcap 150"
     ],
@@ -5927,9 +5927,9 @@
   },
   {
     "symbol": "DEVYANI.NS",
-    "name": "DEVYANI Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Devyani International Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants",
     "indices": [
       "Next 50"
     ],
@@ -5957,9 +5957,9 @@
   },
   {
     "symbol": "ECLERX.NS",
-    "name": "ECLERX Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "eClerx Services Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Next 50"
     ],
@@ -5987,9 +5987,9 @@
   },
   {
     "symbol": "EDELWEISS.NS",
-    "name": "EDELWEISS Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Edelweiss Financial Services Ltd.",
+    "sector": "Financial Services",
+    "industry": "Financial Conglomerates",
     "indices": [
       "Midcap 150"
     ],
@@ -6017,9 +6017,9 @@
   },
   {
     "symbol": "EIDPARRY.NS",
-    "name": "EIDPARRY Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "E.I.D.- Parry (India) Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -6047,9 +6047,9 @@
   },
   {
     "symbol": "ELGIEQUIP.NS",
-    "name": "ELGIEQUIP Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Elgi Equipments Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Midcap 150"
     ],
@@ -6077,9 +6077,9 @@
   },
   {
     "symbol": "EMAMILTD.NS",
-    "name": "EMAMILTD Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Emami Ltd.",
+    "sector": "FMCG",
+    "industry": "Household & Personal Products",
     "indices": [
       "Next 50"
     ],
@@ -6107,9 +6107,9 @@
   },
   {
     "symbol": "ENDURANCE.NS",
-    "name": "ENDURANCE Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Endurance Technologies Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50"
     ],
@@ -6137,9 +6137,9 @@
   },
   {
     "symbol": "ENGINERSIN.NS",
-    "name": "ENGINERSIN Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Engineers India Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Midcap 150"
     ],
@@ -6167,9 +6167,9 @@
   },
   {
     "symbol": "EPL.NS",
-    "name": "EPL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "EPL Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Packaging & Containers",
     "indices": [
       "Next 50"
     ],
@@ -6197,9 +6197,9 @@
   },
   {
     "symbol": "EQUITASBNK.NS",
-    "name": "EQUITASBNK Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Equitas Small Finance Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -6227,9 +6227,9 @@
   },
   {
     "symbol": "ERIS.NS",
-    "name": "ERIS Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Eris Lifesciences Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -6257,9 +6257,9 @@
   },
   {
     "symbol": "ESCORTS.NS",
-    "name": "ESCORTS Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Escorts Kubota Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Farm & Heavy Construction Machinery",
     "indices": [
       "Midcap 150"
     ],
@@ -6287,9 +6287,9 @@
   },
   {
     "symbol": "EXIDEIND.NS",
-    "name": "EXIDEIND Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Exide Industries Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -6317,9 +6317,9 @@
   },
   {
     "symbol": "FDC.NS",
-    "name": "FDC Limited",
+    "name": "FDC Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50"
     ],
@@ -6347,9 +6347,9 @@
   },
   {
     "symbol": "FINCABLES.NS",
-    "name": "FINCABLES Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Finolex Cables Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -6377,9 +6377,9 @@
   },
   {
     "symbol": "FINEORG.NS",
-    "name": "FINEORG Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Fine Organic Industries Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -6407,9 +6407,9 @@
   },
   {
     "symbol": "FINPIPE.NS",
-    "name": "FINPIPE Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Finolex Industries Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Next 50"
     ],
@@ -6437,9 +6437,9 @@
   },
   {
     "symbol": "FIVESTAR.NS",
-    "name": "FIVESTAR Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Five-Star Business Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -6467,9 +6467,9 @@
   },
   {
     "symbol": "FLUOROCHEM.NS",
-    "name": "FLUOROCHEM Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Gujarat Fluorochemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Midcap 150"
     ],
@@ -6497,9 +6497,9 @@
   },
   {
     "symbol": "GLAXO.NS",
-    "name": "GLAXO Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "GlaxoSmithKline Pharmaceuticals Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - General",
     "indices": [
       "Midcap 150"
     ],
@@ -6527,9 +6527,9 @@
   },
   {
     "symbol": "GLENMARK.NS",
-    "name": "GLENMARK Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Glenmark Pharmaceuticals Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Smallcap 250"
     ],
@@ -6557,9 +6557,9 @@
   },
   {
     "symbol": "GMDCLTD.NS",
-    "name": "GMDCLTD Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Gujarat Mineral Development Corporation Ltd.",
+    "sector": "Power",
+    "industry": "Thermal Coal",
     "indices": [
       "Next 50"
     ],
@@ -6587,9 +6587,9 @@
   },
   {
     "symbol": "GNFC.NS",
-    "name": "GNFC Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Gujarat Narmada Valley Fertilizers & Chemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -6617,9 +6617,9 @@
   },
   {
     "symbol": "GODFRYPHLP.NS",
-    "name": "GODFRYPHLP Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Godfrey Phillips India Ltd.",
+    "sector": "FMCG",
+    "industry": "Tobacco",
     "indices": [
       "Midcap 150"
     ],
@@ -6647,9 +6647,9 @@
   },
   {
     "symbol": "GODREJIND.NS",
-    "name": "GODREJIND Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Godrej Industries Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Next 50"
     ],
@@ -6677,9 +6677,9 @@
   },
   {
     "symbol": "GRANULES.NS",
-    "name": "GRANULES Limited",
+    "name": "Granules India Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50"
     ],
@@ -6707,9 +6707,9 @@
   },
   {
     "symbol": "GRAPHITE.NS",
-    "name": "GRAPHITE Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Graphite India Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -6737,9 +6737,9 @@
   },
   {
     "symbol": "GRINDWELL.NS",
-    "name": "GRINDWELL Limited",
+    "name": "Grindwell Norton Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Next 50"
     ],
@@ -6767,9 +6767,9 @@
   },
   {
     "symbol": "GRSE.NS",
-    "name": "GRSE Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Garden Reach Shipbuilders & Engineers Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Aerospace & Defense",
     "indices": [
       "Next 50"
     ],
@@ -6797,9 +6797,9 @@
   },
   {
     "symbol": "GSFC.NS",
-    "name": "GSFC Limited",
+    "name": "Gujarat State Fertilizers & Chemicals Ltd.",
     "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -6827,7 +6827,7 @@
   },
   {
     "symbol": "GSPL.NS",
-    "name": "GSPL Limited",
+    "name": "Gujarat State Petronet Ltd.",
     "sector": "Consumer Durables",
     "industry": "Consumer Electronics",
     "indices": [
@@ -6857,9 +6857,9 @@
   },
   {
     "symbol": "GUJALKALI.NS",
-    "name": "GUJALKALI Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Gujarat Alkalies and Chemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -6887,9 +6887,9 @@
   },
   {
     "symbol": "GUJFLUORO.NS",
-    "name": "GUJFLUORO Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Gujarat Fluorochemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Fluorochemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -6915,9 +6915,9 @@
   },
   {
     "symbol": "GUJGASLTD.NS",
-    "name": "GUJGASLTD Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Gujarat Gas Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "City Gas Distribution",
     "indices": [
       "Midcap 150"
     ],
@@ -6943,9 +6943,9 @@
   },
   {
     "symbol": "GICRE.NS",
-    "name": "GICRE Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "General Insurance Corporation of India",
+    "sector": "Financial Services",
+    "industry": "Insurance - Reinsurance",
     "indices": [
       "Midcap 150"
     ],
@@ -6973,9 +6973,9 @@
   },
   {
     "symbol": "HAPPSTMNDS.NS",
-    "name": "HAPPSTMNDS Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Happiest Minds Technologies Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Midcap 150"
     ],
@@ -7003,9 +7003,9 @@
   },
   {
     "symbol": "HEG.NS",
-    "name": "HEG Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "HEG Advanced Materials Ltd",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -7033,9 +7033,9 @@
   },
   {
     "symbol": "HGINFRA.NS",
-    "name": "HGINFRA Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "H.G. Infra Engineering Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Midcap 150"
     ],
@@ -7063,9 +7063,9 @@
   },
   {
     "symbol": "HIKAL.NS",
-    "name": "HIKAL Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Hikal Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -7093,9 +7093,9 @@
   },
   {
     "symbol": "HINDCOPPER.NS",
-    "name": "HINDCOPPER Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Hindustan Copper Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Copper",
     "indices": [
       "Midcap 150"
     ],
@@ -7123,9 +7123,9 @@
   },
   {
     "symbol": "HINDPETRO.NS",
-    "name": "HINDPETRO Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Hindustan Petroleum Corporation Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil & Gas Refining & Marketing",
     "indices": [
       "Midcap 150"
     ],
@@ -7153,9 +7153,9 @@
   },
   {
     "symbol": "HOMEFIRST.NS",
-    "name": "HOMEFIRST Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Home First Finance Company India Ltd.",
+    "sector": "Financial Services",
+    "industry": "Mortgage Finance",
     "indices": [
       "Next 50"
     ],
@@ -7183,9 +7183,9 @@
   },
   {
     "symbol": "HONAUT.NS",
-    "name": "HONAUT Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Honeywell Automation India Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -7213,9 +7213,9 @@
   },
   {
     "symbol": "HUDCO.NS",
-    "name": "HUDCO Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Housing and Urban Development Corporation Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -7243,9 +7243,9 @@
   },
   {
     "symbol": "IBREALEST.NS",
-    "name": "IBREALEST Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Equinox India Real Estate Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate Development",
     "indices": [
       "Midcap 150"
     ],
@@ -7271,9 +7271,9 @@
   },
   {
     "symbol": "IDBI.NS",
-    "name": "IDBI Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "IDBI Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Next 50"
     ],
@@ -7332,9 +7332,9 @@
   },
   {
     "symbol": "IDFC.NS",
-    "name": "IDFC Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "IDFC Ltd.",
+    "sector": "Financial Services",
+    "industry": "Holding Companies",
     "indices": [
       "Next 50"
     ],
@@ -7360,9 +7360,9 @@
   },
   {
     "symbol": "IFCI.NS",
-    "name": "IFCI Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "IFCI Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -7390,9 +7390,9 @@
   },
   {
     "symbol": "IIFL.NS",
-    "name": "IIFL Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "IIFL Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -7420,9 +7420,9 @@
   },
   {
     "symbol": "INDHOTEL.NS",
-    "name": "INDHOTEL Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "The Indian Hotels Company Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Lodging",
     "indices": [
       "Next 50"
     ],
@@ -7450,9 +7450,9 @@
   },
   {
     "symbol": "INDIACEM.NS",
-    "name": "INDIACEM Limited",
+    "name": "The India Cements Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Midcap 150"
     ],
@@ -7480,9 +7480,9 @@
   },
   {
     "symbol": "INDIAMART.NS",
-    "name": "INDIAMART Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "IndiaMART InterMESH Ltd.",
+    "sector": "IT",
+    "industry": "Internet Retail",
     "indices": [
       "Midcap 150"
     ],
@@ -7510,9 +7510,9 @@
   },
   {
     "symbol": "INDIANB.NS",
-    "name": "INDIANB Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Indian Bank",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Next 50"
     ],
@@ -7540,9 +7540,9 @@
   },
   {
     "symbol": "INDIGOPNTS.NS",
-    "name": "INDIGOPNTS Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Indigo Paints Ltd.",
+    "sector": "Chemicals",
+    "industry": "Paints & Protective Coatings",
     "indices": [
       "Next 50"
     ],
@@ -7601,9 +7601,9 @@
   },
   {
     "symbol": "INFIBEAM.NS",
-    "name": "INFIBEAM Limited",
+    "name": "Infibeam Avenues Ltd.",
     "sector": "IT",
-    "industry": "IT Services",
+    "industry": "FinTech Platforms & Software",
     "indices": [
       "Midcap 150"
     ],
@@ -7629,9 +7629,9 @@
   },
   {
     "symbol": "INOXWIND.NS",
-    "name": "INOXWIND Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Inox Wind Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Midcap 150"
     ],
@@ -7659,9 +7659,9 @@
   },
   {
     "symbol": "INTELLECT.NS",
-    "name": "INTELLECT Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Intellect Design Arena Ltd.",
+    "sector": "IT",
+    "industry": "Software - Application",
     "indices": [
       "Next 50"
     ],
@@ -7689,9 +7689,9 @@
   },
   {
     "symbol": "IOB.NS",
-    "name": "IOB Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Indian Overseas Bank",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Midcap 150"
     ],
@@ -7719,9 +7719,9 @@
   },
   {
     "symbol": "IPCALAB.NS",
-    "name": "IPCALAB Limited",
+    "name": "Ipca Laboratories Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Smallcap 250"
     ],
@@ -7749,9 +7749,9 @@
   },
   {
     "symbol": "IRB.NS",
-    "name": "IRB Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "IRB Infrastructure Developers Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Next 50"
     ],
@@ -7779,9 +7779,9 @@
   },
   {
     "symbol": "IRCON.NS",
-    "name": "IRCON Limited",
+    "name": "Ircon International Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Next 50"
     ],
@@ -7809,9 +7809,9 @@
   },
   {
     "symbol": "IRCTC.NS",
-    "name": "IRCTC Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Indian Railway Catering & Tourism Corporation Ltd.",
+    "sector": "Services",
+    "industry": "Rail Catering & Ticketing",
     "indices": [
       "Next 50"
     ],
@@ -7839,9 +7839,9 @@
   },
   {
     "symbol": "IRFC.NS",
-    "name": "IRFC Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Indian Railway Finance Corporation Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -7869,9 +7869,9 @@
   },
   {
     "symbol": "ISEC.NS",
-    "name": "ISEC Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "ICICI Securities Ltd.",
+    "sector": "Financial Services",
+    "industry": "Stock Broking & Wealth Management",
     "indices": [
       "Next 50"
     ],
@@ -7897,7 +7897,7 @@
   },
   {
     "symbol": "JBCHEPHARM.NS",
-    "name": "JBCHEPHARM Limited",
+    "name": "J. B. Chemicals & Pharmaceuticals Ltd.",
     "sector": "Services",
     "industry": "Logistics",
     "indices": [
@@ -7927,9 +7927,9 @@
   },
   {
     "symbol": "JBMA.NS",
-    "name": "JBMA Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "JBM Auto Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -7957,9 +7957,9 @@
   },
   {
     "symbol": "JINDALSAW.NS",
-    "name": "JINDALSAW Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Jindal Saw Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Midcap 150"
     ],
@@ -7987,9 +7987,9 @@
   },
   {
     "symbol": "JKCEMENT.NS",
-    "name": "JKCEMENT Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "J.K. Cement Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Next 50"
     ],
@@ -8017,9 +8017,9 @@
   },
   {
     "symbol": "JKLAKSHMI.NS",
-    "name": "JKLAKSHMI Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "JK Lakshmi Cement Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Next 50"
     ],
@@ -8047,9 +8047,9 @@
   },
   {
     "symbol": "JKPAPER.NS",
-    "name": "JKPAPER Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "JK Paper Ltd.",
+    "sector": "Chemicals",
+    "industry": "Paper & Paper Products",
     "indices": [
       "Midcap 150"
     ],
@@ -8077,9 +8077,9 @@
   },
   {
     "symbol": "JKTYRE.NS",
-    "name": "JKTYRE Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "JK Tyre & Industries Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -8107,9 +8107,9 @@
   },
   {
     "symbol": "JMFINANCIL.NS",
-    "name": "JMFINANCIL Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "JM Financial Ltd.",
+    "sector": "Financial Services",
+    "industry": "Capital Markets",
     "indices": [
       "Midcap 150"
     ],
@@ -8137,9 +8137,9 @@
   },
   {
     "symbol": "JSL.NS",
-    "name": "JSL Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Jindal Stainless Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Smallcap 250"
     ],
@@ -8167,9 +8167,9 @@
   },
   {
     "symbol": "JSWENERGY.NS",
-    "name": "JSWENERGY Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "JSW Energy Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Independent Power Producers",
     "indices": [
       "Next 50"
     ],
@@ -8197,9 +8197,9 @@
   },
   {
     "symbol": "JSWINFRA.NS",
-    "name": "JSWINFRA Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "JSW Infrastructure Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Marine Shipping",
     "indices": [
       "Smallcap 250"
     ],
@@ -8227,9 +8227,9 @@
   },
   {
     "symbol": "JUBLFOOD.NS",
-    "name": "JUBLFOOD Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Jubilant FoodWorks Ltd.",
+    "sector": "Services",
+    "industry": "QSR & Restaurants (Domino's)",
     "indices": [
       "Next 50"
     ],
@@ -8257,9 +8257,9 @@
   },
   {
     "symbol": "JUBLINGREA.NS",
-    "name": "JUBLINGREA Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Jubilant Ingrevia Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -8287,9 +8287,9 @@
   },
   {
     "symbol": "JUSTDIAL.NS",
-    "name": "JUSTDIAL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Just Dial Ltd.",
+    "sector": "IT",
+    "industry": "Internet Content & Information",
     "indices": [
       "Midcap 150"
     ],
@@ -8317,9 +8317,9 @@
   },
   {
     "symbol": "JYOTHYLAB.NS",
-    "name": "JYOTHYLAB Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Jyothy Labs Ltd.",
+    "sector": "FMCG",
+    "industry": "Household & Personal Products",
     "indices": [
       "Midcap 150"
     ],
@@ -8347,9 +8347,9 @@
   },
   {
     "symbol": "KAJARIACER.NS",
-    "name": "KAJARIACER Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Kajaria Ceramics Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Midcap 150"
     ],
@@ -8377,9 +8377,9 @@
   },
   {
     "symbol": "KALPATPOWR.NS",
-    "name": "KALPATPOWR Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Kalpataru Projects International Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Power Transmission EPC",
     "indices": [
       "Midcap 150"
     ],
@@ -8405,9 +8405,9 @@
   },
   {
     "symbol": "KALYANKJIL.NS",
-    "name": "KALYANKJIL Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Kalyan Jewellers India Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Luxury Goods",
     "indices": [
       "Midcap 150"
     ],
@@ -8435,9 +8435,9 @@
   },
   {
     "symbol": "KANSAINER.NS",
-    "name": "KANSAINER Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Kansai Nerolac Paints Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -8465,9 +8465,9 @@
   },
   {
     "symbol": "KARURVYSYA.NS",
-    "name": "KARURVYSYA Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "The Karur Vysya Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -8495,9 +8495,9 @@
   },
   {
     "symbol": "KEC.NS",
-    "name": "KEC Limited",
+    "name": "KEC International Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Smallcap 250"
     ],
@@ -8525,9 +8525,9 @@
   },
   {
     "symbol": "KEI.NS",
-    "name": "KEI Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "KEI Industries Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -8555,9 +8555,9 @@
   },
   {
     "symbol": "KIMS.NS",
-    "name": "KIMS Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Krishna Institute of Medical Sciences Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Care Facilities",
     "indices": [
       "Next 50"
     ],
@@ -8585,9 +8585,9 @@
   },
   {
     "symbol": "KNRCON.NS",
-    "name": "KNRCON Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "KNR Constructions Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Next 50"
     ],
@@ -8615,9 +8615,9 @@
   },
   {
     "symbol": "KRBL.NS",
-    "name": "KRBL Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "KRBL Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Midcap 150"
     ],
@@ -8645,9 +8645,9 @@
   },
   {
     "symbol": "KSB.NS",
-    "name": "KSB Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "KSB Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Next 50"
     ],
@@ -8675,9 +8675,9 @@
   },
   {
     "symbol": "L&TFH.NS",
-    "name": "L&TFH Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "L&T Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "NBFC & Retail Lending",
     "indices": [
       "Midcap 150"
     ],
@@ -8703,9 +8703,9 @@
   },
   {
     "symbol": "LALPATHLAB.NS",
-    "name": "LALPATHLAB Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Dr. Lal PathLabs Ltd.",
+    "sector": "Healthcare",
+    "industry": "Diagnostics & Research",
     "indices": [
       "Midcap 150"
     ],
@@ -8733,9 +8733,9 @@
   },
   {
     "symbol": "LAURUSLABS.NS",
-    "name": "LAURUSLABS Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Laurus Labs Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -8763,9 +8763,9 @@
   },
   {
     "symbol": "LEMONTREE.NS",
-    "name": "LEMONTREE Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Lemon Tree Hotels Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Lodging",
     "indices": [
       "Smallcap 250"
     ],
@@ -8793,9 +8793,9 @@
   },
   {
     "symbol": "LINDEINDIA.NS",
-    "name": "LINDEINDIA Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Linde India Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -8823,9 +8823,9 @@
   },
   {
     "symbol": "LTFOODS.NS",
-    "name": "LTFOODS Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "LT Foods Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Next 50"
     ],
@@ -8853,9 +8853,9 @@
   },
   {
     "symbol": "LUXIND.NS",
-    "name": "LUXIND Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Lux Industries Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Apparel Manufacturing",
     "indices": [
       "Next 50"
     ],
@@ -8883,9 +8883,9 @@
   },
   {
     "symbol": "M&MFIN.NS",
-    "name": "M&MFIN Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Mahindra & Mahindra Financial Services Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -8913,9 +8913,9 @@
   },
   {
     "symbol": "MAHABANK.NS",
-    "name": "MAHABANK Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Bank of Maharashtra",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Midcap 150"
     ],
@@ -8943,9 +8943,9 @@
   },
   {
     "symbol": "MAHINDCIE.NS",
-    "name": "MAHINDCIE Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "CIE Automotive India Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Components & Forgings",
     "indices": [
       "Smallcap 250"
     ],
@@ -8971,9 +8971,9 @@
   },
   {
     "symbol": "MANAPPURAM.NS",
-    "name": "MANAPPURAM Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Manappuram Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -9001,9 +9001,9 @@
   },
   {
     "symbol": "MAPMYINDIA.NS",
-    "name": "MAPMYINDIA Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "C. E. Info Systems Ltd.",
+    "sector": "IT",
+    "industry": "Software - Infrastructure",
     "indices": [
       "Next 50"
     ],
@@ -9031,9 +9031,9 @@
   },
   {
     "symbol": "MARKSANS.NS",
-    "name": "MARKSANS Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Marksans Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - General",
     "indices": [
       "Next 50"
     ],
@@ -9061,9 +9061,9 @@
   },
   {
     "symbol": "MASTEK.NS",
-    "name": "MASTEK Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Mastek Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Next 50"
     ],
@@ -9091,9 +9091,9 @@
   },
   {
     "symbol": "MEDANTA.NS",
-    "name": "MEDANTA Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Global Health Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Care Facilities",
     "indices": [
       "Next 50"
     ],
@@ -9121,9 +9121,9 @@
   },
   {
     "symbol": "METROPOLIS.NS",
-    "name": "METROPOLIS Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Metropolis Healthcare Ltd.",
+    "sector": "Healthcare",
+    "industry": "Diagnostics & Research",
     "indices": [
       "Smallcap 250"
     ],
@@ -9151,9 +9151,9 @@
   },
   {
     "symbol": "MGL.NS",
-    "name": "MGL Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Mahanagar Gas Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Regulated Gas",
     "indices": [
       "Next 50"
     ],
@@ -9181,9 +9181,9 @@
   },
   {
     "symbol": "MINDACORP.NS",
-    "name": "MINDACORP Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Minda Corporation Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50"
     ],
@@ -9211,9 +9211,9 @@
   },
   {
     "symbol": "MMTC.NS",
-    "name": "MMTC Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "MMTC Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Next 50"
     ],
@@ -9241,9 +9241,9 @@
   },
   {
     "symbol": "MOTILALOFS.NS",
-    "name": "MOTILALOFS Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Motilal Oswal Financial Services Ltd.",
+    "sector": "Financial Services",
+    "industry": "Capital Markets",
     "indices": [
       "Midcap 150"
     ],
@@ -9271,9 +9271,9 @@
   },
   {
     "symbol": "MRPL.NS",
-    "name": "MRPL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Mangalore Refinery and Petrochemicals Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil & Gas Refining & Marketing",
     "indices": [
       "Next 50"
     ],
@@ -9301,9 +9301,9 @@
   },
   {
     "symbol": "MSUMI.NS",
-    "name": "MSUMI Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Motherson Sumi Wiring India Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50"
     ],
@@ -9331,9 +9331,9 @@
   },
   {
     "symbol": "MTARTECH.NS",
-    "name": "MTARTECH Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "MTAR Technologies Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Midcap 150"
     ],
@@ -9361,9 +9361,9 @@
   },
   {
     "symbol": "NATCOPHARM.NS",
-    "name": "NATCOPHARM Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "NATCO Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Next 50"
     ],
@@ -9391,9 +9391,9 @@
   },
   {
     "symbol": "NAVINFLUOR.NS",
-    "name": "NAVINFLUOR Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Navin Fluorine International Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -9421,9 +9421,9 @@
   },
   {
     "symbol": "NBCC.NS",
-    "name": "NBCC Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "NBCC (India) Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Midcap 150"
     ],
@@ -9451,9 +9451,9 @@
   },
   {
     "symbol": "NCC.NS",
-    "name": "NCC Limited",
+    "name": "NCC Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Midcap 150"
     ],
@@ -9481,9 +9481,9 @@
   },
   {
     "symbol": "NESCO.NS",
-    "name": "NESCO Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Nesco Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Smallcap 250"
     ],
@@ -9511,9 +9511,9 @@
   },
   {
     "symbol": "NETWORK18.NS",
-    "name": "NETWORK18 Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Network18 Media & Investments Ltd.",
+    "sector": "Services",
+    "industry": "Entertainment",
     "indices": [
       "Midcap 150"
     ],
@@ -9541,9 +9541,9 @@
   },
   {
     "symbol": "NH.NS",
-    "name": "NH Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Narayana Hrudayalaya Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Care Facilities",
     "indices": [
       "Next 50"
     ],
@@ -9571,9 +9571,9 @@
   },
   {
     "symbol": "NLCINDIA.NS",
-    "name": "NLCINDIA Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "NLC India Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Regulated Electric",
     "indices": [
       "Next 50"
     ],
@@ -9601,9 +9601,9 @@
   },
   {
     "symbol": "NOCIL.NS",
-    "name": "NOCIL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "NOCIL Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Midcap 150"
     ],
@@ -9631,9 +9631,9 @@
   },
   {
     "symbol": "NTPCGREEN.NS",
-    "name": "NTPCGREEN Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "NTPC Green Energy Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Renewable",
     "indices": [
       "Smallcap 250"
     ],
@@ -9661,9 +9661,9 @@
   },
   {
     "symbol": "NUVAMA.NS",
-    "name": "NUVAMA Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Nuvama Wealth Management Ltd.",
+    "sector": "Financial Services",
+    "industry": "Asset Management",
     "indices": [
       "Next 50"
     ],
@@ -9691,9 +9691,9 @@
   },
   {
     "symbol": "OIL.NS",
-    "name": "OIL Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Oil India Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil & Gas Integrated",
     "indices": [
       "Midcap 150"
     ],
@@ -9721,9 +9721,9 @@
   },
   {
     "symbol": "OLECTRA.NS",
-    "name": "OLECTRA Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Olectra Greentech Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Farm & Heavy Construction Machinery",
     "indices": [
       "Next 50"
     ],
@@ -9751,9 +9751,9 @@
   },
   {
     "symbol": "PFIZER.NS",
-    "name": "PFIZER Limited",
+    "name": "Pfizer Ltd.",
     "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "industry": "Drug Manufacturers - General",
     "indices": [
       "Next 50"
     ],
@@ -9781,9 +9781,9 @@
   },
   {
     "symbol": "PNCINFRA.NS",
-    "name": "PNCINFRA Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "PNC Infratech Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Next 50"
     ],
@@ -9811,9 +9811,9 @@
   },
   {
     "symbol": "POLYMED.NS",
-    "name": "POLYMED Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Poly Medicure Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Instruments & Supplies",
     "indices": [
       "Midcap 150"
     ],
@@ -9841,9 +9841,9 @@
   },
   {
     "symbol": "POLYPLEX.NS",
-    "name": "POLYPLEX Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Polyplex Corporation Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -9871,9 +9871,9 @@
   },
   {
     "symbol": "POWERINDIA.NS",
-    "name": "POWERINDIA Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Hitachi Energy India Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -9901,9 +9901,9 @@
   },
   {
     "symbol": "PPLPHARMA.NS",
-    "name": "PPLPHARMA Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Piramal Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -9931,9 +9931,9 @@
   },
   {
     "symbol": "PRAJIND.NS",
-    "name": "PRAJIND Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Praj Industries Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Midcap 150"
     ],
@@ -9961,9 +9961,9 @@
   },
   {
     "symbol": "PREMIERENE.NS",
-    "name": "PREMIERENE Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Premier Energies Ltd.",
+    "sector": "IT",
+    "industry": "Solar",
     "indices": [
       "Next 50"
     ],
@@ -9991,9 +9991,9 @@
   },
   {
     "symbol": "PRINCEPIPE.NS",
-    "name": "PRINCEPIPE Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Prince Pipes and Fittings Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Midcap 150"
     ],
@@ -10021,9 +10021,9 @@
   },
   {
     "symbol": "PRSMJOHNSN.NS",
-    "name": "PRSMJOHNSN Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Prism Johnson Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Next 50"
     ],
@@ -10051,9 +10051,9 @@
   },
   {
     "symbol": "PVRINOX.NS",
-    "name": "PVRINOX Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "PVR INOX Ltd.",
+    "sector": "Services",
+    "industry": "Entertainment",
     "indices": [
       "Midcap 150"
     ],
@@ -10081,9 +10081,9 @@
   },
   {
     "symbol": "QUESS.NS",
-    "name": "QUESS Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Quess Corp Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Staffing & Employment Services",
     "indices": [
       "Midcap 150"
     ],
@@ -10111,9 +10111,9 @@
   },
   {
     "symbol": "RADICO.NS",
-    "name": "RADICO Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Radico Khaitan Ltd.",
+    "sector": "FMCG",
+    "industry": "Beverages - Wineries & Distilleries",
     "indices": [
       "Midcap 150"
     ],
@@ -10141,9 +10141,9 @@
   },
   {
     "symbol": "RAIN.NS",
-    "name": "RAIN Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Rain Industries Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -10171,9 +10171,9 @@
   },
   {
     "symbol": "RAINBOW.NS",
-    "name": "RAINBOW Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Rainbow Children's Medicare Ltd.",
+    "sector": "Healthcare",
+    "industry": "Medical Care Facilities",
     "indices": [
       "Next 50"
     ],
@@ -10201,9 +10201,9 @@
   },
   {
     "symbol": "RAJESHEXPO.NS",
-    "name": "RAJESHEXPO Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Rajesh Exports Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Luxury Goods",
     "indices": [
       "Next 50"
     ],
@@ -10231,9 +10231,9 @@
   },
   {
     "symbol": "RALLIS.NS",
-    "name": "RALLIS Limited",
+    "name": "Rallis India Ltd.",
     "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Midcap 150"
     ],
@@ -10261,9 +10261,9 @@
   },
   {
     "symbol": "RAMCOCEM.NS",
-    "name": "RAMCOCEM Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "The Ramco Cements Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Smallcap 250"
     ],
@@ -10291,9 +10291,9 @@
   },
   {
     "symbol": "RATNAMANI.NS",
-    "name": "RATNAMANI Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Ratnamani Metals & Tubes Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Midcap 150"
     ],
@@ -10321,9 +10321,9 @@
   },
   {
     "symbol": "RAYMOND.NS",
-    "name": "RAYMOND Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Raymond Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Midcap 150"
     ],
@@ -10351,9 +10351,9 @@
   },
   {
     "symbol": "RBA.NS",
-    "name": "RBA Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Restaurant Brands Asia Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants",
     "indices": [
       "Smallcap 250"
     ],
@@ -10381,9 +10381,9 @@
   },
   {
     "symbol": "RCF.NS",
-    "name": "RCF Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Rashtriya Chemicals and Fertilizers Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -10411,9 +10411,9 @@
   },
   {
     "symbol": "REDINGTON.NS",
-    "name": "REDINGTON Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Redington Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Midcap 150"
     ],
@@ -10441,9 +10441,9 @@
   },
   {
     "symbol": "RELAXO.NS",
-    "name": "RELAXO Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Relaxo Footwears Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Footwear & Accessories",
     "indices": [
       "Next 50"
     ],
@@ -10471,9 +10471,9 @@
   },
   {
     "symbol": "RITES.NS",
-    "name": "RITES Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "RITES Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Next 50"
     ],
@@ -10531,9 +10531,9 @@
   },
   {
     "symbol": "RRKABEL.NS",
-    "name": "RRKABEL Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "R R Kabel Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -10561,9 +10561,9 @@
   },
   {
     "symbol": "RPOWER.NS",
-    "name": "RPOWER Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Reliance Power Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Independent Power Producers",
     "indices": [
       "Midcap 150"
     ],
@@ -10591,9 +10591,9 @@
   },
   {
     "symbol": "SAFARI.NS",
-    "name": "SAFARI Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Safari Industries (India) Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Footwear & Accessories",
     "indices": [
       "Next 50"
     ],
@@ -10621,9 +10621,9 @@
   },
   {
     "symbol": "SAGCEM.NS",
-    "name": "SAGCEM Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Sagar Cements Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Midcap 150"
     ],
@@ -10651,9 +10651,9 @@
   },
   {
     "symbol": "SANOFI.NS",
-    "name": "SANOFI Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Sanofi India Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - General",
     "indices": [
       "Next 50"
     ],
@@ -10681,9 +10681,9 @@
   },
   {
     "symbol": "SAPPHIRE.NS",
-    "name": "SAPPHIRE Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Sapphire Foods India Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants",
     "indices": [
       "Midcap 150"
     ],
@@ -10711,9 +10711,9 @@
   },
   {
     "symbol": "SBICARD.NS",
-    "name": "SBICARD Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "SBI Cards and Payment Services Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Next 50"
     ],
@@ -10741,9 +10741,9 @@
   },
   {
     "symbol": "SCHAEFFLER.NS",
-    "name": "SCHAEFFLER Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Schaeffler India Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -10771,9 +10771,9 @@
   },
   {
     "symbol": "SCHNEIDER.NS",
-    "name": "SCHNEIDER Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Schneider Electric Infrastructure Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -10801,9 +10801,9 @@
   },
   {
     "symbol": "SCI.NS",
-    "name": "SCI Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "The Shipping Corporation of India Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Marine Shipping",
     "indices": [
       "Midcap 150"
     ],
@@ -10831,9 +10831,9 @@
   },
   {
     "symbol": "SHOPERSTOP.NS",
-    "name": "SHOPERSTOP Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Shoppers Stop Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Department Stores",
     "indices": [
       "Midcap 150"
     ],
@@ -10861,9 +10861,9 @@
   },
   {
     "symbol": "SHRIRAMPPS.NS",
-    "name": "SHRIRAMPPS Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Shriram Properties Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate - Development",
     "indices": [
       "Smallcap 250"
     ],
@@ -10891,9 +10891,9 @@
   },
   {
     "symbol": "SKFINDIA.NS",
-    "name": "SKFINDIA Limited",
+    "name": "SKF India Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Tools & Accessories",
     "indices": [
       "Next 50"
     ],
@@ -10921,9 +10921,9 @@
   },
   {
     "symbol": "SOBHA.NS",
-    "name": "SOBHA Limited",
+    "name": "Sobha Ltd.",
     "sector": "Realty",
-    "industry": "Real Estate Development",
+    "industry": "Real Estate - Development",
     "indices": [
       "Next 50"
     ],
@@ -10951,9 +10951,9 @@
   },
   {
     "symbol": "SONACOMS.NS",
-    "name": "SONACOMS Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Sona BLW Precision Forgings Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -10981,9 +10981,9 @@
   },
   {
     "symbol": "SOUTHBANK.NS",
-    "name": "SOUTHBANK Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "The South Indian Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Next 50"
     ],
@@ -11011,9 +11011,9 @@
   },
   {
     "symbol": "SPLPETRO.NS",
-    "name": "SPLPETRO Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Supreme Petrochem Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -11041,9 +11041,9 @@
   },
   {
     "symbol": "STARHEALTH.NS",
-    "name": "STARHEALTH Limited",
+    "name": "Star Health and Allied Insurance Company Ltd.",
     "sector": "Financial Services",
-    "industry": "NBFC",
+    "industry": "Insurance - Life",
     "indices": [
       "Next 50"
     ],
@@ -11071,9 +11071,9 @@
   },
   {
     "symbol": "SUMICHEM.NS",
-    "name": "SUMICHEM Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Sumitomo Chemical India Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -11101,9 +11101,9 @@
   },
   {
     "symbol": "SUNDARMFIN.NS",
-    "name": "SUNDARMFIN Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Sundaram Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Midcap 150"
     ],
@@ -11131,9 +11131,9 @@
   },
   {
     "symbol": "SUNDRMFAST.NS",
-    "name": "SUNDRMFAST Limited",
+    "name": "Sundram Fasteners Ltd.",
     "sector": "Auto",
-    "industry": "Auto Components",
+    "industry": "Auto Parts",
     "indices": [
       "Next 50"
     ],
@@ -11161,9 +11161,9 @@
   },
   {
     "symbol": "SUNTECK.NS",
-    "name": "SUNTECK Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Sunteck Realty Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate - Development",
     "indices": [
       "Midcap 150"
     ],
@@ -11191,9 +11191,9 @@
   },
   {
     "symbol": "SUNTV.NS",
-    "name": "SUNTV Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Sun TV Network Ltd.",
+    "sector": "Services",
+    "industry": "Broadcasting",
     "indices": [
       "Next 50"
     ],
@@ -11221,9 +11221,9 @@
   },
   {
     "symbol": "SUPRAJIT.NS",
-    "name": "SUPRAJIT Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Suprajit Engineering Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -11251,9 +11251,9 @@
   },
   {
     "symbol": "SUPREMEIND.NS",
-    "name": "SUPREMEIND Limited",
+    "name": "The Supreme Industries Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Building Products & Equipment",
     "indices": [
       "Next 50"
     ],
@@ -11281,9 +11281,9 @@
   },
   {
     "symbol": "SWANENERGY.NS",
-    "name": "SWANENERGY Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Swan Energy Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil, Gas & Petrochemicals",
     "indices": [
       "Next 50"
     ],
@@ -11309,9 +11309,9 @@
   },
   {
     "symbol": "SYMPHONY.NS",
-    "name": "SYMPHONY Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Symphony Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Smallcap 250"
     ],
@@ -11339,9 +11339,9 @@
   },
   {
     "symbol": "SYNGENE.NS",
-    "name": "SYNGENE Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Syngene International Ltd.",
+    "sector": "Healthcare",
+    "industry": "Diagnostics & Research",
     "indices": [
       "Next 50"
     ],
@@ -11369,9 +11369,9 @@
   },
   {
     "symbol": "TANLA.NS",
-    "name": "TANLA Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Tanla Platforms Ltd.",
+    "sector": "IT",
+    "industry": "Software - Application",
     "indices": [
       "Midcap 150"
     ],
@@ -11399,9 +11399,9 @@
   },
   {
     "symbol": "TATACHEM.NS",
-    "name": "TATACHEM Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Tata Chemicals Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Midcap 150"
     ],
@@ -11459,9 +11459,9 @@
   },
   {
     "symbol": "TATAINVEST.NS",
-    "name": "TATAINVEST Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Tata Investment Corporation Ltd.",
+    "sector": "Financial Services",
+    "industry": "Asset Management",
     "indices": [
       "Midcap 150"
     ],
@@ -11489,9 +11489,9 @@
   },
   {
     "symbol": "TATATECH.NS",
-    "name": "TATATECH Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Tata Technologies Ltd.",
+    "sector": "IT",
+    "industry": "Information Technology Services",
     "indices": [
       "Midcap 150"
     ],
@@ -11519,9 +11519,9 @@
   },
   {
     "symbol": "TEAMLEASE.NS",
-    "name": "TEAMLEASE Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "TeamLease Services Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Staffing & Employment Services",
     "indices": [
       "Midcap 150"
     ],
@@ -11579,9 +11579,9 @@
   },
   {
     "symbol": "THERMAX.NS",
-    "name": "THERMAX Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Thermax Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Midcap 150"
     ],
@@ -11609,9 +11609,9 @@
   },
   {
     "symbol": "TIMKEN.NS",
-    "name": "TIMKEN Limited",
+    "name": "Timken India Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Tools & Accessories",
     "indices": [
       "Midcap 150"
     ],
@@ -11639,9 +11639,9 @@
   },
   {
     "symbol": "TIPSMUSIC.NS",
-    "name": "TIPSMUSIC Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Tips Music Ltd.",
+    "sector": "Services",
+    "industry": "Entertainment",
     "indices": [
       "Next 50"
     ],
@@ -11669,9 +11669,9 @@
   },
   {
     "symbol": "TRITURBINE.NS",
-    "name": "TRITURBINE Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Triveni Turbine Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Next 50"
     ],
@@ -11699,9 +11699,9 @@
   },
   {
     "symbol": "TRIVENI.NS",
-    "name": "TRIVENI Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Triveni Engineering & Industries Ltd.",
+    "sector": "FMCG",
+    "industry": "Confectioners",
     "indices": [
       "Midcap 150"
     ],
@@ -11729,9 +11729,9 @@
   },
   {
     "symbol": "TTKPRESTIG.NS",
-    "name": "TTKPRESTIG Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "TTK Prestige Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Next 50"
     ],
@@ -11759,9 +11759,9 @@
   },
   {
     "symbol": "TV18BRDCST.NS",
-    "name": "TV18BRDCST Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "TV18 Broadcast Ltd.",
+    "sector": "Services",
+    "industry": "Media & Broadcasting",
     "indices": [
       "Smallcap 250"
     ],
@@ -11787,9 +11787,9 @@
   },
   {
     "symbol": "UBL.NS",
-    "name": "UBL Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "United Breweries Ltd.",
+    "sector": "FMCG",
+    "industry": "Beverages - Brewers",
     "indices": [
       "Midcap 150"
     ],
@@ -11817,9 +11817,9 @@
   },
   {
     "symbol": "UCOBANK.NS",
-    "name": "UCOBANK Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "UCO Bank",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Next 50"
     ],
@@ -11847,9 +11847,9 @@
   },
   {
     "symbol": "UJJIVANSFB.NS",
-    "name": "UJJIVANSFB Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Ujjivan Small Finance Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Midcap 150"
     ],
@@ -11877,9 +11877,9 @@
   },
   {
     "symbol": "UNOMINDA.NS",
-    "name": "UNOMINDA Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Uno Minda Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Midcap 150"
     ],
@@ -11907,9 +11907,9 @@
   },
   {
     "symbol": "UPL.NS",
-    "name": "UPL Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "UPL Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Next 50"
     ],
@@ -11937,9 +11937,9 @@
   },
   {
     "symbol": "USHAMART.NS",
-    "name": "USHAMART Limited",
+    "name": "Usha Martin Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Steel",
     "indices": [
       "Next 50"
     ],
@@ -11967,9 +11967,9 @@
   },
   {
     "symbol": "UTIAMC.NS",
-    "name": "UTIAMC Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "UTI Asset Management Company Ltd.",
+    "sector": "Financial Services",
+    "industry": "Asset Management",
     "indices": [
       "Next 50"
     ],
@@ -11997,9 +11997,9 @@
   },
   {
     "symbol": "VAIBHAVGBL.NS",
-    "name": "VAIBHAVGBL Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Vaibhav Global Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Luxury Goods",
     "indices": [
       "Midcap 150"
     ],
@@ -12027,9 +12027,9 @@
   },
   {
     "symbol": "VGUARD.NS",
-    "name": "VGUARD Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "V-Guard Industries Ltd.",
+    "sector": "Power",
+    "industry": "Electrical Equipment & Parts",
     "indices": [
       "Next 50"
     ],
@@ -12057,9 +12057,9 @@
   },
   {
     "symbol": "VIJAYA.NS",
-    "name": "VIJAYA Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Vijaya Diagnostic Centre Ltd.",
+    "sector": "Healthcare",
+    "industry": "Diagnostics & Research",
     "indices": [
       "Next 50"
     ],
@@ -12087,9 +12087,9 @@
   },
   {
     "symbol": "VINATIORGA.NS",
-    "name": "VINATIORGA Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Vinati Organics Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Next 50"
     ],
@@ -12117,9 +12117,9 @@
   },
   {
     "symbol": "VIPIND.NS",
-    "name": "VIPIND Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "V.I.P. Industries Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Footwear & Accessories",
     "indices": [
       "Midcap 150"
     ],
@@ -12147,9 +12147,9 @@
   },
   {
     "symbol": "VMART.NS",
-    "name": "VMART Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "V-Mart Retail Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Department Stores",
     "indices": [
       "Next 50"
     ],
@@ -12177,9 +12177,9 @@
   },
   {
     "symbol": "VTL.NS",
-    "name": "VTL Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Vardhman Textiles Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Midcap 150"
     ],
@@ -12207,9 +12207,9 @@
   },
   {
     "symbol": "WELCORP.NS",
-    "name": "WELCORP Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Welspun Corp Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Next 50"
     ],
@@ -12237,9 +12237,9 @@
   },
   {
     "symbol": "WELSPUNLIV.NS",
-    "name": "WELSPUNLIV Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Welspun Living Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Midcap 150"
     ],
@@ -12267,9 +12267,9 @@
   },
   {
     "symbol": "WESTLIFE.NS",
-    "name": "WESTLIFE Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Westlife Foodworld Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants",
     "indices": [
       "Smallcap 250"
     ],
@@ -12297,9 +12297,9 @@
   },
   {
     "symbol": "WHIRLPOOL.NS",
-    "name": "WHIRLPOOL Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Whirlpool of India Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Next 50"
     ],
@@ -12327,9 +12327,9 @@
   },
   {
     "symbol": "WOCKPHARMA.NS",
-    "name": "WOCKPHARMA Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Wockhardt Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Midcap 150"
     ],
@@ -12357,9 +12357,9 @@
   },
   {
     "symbol": "YESBANK.NS",
-    "name": "YESBANK Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Yes Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -12387,9 +12387,9 @@
   },
   {
     "symbol": "ZEEL.NS",
-    "name": "ZEEL Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Zee Entertainment Enterprises Ltd.",
+    "sector": "Services",
+    "industry": "Broadcasting",
     "indices": [
       "Smallcap 250"
     ],
@@ -12417,9 +12417,9 @@
   },
   {
     "symbol": "ZENTEC.NS",
-    "name": "ZENTEC Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Zen Technologies Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Aerospace & Defense",
     "indices": [
       "Next 50"
     ],
@@ -12447,9 +12447,9 @@
   },
   {
     "symbol": "ACE.NS",
-    "name": "ACE Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Action Construction Equipment Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Farm & Heavy Construction Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -12477,9 +12477,9 @@
   },
   {
     "symbol": "AETHER.NS",
-    "name": "AETHER Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Aether Industries Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -12507,9 +12507,9 @@
   },
   {
     "symbol": "AGI.NS",
-    "name": "AGI Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "AGI Greenpac Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Packaging & Containers",
     "indices": [
       "Smallcap 250"
     ],
@@ -12537,9 +12537,9 @@
   },
   {
     "symbol": "ALLCARGO.NS",
-    "name": "ALLCARGO Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Allcargo Logistics Ltd.",
+    "sector": "Services",
+    "industry": "Integrated Freight & Logistics",
     "indices": [
       "Smallcap 250"
     ],
@@ -12567,9 +12567,9 @@
   },
   {
     "symbol": "ALOKINDS.NS",
-    "name": "ALOKINDS Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Alok Industries Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -12597,9 +12597,9 @@
   },
   {
     "symbol": "ANANTRAJ.NS",
-    "name": "ANANTRAJ Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Anant Raj Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate - Development",
     "indices": [
       "Smallcap 250"
     ],
@@ -12627,9 +12627,9 @@
   },
   {
     "symbol": "AVANTIFEED.NS",
-    "name": "AVANTIFEED Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Avanti Feeds Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Smallcap 250"
     ],
@@ -12657,9 +12657,9 @@
   },
   {
     "symbol": "BALMLAWRIE.NS",
-    "name": "BALMLAWRIE Limited",
+    "name": "Balmer Lawrie & Co. Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Conglomerates",
     "indices": [
       "Smallcap 250"
     ],
@@ -12687,9 +12687,9 @@
   },
   {
     "symbol": "BANCOINDIA.NS",
-    "name": "BANCOINDIA Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Banco Products (India) Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -12717,9 +12717,9 @@
   },
   {
     "symbol": "BARBEQUE.NS",
-    "name": "BARBEQUE Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Barbeque Nation Hospitality Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants & Dining",
     "indices": [
       "Smallcap 250"
     ],
@@ -12745,9 +12745,9 @@
   },
   {
     "symbol": "BASF.NS",
-    "name": "BASF Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "BASF India Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -12775,9 +12775,9 @@
   },
   {
     "symbol": "BBTC.NS",
-    "name": "BBTC Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "The Bombay Burmah Trading Corporation Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Smallcap 250"
     ],
@@ -12805,9 +12805,9 @@
   },
   {
     "symbol": "BECTORFOOD.NS",
-    "name": "BECTORFOOD Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Mrs. Bectors Food Specialities Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Smallcap 250"
     ],
@@ -12835,9 +12835,9 @@
   },
   {
     "symbol": "BELRISE.NS",
-    "name": "BELRISE Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Belrise Industries Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -12865,9 +12865,9 @@
   },
   {
     "symbol": "BLISSGVS.NS",
-    "name": "BLISSGVS Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Bliss GVS Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Smallcap 250"
     ],
@@ -12895,9 +12895,9 @@
   },
   {
     "symbol": "BOMDYEING.NS",
-    "name": "BOMDYEING Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "The Bombay Dyeing and Manufacturing Company Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -12925,9 +12925,9 @@
   },
   {
     "symbol": "BOROLTD.NS",
-    "name": "BOROLTD Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Borosil Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Smallcap 250"
     ],
@@ -12955,9 +12955,9 @@
   },
   {
     "symbol": "BURGERKING.NS",
-    "name": "BURGERKING Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Restaurant Brands Asia Ltd. (Burger King)",
+    "sector": "Services",
+    "industry": "QSR & Fast Food",
     "indices": [
       "Smallcap 250"
     ],
@@ -12983,9 +12983,9 @@
   },
   {
     "symbol": "CAMLINFINE.NS",
-    "name": "CAMLINFINE Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Camlin Fine Sciences Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -13013,9 +13013,9 @@
   },
   {
     "symbol": "CAPL.NS",
-    "name": "CAPL Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Coastal Corporation Ltd.",
+    "sector": "FMCG",
+    "industry": "Seafood Processing & Export",
     "indices": [
       "Smallcap 250"
     ],
@@ -13041,9 +13041,9 @@
   },
   {
     "symbol": "CAREERP.NS",
-    "name": "CAREERP Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Career Point Ltd.",
+    "sector": "Services",
+    "industry": "Education & Test Prep",
     "indices": [
       "Smallcap 250"
     ],
@@ -13069,9 +13069,9 @@
   },
   {
     "symbol": "CARERATING.NS",
-    "name": "CARERATING Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "CARE Ratings Ltd.",
+    "sector": "Financial Services",
+    "industry": "Financial Data & Stock Exchanges",
     "indices": [
       "Smallcap 250"
     ],
@@ -13099,9 +13099,9 @@
   },
   {
     "symbol": "CENTENKA.NS",
-    "name": "CENTENKA Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Century Enka Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -13129,9 +13129,9 @@
   },
   {
     "symbol": "CENTUM.NS",
-    "name": "CENTUM Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Centum Electronics Ltd.",
+    "sector": "IT",
+    "industry": "Electronic Components",
     "indices": [
       "Smallcap 250"
     ],
@@ -13159,9 +13159,9 @@
   },
   {
     "symbol": "CHALET.NS",
-    "name": "CHALET Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Chalet Hotels Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Lodging",
     "indices": [
       "Smallcap 250"
     ],
@@ -13189,9 +13189,9 @@
   },
   {
     "symbol": "CHENNPETRO.NS",
-    "name": "CHENNPETRO Limited",
+    "name": "Chennai Petroleum Corporation Ltd.",
     "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "industry": "Oil & Gas Refining & Marketing",
     "indices": [
       "Smallcap 250"
     ],
@@ -13219,9 +13219,9 @@
   },
   {
     "symbol": "CHOICEIN.NS",
-    "name": "CHOICEIN Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Choice International Ltd.",
+    "sector": "Financial Services",
+    "industry": "Capital Markets",
     "indices": [
       "Smallcap 250"
     ],
@@ -13249,7 +13249,7 @@
   },
   {
     "symbol": "CIGNITITEC.NS",
-    "name": "CIGNITITEC Limited",
+    "name": "Cigniti Technologies Ltd.",
     "sector": "FMCG",
     "industry": "Packaged Foods",
     "indices": [
@@ -13279,9 +13279,9 @@
   },
   {
     "symbol": "CMSINFO.NS",
-    "name": "CMSINFO Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "CMS Info Systems Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Business Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -13309,9 +13309,9 @@
   },
   {
     "symbol": "COFFEEDAY.NS",
-    "name": "COFFEEDAY Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Coffee Day Enterprises Ltd.",
+    "sector": "Services",
+    "industry": "Restaurants",
     "indices": [
       "Smallcap 250"
     ],
@@ -13339,9 +13339,9 @@
   },
   {
     "symbol": "CONFIPET.NS",
-    "name": "CONFIPET Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Confidence Petroleum India Ltd.",
+    "sector": "Oil Gas & Energy",
+    "industry": "Oil & Gas Refining & Marketing",
     "indices": [
       "Smallcap 250"
     ],
@@ -13369,9 +13369,9 @@
   },
   {
     "symbol": "CRAFTSMAN.NS",
-    "name": "CRAFTSMAN Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Craftsman Automation Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -13399,9 +13399,9 @@
   },
   {
     "symbol": "CSBBANK.NS",
-    "name": "CSBBANK Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "CSB Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -13429,9 +13429,9 @@
   },
   {
     "symbol": "DBCORP.NS",
-    "name": "DBCORP Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "D. B. Corp Ltd.",
+    "sector": "Services",
+    "industry": "Publishing",
     "indices": [
       "Smallcap 250"
     ],
@@ -13459,9 +13459,9 @@
   },
   {
     "symbol": "DCBBANK.NS",
-    "name": "DCBBANK Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "DCB Bank Ltd.",
+    "sector": "Financial Services",
+    "industry": "Banks - Regional",
     "indices": [
       "Smallcap 250"
     ],
@@ -13489,9 +13489,9 @@
   },
   {
     "symbol": "DCMSHRIRAM.NS",
-    "name": "DCMSHRIRAM Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "DCM Shriram Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Conglomerates",
     "indices": [
       "Smallcap 250"
     ],
@@ -13519,9 +13519,9 @@
   },
   {
     "symbol": "DODLA.NS",
-    "name": "DODLA Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Dodla Dairy Ltd.",
+    "sector": "FMCG",
+    "industry": "Food Distribution",
     "indices": [
       "Smallcap 250"
     ],
@@ -13549,9 +13549,9 @@
   },
   {
     "symbol": "DREAMFOLKS.NS",
-    "name": "DREAMFOLKS Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Dreamfolks Services Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Airports & Air Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -13579,9 +13579,9 @@
   },
   {
     "symbol": "DYNAMATECH.NS",
-    "name": "DYNAMATECH Limited",
+    "name": "Dynamatic Technologies Ltd.",
     "sector": "Auto",
-    "industry": "Auto Components",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -13609,9 +13609,9 @@
   },
   {
     "symbol": "EASEMYTRIP.NS",
-    "name": "EASEMYTRIP Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Easy Trip Planners Ltd.",
+    "sector": "Services",
+    "industry": "Travel Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -13639,9 +13639,9 @@
   },
   {
     "symbol": "ELECON.NS",
-    "name": "ELECON Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Elecon Engineering Company Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -13669,9 +13669,9 @@
   },
   {
     "symbol": "EMUDHRA.NS",
-    "name": "EMUDHRA Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "eMudhra Ltd.",
+    "sector": "IT",
+    "industry": "Software - Application",
     "indices": [
       "Smallcap 250"
     ],
@@ -13699,9 +13699,9 @@
   },
   {
     "symbol": "EPIGRAL.NS",
-    "name": "EPIGRAL Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Epigral Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -13729,9 +13729,9 @@
   },
   {
     "symbol": "ETHOSLTD.NS",
-    "name": "ETHOSLTD Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Ethos Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Luxury Goods",
     "indices": [
       "Smallcap 250"
     ],
@@ -13759,9 +13759,9 @@
   },
   {
     "symbol": "FUSION.NS",
-    "name": "FUSION Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Fusion Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -13789,9 +13789,9 @@
   },
   {
     "symbol": "GABRIEL.NS",
-    "name": "GABRIEL Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Gabriel India Ltd.",
+    "sector": "Auto",
+    "industry": "Auto Parts",
     "indices": [
       "Smallcap 250"
     ],
@@ -13819,9 +13819,9 @@
   },
   {
     "symbol": "GATEWAY.NS",
-    "name": "GATEWAY Limited",
+    "name": "Gateway Distriparks Ltd.",
     "sector": "Services",
-    "industry": "Logistics",
+    "industry": "Integrated Freight & Logistics",
     "indices": [
       "Smallcap 250"
     ],
@@ -13849,9 +13849,9 @@
   },
   {
     "symbol": "GHCL.NS",
-    "name": "GHCL Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "GHCL Ltd.",
+    "sector": "Chemicals",
+    "industry": "Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -13879,9 +13879,9 @@
   },
   {
     "symbol": "GLAND.NS",
-    "name": "GLAND Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Gland Pharma Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Smallcap 250"
     ],
@@ -13909,9 +13909,9 @@
   },
   {
     "symbol": "GLS.NS",
-    "name": "GLS Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Glenmark Life Sciences Ltd.",
+    "sector": "Healthcare",
+    "industry": "Active Pharmaceutical Ingredients (API)",
     "indices": [
       "Smallcap 250"
     ],
@@ -13937,9 +13937,9 @@
   },
   {
     "symbol": "GMMPFAUDLR.NS",
-    "name": "GMMPFAUDLR Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "GMM Pfaudler Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -13967,9 +13967,9 @@
   },
   {
     "symbol": "GOKEX.NS",
-    "name": "GOKEX Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Gokaldas Exports Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Apparel Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -13997,9 +13997,9 @@
   },
   {
     "symbol": "GPIL.NS",
-    "name": "GPIL Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Godawari Power & Ispat Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Steel",
     "indices": [
       "Smallcap 250"
     ],
@@ -14027,9 +14027,9 @@
   },
   {
     "symbol": "GRAVITA.NS",
-    "name": "GRAVITA Limited",
+    "name": "Gravita India Ltd.",
     "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "industry": "Metal Fabrication",
     "indices": [
       "Smallcap 250"
     ],
@@ -14057,9 +14057,9 @@
   },
   {
     "symbol": "GREAVESCOT.NS",
-    "name": "GREAVESCOT Limited",
+    "name": "Greaves Cotton Ltd.",
     "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -14087,9 +14087,9 @@
   },
   {
     "symbol": "GRINFRA.NS",
-    "name": "GRINFRA Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "G R Infraprojects Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Infrastructure & Construction",
     "indices": [
       "Smallcap 250"
     ],
@@ -14117,7 +14117,7 @@
   },
   {
     "symbol": "GULFOILLUB.NS",
-    "name": "GULFOILLUB Limited",
+    "name": "Gulf Oil Lubricants India Ltd.",
     "sector": "Chemicals",
     "industry": "Specialty Chemicals",
     "indices": [
@@ -14147,9 +14147,9 @@
   },
   {
     "symbol": "HARSHA.NS",
-    "name": "HARSHA Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Harsha Engineers International Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Tools & Accessories",
     "indices": [
       "Smallcap 250"
     ],
@@ -14177,9 +14177,9 @@
   },
   {
     "symbol": "HBLPOWER.NS",
-    "name": "HBLPOWER Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "HBL Power Systems Ltd.",
+    "sector": "Power",
+    "industry": "Industrial Batteries & Electronic Systems",
     "indices": [
       "Smallcap 250"
     ],
@@ -14205,9 +14205,9 @@
   },
   {
     "symbol": "HEIDELBERG.NS",
-    "name": "HEIDELBERG Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "HeidelbergCement India Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Cement & Building Materials",
     "indices": [
       "Smallcap 250"
     ],
@@ -14235,9 +14235,9 @@
   },
   {
     "symbol": "HEMIPROP.NS",
-    "name": "HEMIPROP Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "Hemisphere Properties India Ltd.",
+    "sector": "Realty",
+    "industry": "Real Estate - Diversified",
     "indices": [
       "Smallcap 250"
     ],
@@ -14265,9 +14265,9 @@
   },
   {
     "symbol": "HERITGFOOD.NS",
-    "name": "HERITGFOOD Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Heritage Foods Ltd.",
+    "sector": "FMCG",
+    "industry": "Packaged Foods",
     "indices": [
       "Smallcap 250"
     ],
@@ -14295,9 +14295,9 @@
   },
   {
     "symbol": "HONDAPOWER.NS",
-    "name": "HONDAPOWER Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Honda India Power Products Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -14325,9 +14325,9 @@
   },
   {
     "symbol": "HSCL.NS",
-    "name": "HSCL Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Himadri Speciality Chemical Ltd.",
+    "sector": "Chemicals",
+    "industry": "Specialty Chemicals",
     "indices": [
       "Smallcap 250"
     ],
@@ -14355,9 +14355,9 @@
   },
   {
     "symbol": "IEX.NS",
-    "name": "IEX Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Indian Energy Exchange Ltd.",
+    "sector": "Financial Services",
+    "industry": "Capital Markets",
     "indices": [
       "Smallcap 250"
     ],
@@ -14385,9 +14385,9 @@
   },
   {
     "symbol": "IFBIND.NS",
-    "name": "IFBIND Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "IFB Industries Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Furnishings, Fixtures & Appliances",
     "indices": [
       "Smallcap 250"
     ],
@@ -14415,9 +14415,9 @@
   },
   {
     "symbol": "IMAGICAA.NS",
-    "name": "IMAGICAA Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Imagicaaworld Entertainment Ltd.",
+    "sector": "Services",
+    "industry": "Entertainment",
     "indices": [
       "Smallcap 250"
     ],
@@ -14445,9 +14445,9 @@
   },
   {
     "symbol": "IMFA.NS",
-    "name": "IMFA Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Indian Metals and Ferro Alloys Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Other Industrial Metals & Mining",
     "indices": [
       "Smallcap 250"
     ],
@@ -14475,9 +14475,9 @@
   },
   {
     "symbol": "INDOCO.NS",
-    "name": "INDOCO Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Indoco Remedies Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - Specialty & Generic",
     "indices": [
       "Smallcap 250"
     ],
@@ -14505,9 +14505,9 @@
   },
   {
     "symbol": "INDOSTAR.NS",
-    "name": "INDOSTAR Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "IndoStar Capital Finance Ltd.",
+    "sector": "Financial Services",
+    "industry": "Credit Services",
     "indices": [
       "Smallcap 250"
     ],
@@ -14535,9 +14535,9 @@
   },
   {
     "symbol": "INFOBEAN.NS",
-    "name": "INFOBEAN Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "InfoBeans Technologies Ltd.",
+    "sector": "IT",
+    "industry": "Software - Application",
     "indices": [
       "Smallcap 250"
     ],
@@ -14565,9 +14565,9 @@
   },
   {
     "symbol": "IONEXCHANG.NS",
-    "name": "IONEXCHANG Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "Ion Exchange (India) Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Pollution & Treatment Controls",
     "indices": [
       "Smallcap 250"
     ],
@@ -14595,9 +14595,9 @@
   },
   {
     "symbol": "IPL.NS",
-    "name": "IPL Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "India Pesticides Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Smallcap 250"
     ],
@@ -14625,9 +14625,9 @@
   },
   {
     "symbol": "ISGEC.NS",
-    "name": "ISGEC Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Isgec Heavy Engineering Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -14655,9 +14655,9 @@
   },
   {
     "symbol": "ITDC.NS",
-    "name": "ITDC Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "India Tourism Development Corporation Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Lodging",
     "indices": [
       "Smallcap 250"
     ],
@@ -14685,9 +14685,9 @@
   },
   {
     "symbol": "JAGRAN.NS",
-    "name": "JAGRAN Limited",
-    "sector": "FMCG",
-    "industry": "Packaged Foods",
+    "name": "Jagran Prakashan Ltd.",
+    "sector": "Services",
+    "industry": "Publishing",
     "indices": [
       "Smallcap 250"
     ],
@@ -14715,9 +14715,9 @@
   },
   {
     "symbol": "JCHAC.NS",
-    "name": "JCHAC Limited",
-    "sector": "Healthcare",
-    "industry": "Pharmaceuticals",
+    "name": "Johnson Controls-Hitachi Air Conditioning Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Air Conditioners & Appliances",
     "indices": [
       "Smallcap 250"
     ],
@@ -14743,9 +14743,9 @@
   },
   {
     "symbol": "JINDWORLD.NS",
-    "name": "JINDWORLD Limited",
-    "sector": "Metals & Mining",
-    "industry": "Iron & Steel",
+    "name": "Jindal Worldwide Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -14773,9 +14773,9 @@
   },
   {
     "symbol": "KICL.NS",
-    "name": "KICL Limited",
-    "sector": "Capital Goods",
-    "industry": "Industrial Machinery",
+    "name": "Kalyani Investment Company Ltd.",
+    "sector": "Financial Services",
+    "industry": "Asset Management",
     "indices": [
       "Smallcap 250"
     ],
@@ -14803,9 +14803,9 @@
   },
   {
     "symbol": "KIRLOSBROS.NS",
-    "name": "KIRLOSBROS Limited",
-    "sector": "Realty",
-    "industry": "Real Estate Development",
+    "name": "Kirloskar Brothers Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -14833,9 +14833,9 @@
   },
   {
     "symbol": "KIRLOSENG.NS",
-    "name": "KIRLOSENG Limited",
-    "sector": "Chemicals",
-    "industry": "Specialty Chemicals",
+    "name": "Kirloskar Oil Engines Ltd.",
+    "sector": "Capital Goods",
+    "industry": "Specialty Industrial Machinery",
     "indices": [
       "Smallcap 250"
     ],
@@ -14863,9 +14863,9 @@
   },
   {
     "symbol": "KIRLOSIND.NS",
-    "name": "KIRLOSIND Limited",
-    "sector": "Consumer Durables",
-    "industry": "Consumer Electronics",
+    "name": "Kirloskar Industries Ltd.",
+    "sector": "Metals & Mining",
+    "industry": "Metal Fabrication",
     "indices": [
       "Smallcap 250"
     ],
@@ -14893,9 +14893,9 @@
   },
   {
     "symbol": "KOPRAN.NS",
-    "name": "KOPRAN Limited",
-    "sector": "Services",
-    "industry": "Logistics",
+    "name": "Kopran Ltd.",
+    "sector": "Healthcare",
+    "industry": "Drug Manufacturers - General",
     "indices": [
       "Smallcap 250"
     ],
@@ -14923,9 +14923,9 @@
   },
   {
     "symbol": "KPIGREEN.NS",
-    "name": "KPIGREEN Limited",
-    "sector": "Financial Services",
-    "industry": "NBFC",
+    "name": "KPI Green Energy Ltd.",
+    "sector": "Power",
+    "industry": "Utilities - Renewable",
     "indices": [
       "Smallcap 250"
     ],
@@ -14953,9 +14953,9 @@
   },
   {
     "symbol": "KPRMILL.NS",
-    "name": "KPRMILL Limited",
-    "sector": "IT",
-    "industry": "IT Services",
+    "name": "K.P.R. Mill Ltd.",
+    "sector": "Consumer Durables",
+    "industry": "Textile Manufacturing",
     "indices": [
       "Smallcap 250"
     ],
@@ -14983,9 +14983,9 @@
   },
   {
     "symbol": "KRISHANA.NS",
-    "name": "KRISHANA Limited",
-    "sector": "Oil Gas & Energy",
-    "industry": "Power",
+    "name": "Krishana Phoschem Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Smallcap 250"
     ],
@@ -15013,9 +15013,9 @@
   },
   {
     "symbol": "KSCL.NS",
-    "name": "KSCL Limited",
-    "sector": "Auto",
-    "industry": "Auto Components",
+    "name": "Kaveri Seed Company Ltd.",
+    "sector": "Chemicals",
+    "industry": "Agricultural Inputs",
     "indices": [
       "Smallcap 250"
     ],
@@ -15130,5 +15130,36 @@
     "dist52wHigh": -19.4,
     "fiftyTwoWeekHigh": 332.95,
     "fiftyTwoWeekLow": 210.76
+  },
+  {
+    "symbol": "INDIGO.NS",
+    "name": "InterGlobe Aviation Ltd. (IndiGo)",
+    "sector": "Services",
+    "industry": "Passenger Airlines & Aviation",
+    "indices": [
+      "Next 50",
+      "Midcap 150"
+    ],
+    "capBucket": "Large",
+    "marketCap": 2050000000000,
+    "price": 4485.5,
+    "change1d": 1.15,
+    "change1w": 2.4,
+    "change1m": 5.6,
+    "change3m": 14.8,
+    "change6m": 22.4,
+    "changeYtd": 48.2,
+    "change1y": 65.4,
+    "volume": 1250000,
+    "avgVolume": 1400000,
+    "pe": 22.5,
+    "pb": 8.5,
+    "dividendYield": 0,
+    "roe": 35.4,
+    "debtEquity": 1.8,
+    "revGrowth": 26.5,
+    "dist52wHigh": -8.2,
+    "fiftyTwoWeekHigh": 4980,
+    "fiftyTwoWeekLow": 2850
   }
 ]
